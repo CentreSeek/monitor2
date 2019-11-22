@@ -27,8 +27,7 @@
         zdi.department_id = #{departmentId,jdbcType=INTEGER} and
         zbi.`bed_id` NOT IN (SELECT bed_id
         FROM zs_patient_record
-        WHERE `usage_state` = 0 AND `status` = 0
-        and record_type = #{recordType,jdbcType=INTEGER});
+        WHERE `usage_state` = 0 AND `status` = 0);
     </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from zs_bed_info

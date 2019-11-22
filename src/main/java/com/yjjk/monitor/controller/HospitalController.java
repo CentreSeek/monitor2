@@ -11,7 +11,6 @@
 package com.yjjk.monitor.controller;
 
 import com.yjjk.monitor.configer.CommonResult;
-import com.yjjk.monitor.constant.PatientRecordConstant;
 import com.yjjk.monitor.entity.ZsBedInfo;
 import com.yjjk.monitor.entity.ZsDepartmentInfo;
 import com.yjjk.monitor.entity.ZsManagerInfo;
@@ -108,7 +107,6 @@ public class HospitalController extends BaseController {
         Integer departmentId = managerInfo.getDepartmentId();
         Map<String, Object> paraMap = new HashMap();
         paraMap.put("departmentId", departmentId);
-        paraMap.put("recordType", PatientRecordConstant.TYPE_TEMPERATURE);
         List<ZsBedInfo> zsBedInfos = this.hospitalService.selectEmptyBeds(paraMap);
 
         return ResultUtil.returnSuccess(zsBedInfos);

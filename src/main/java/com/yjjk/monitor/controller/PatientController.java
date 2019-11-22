@@ -111,7 +111,7 @@ public class PatientController extends BaseController {
             return;
         }
         ZsPatientRecord patientRecord = new ZsPatientRecord();
-        patientRecord.setStartTime(DateUtil.getCurrentTime()).setMachineId(machineId).setPatientId(zsPatientInfo.getPatientId());
+        patientRecord.setStartTime(DateUtil.getCurrentTime()).setMachineId(machineId).setPatientId(zsPatientInfo.getPatientId()).setBedId(bedId);
         int i = super.patientRecordService.addPatientRecord(patientRecord);
         if (i == 0) {
             message = "新增使用信息失败";
