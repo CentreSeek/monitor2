@@ -17,6 +17,19 @@
     from zs_bed_info
     where bed_id = #{bedId,jdbcType=INTEGER}
   </select>
+  <select id="selectEmptyBeds" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+        zbi.bed_id, zbi.`name`
+        FROM zs_bed_info zbi
+        LEFT JOIN zs_room_info zri ON zbi.`room_id` = zri.`room_id`
+        LEFT JOIN zs_department_info zdi ON zdi.`department_id` = zri.`department_id`
+        WHERE
+        zdi.department_id = #{departmentId,jdbcType=INTEGER} and
+        zbi.`bed_id` NOT IN (SELECT bed_id
+        FROM zs_patient_record
+        WHERE `usage_state` = 0 AND `status` = 0
+        and record_type = #{recordType,jdbcType=INTEGER});
+    </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from zs_bed_info
     where bed_id = #{bedId,jdbcType=INTEGER}

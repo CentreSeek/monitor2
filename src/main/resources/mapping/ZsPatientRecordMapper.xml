@@ -267,6 +267,9 @@
             <if test="machineId != null">
                 #{machineId,jdbcType=INTEGER},
             </if>
+            <if test="bedId != null">
+                #{bedId,jdbcType=INTEGER},
+            </if>
             <if test="startTime != null">
                 #{startTime,jdbcType=VARCHAR},
             </if>
@@ -295,6 +298,9 @@
             </if>
             <if test="machineId != null">
                 machine_id = #{machineId,jdbcType=INTEGER},
+            </if>
+            <if test="bedId != null">
+                bed_id = #{bedId,jdbcType=INTEGER},
             </if>
             <if test="startTime != null">
                 start_time = #{startTime,jdbcType=VARCHAR},

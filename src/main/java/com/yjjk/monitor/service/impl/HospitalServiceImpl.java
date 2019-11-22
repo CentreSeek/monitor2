@@ -11,6 +11,7 @@
 package com.yjjk.monitor.service.impl;
 
 import com.yjjk.monitor.constant.ExportConstant;
+import com.yjjk.monitor.entity.ZsBedInfo;
 import com.yjjk.monitor.entity.ZsDepartmentInfo;
 import com.yjjk.monitor.entity.ZsRoomInfo;
 import com.yjjk.monitor.service.BaseService;
@@ -19,10 +20,11 @@ import com.yjjk.monitor.utility.ExcelUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * @Description: 医院信息
  * @author CentreS
+ * @Description: 医院信息
  * @create 2019/7/18
  */
 @Service
@@ -43,7 +45,7 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
     @Override
     public int temperatureInfoPersistent(String dateOfOneMonthAgo) {
         List<String> exportTemperatures = super.zsTemperatureInfoMapper.getExportTemperatures(dateOfOneMonthAgo);
-        ExcelUtils.writeToTxt(exportTemperatures,ExportConstant.TEMPERATURE_EXPORT_PATH);
+        ExcelUtils.writeToTxt(exportTemperatures, ExportConstant.TEMPERATURE_EXPORT_PATH);
         return exportTemperatures.size();
     }
 
@@ -55,5 +57,10 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
     @Override
     public List<ZsRoomInfo> selectRooms(Integer departmentId) {
         return super.ZsRoomInfoMapper.selectRooms(departmentId);
+    }
+
+    @Override
+    public List<ZsBedInfo> selectEmptyBeds(Map<String, Object> paraMap) {
+        return this.ZsBedInfoMapper.selectEmptyBeds(paraMap);
     }
 }

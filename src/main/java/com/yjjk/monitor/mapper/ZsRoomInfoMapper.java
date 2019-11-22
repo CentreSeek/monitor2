@@ -24,4 +24,5 @@ public interface ZsRoomInfoMapper {
      * @return
      */
     List<ZsRoomInfo> selectRooms(Integer departmentId);
+
 }
