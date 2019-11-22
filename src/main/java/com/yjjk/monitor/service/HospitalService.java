@@ -10,10 +10,12 @@
  */
 package com.yjjk.monitor.service;
 
+import com.yjjk.monitor.entity.ZsBedInfo;
 import com.yjjk.monitor.entity.ZsDepartmentInfo;
 import com.yjjk.monitor.entity.ZsRoomInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 医院信息
@@ -54,4 +56,11 @@ public interface HospitalService {
      * @return
      */
     List<ZsRoomInfo> selectRooms(Integer departmentId);
+
+    /**
+     * 查找空床
+     * @param paramMap
+     * @return
+     */
+    List<ZsBedInfo> selectEmptyBeds(Map<String, Object> paramMap);
 }

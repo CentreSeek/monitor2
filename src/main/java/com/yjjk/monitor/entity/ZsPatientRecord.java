@@ -13,7 +13,6 @@ package com.yjjk.monitor.entity;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -27,6 +26,7 @@ public class ZsPatientRecord{
     private Long recordId;
     private Integer patientId;
     private Integer machineId;
+    private Integer bedId;
     private String startTime;
     private String endTime;
     private Integer usageState;

@@ -111,7 +111,7 @@ public class PatientController extends BaseController {
             return;
         }
         ZsPatientRecord patientRecord = new ZsPatientRecord();
-        patientRecord.setStartTime(DateUtil.getCurrentTime()).setMachineId(machineId).setPatientId(zsPatientInfo.getPatientId());
+        patientRecord.setStartTime(DateUtil.getCurrentTime()).setMachineId(machineId).setPatientId(zsPatientInfo.getPatientId()).setBedId(bedId);
         int i = super.patientRecordService.addPatientRecord(patientRecord);
         if (i == 0) {
             message = "新增使用信息失败";
@@ -494,7 +494,7 @@ public class PatientController extends BaseController {
         }
     }
 
-//    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    //    @RequestMapping(value = "/test", method = RequestMethod.GET)
 //    public void test() {
 //        try {
 //            /********************** 参数初始化 **********************/
@@ -504,5 +504,27 @@ public class PatientController extends BaseController {
 //            LOGGER.error("业务异常信息：[{}]", e.getMessage(), e);
 //        }
 //    }
+    @ApiOperation("更换床位")
+    @RequestMapping(value = {"/bed"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT})
+    public CommonResult changeBed(@ApiParam(value = "recordId", required = true) @RequestParam("recordId") Long recordId,
+                                  @ApiParam(value = "新床位号", required = true) @RequestParam("newBedId") Integer newBedId) {
+        try {
+            ZsPatientRecord patientRecord = this.patientRecordService.selectByPrimaryKey(recordId);
+            if (StringUtils.isNullorEmpty(patientRecord)) {
+                return ResultUtil.returnError(ErrorCodeEnum.NON_RECORD);
+            }
+            ZsPatientRecord zsPatientRecord = new ZsPatientRecord();
+            zsPatientRecord.setBedId(newBedId);
+            zsPatientRecord.setRecordId(recordId);
+            int i = this.patientRecordService.updateByPrimaryKey(zsPatientRecord);
+            if (i == 1) {
+                return ResultUtil.returnSuccess(Integer.valueOf(i));
+            }
+            return ResultUtil.returnError(ErrorCodeEnum.UPDATE_ERROR);
+        } catch (Exception e) {
+            LOGGER.error("业务异常信息：[{}]", e.getMessage(), e);
+        }
+        return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
+    }
 
 }

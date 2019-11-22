@@ -56,7 +56,7 @@
         (SELECT zpr.`record_id` AS recordId, zpr.`machine_id` AS machineId,
         zpi.`name` AS patientName, zpi.`case_num` AS caseNum,
         zmi.machine_num AS machineNum, zmi.machine_no as machineNo,
-        NOW() AS endTime, zpr.start_time AS startTime, zpi.`bed_id`
+        NOW() AS endTime, zpr.start_time AS startTime, zpr.`bed_id`
         FROM `zs_patient_record` zpr
         LEFT JOIN zs_patient_info zpi ON zpr.`patient_id` = zpi.`patient_id`
         LEFT JOIN `zs_machine_info` zmi ON zpr.`machine_id` = zmi.`machine_id`
@@ -238,6 +238,9 @@
             <if test="machineId != null">
                 machine_id,
             </if>
+            <if test="bedId != null">
+                bed_id,
+            </if>
             <if test="startTime != null">
                 start_time,
             </if>
@@ -267,6 +270,9 @@
             <if test="machineId != null">
                 #{machineId,jdbcType=INTEGER},
             </if>
+            <if test="bedId != null">
+                #{bedId,jdbcType=INTEGER},
+            </if>
             <if test="startTime != null">
                 #{startTime,jdbcType=VARCHAR},
             </if>
@@ -295,6 +301,9 @@
             </if>
             <if test="machineId != null">
                 machine_id = #{machineId,jdbcType=INTEGER},
+            </if>
+            <if test="bedId != null">
+                bed_id = #{bedId,jdbcType=INTEGER},
             </if>
             <if test="startTime != null">
                 start_time = #{startTime,jdbcType=VARCHAR},
