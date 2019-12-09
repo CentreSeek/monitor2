@@ -160,32 +160,33 @@ public class PatientController extends BaseController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/patient", method = RequestMethod.PUT)
+    @ApiOperation("更换设备")
+    @RequestMapping(value = "/changeMachine", method = RequestMethod.PUT)
     public void changeMachine(@RequestParam(value = "recordId") Long recordId,
                               @RequestParam(value = "machineId") Integer machineId,
+                              @RequestParam(value = "managerId") Integer managerId,
                               HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
         long startTime = System.currentTimeMillis();
         boolean resultCode = false;
         String message = "";
+        try {
+            ZsPatientRecord patientRecord = super.patientRecordService.selectByPrimaryKey(recordId);
+            if (StringUtils.isNullorEmpty(patientRecord)) {
+                message = "获取历史记录失败";
+                returnResult(startTime, request, response, resultCode, message, "");
+                return;
+            }
+            stopRecord(recordId, request, response);
+            ZsPatientInfo patientInfo = patientService.getByPrimaryKey(patientRecord.getPatientId());
+            addMachine(patientRecord.getBedId(), machineId, patientInfo.getName(), patientInfo.getCaseNum(), managerId, request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        ZsPatientRecord patientRecord = super.patientRecordService.selectByPrimaryKey(recordId);
-        if (StringUtils.isNullorEmpty(patientRecord)) {
-            message = "获取历史记录失败";
-            returnResult(startTime, request, response, resultCode, message, "");
-            return;
-        }
-        boolean b = super.patientRecordService.changeMachine(patientRecord.getMachineId(), machineId);
-        patientRecord.setMachineId(machineId);
-        int i = super.patientRecordService.updateByPrimaryKey(patientRecord);
-        if (i == 0 && b) {
-            message = "绑定失败";
-            returnResult(startTime, request, response, resultCode, message, i);
-            return;
-        }
-        message = "绑定成功";
+        message = "更换成功";
         resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, i);
+        returnResult(startTime, request, response, resultCode, message, "");
     }
 
     /**

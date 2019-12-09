@@ -11,7 +11,6 @@
 package com.yjjk.monitor.service.impl;
 
 import com.yjjk.monitor.entity.ZsPatientInfo;
-import com.yjjk.monitor.entity.ZsPatientRecord;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.PatientRecordService;
 import com.yjjk.monitor.service.PatientService;
@@ -57,5 +56,10 @@ public class PatientServiceImpl extends BaseService implements PatientService {
     @Override
     public int updateName(ZsPatientInfo record) {
         return super.ZsPatientInfoMapper.updateName(record);
+    }
+
+    @Override
+    public ZsPatientInfo getByPrimaryKey(Integer patientId) {
+        return super.ZsPatientInfoMapper.selectByPrimaryKey(patientId);
     }
 }
