@@ -39,7 +39,7 @@
         where record_id = #{recordId,jdbcType=BIGINT} and status = 0
     </select>
 
-    <select id="getMonitorsInfo" resultType="com.yjjk.monitor.entity.vo.UseMachineVO" parameterType="java.lang.Integer" useCache="true">
+    <select id="getMonitorsInfo" resultType="com.yjjk.monitor.entity.VO.UseMachineVO" parameterType="java.lang.Integer" useCache="true">
         SELECT a.*,b.*
         FROM ( SELECT zbi.`bed_id` as bedId,zdi.`department_id`,zdi.name AS departmentName,zri.name AS roomName,
         zbi.name AS bedName
@@ -64,7 +64,7 @@
         order by a.bedId
     </select>
 
-    <select id="getMinitorsTemperature" resultType="com.yjjk.monitor.entity.vo.PatientTemperature"
+    <select id="getMinitorsTemperature" resultType="com.yjjk.monitor.entity.VO.PatientTemperature"
             parameterType="java.lang.Integer">
         SELECT
         zmi.`machine_id` AS machineId,
@@ -83,8 +83,8 @@
         </if>
         -- ORDER BY zpr.machine_id
     </select>
-    <select id="getRecordHistory" resultType="com.yjjk.monitor.entity.vo.RecordHistory"
-            parameterType="com.yjjk.monitor.entity.vo.RecordHistory">
+    <select id="getRecordHistory" resultType="com.yjjk.monitor.entity.VO.RecordHistory"
+            parameterType="com.yjjk.monitor.entity.VO.RecordHistory">
         SELECT
         zpr.`record_id` AS recordId, zpi.`name` AS patientName, zpi.`case_num` AS caseNum,
         zdi.`name` AS departmentName,zdi.department_id, zri.`name` AS roomName, zbi.`name` AS bedName,
@@ -116,7 +116,7 @@
     </select>
 
     <select id="getRecordHistoryCount" resultType="java.lang.Integer"
-            parameterType="com.yjjk.monitor.entity.vo.RecordHistory">
+            parameterType="com.yjjk.monitor.entity.VO.RecordHistory">
         SELECT
         count(1)
         FROM`zs_patient_record` zpr
@@ -178,7 +178,7 @@
         order by create_time desc limit 0,1
     </select>
 
-    <select id="getExportList" resultType="com.yjjk.monitor.entity.vo.RecordHistory2Excel"
+    <select id="getExportList" resultType="com.yjjk.monitor.entity.VO.RecordHistory2Excel"
             parameterType="java.util.Map">
         SELECT
         zpi.`name` AS patientName,

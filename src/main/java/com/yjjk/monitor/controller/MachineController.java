@@ -10,15 +10,19 @@
  */
 package com.yjjk.monitor.controller;
 
+import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.MachineConstant;
+import com.yjjk.monitor.entity.VO.SearchMachineVOBase;
 import com.yjjk.monitor.entity.ZsMachineInfo;
+import com.yjjk.monitor.entity.ZsMachineTypeInfo;
 import com.yjjk.monitor.entity.export.MachineExportVO;
 import com.yjjk.monitor.utility.ExcelUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,54 +49,30 @@ public class MachineController extends BaseController {
      * 新增设备
      *
      * @param machineInfo
-     * @param request
-     * @param response
      */
     @ApiOperation(value = "新增设备")
     @RequestMapping(value = "/machine", method = RequestMethod.POST)
-    public void addMachine(ZsMachineInfo machineInfo, HttpServletRequest request, HttpServletResponse response) {
+    public CommonResult addMachine(ZsMachineInfo machineInfo) {
         /********************** 参数初始化 **********************/
-        long startTime = System.currentTimeMillis();
-        boolean resultCode = false;
-        String message = "";
-        if (StringUtils.isNullorEmpty(machineInfo.getName()) || StringUtils.isNullorEmpty(machineInfo.getMachineModel()) ||
-                StringUtils.isNullorEmpty(machineInfo.getMachineNum()) || StringUtils.isNullorEmpty(machineInfo.getDepartmentId()) ||
-                StringUtils.isNullorEmpty(machineInfo.getMachineNo())) {
-            message = "参数错误";
-            returnResult(startTime, request, response, resultCode, message, "");
-            return;
-        }
-        List<String> list = new ArrayList<>();
-        list.add(machineInfo.getMachineNum());
-        machineInfo.setMachineNums(list);
-        for (int i = 0; i < list.size(); i++) {
-            if (!StringUtils.checkMachineNum(list.get(i))) {
-                message = "设备号格式错误或“；”为中文符号  错误示例：710/B34.00066041 正确示例：B34/00066041";
-                returnResult(startTime, request, response, resultCode, message, "");
-                return;
+        try {
+            boolean b = super.machineService.connectionService(machineInfo.getMachineNum());
+            if (!b) {
+                return ResultUtil.returnError("网络堵塞，设备绑定失败，请稍后再试");
             }
-            int count = super.machineService.selectByMachineNum(list.get(i));
-            if (count > 0) {
-                message = "该设备信息已存在，请核实后录入";
-                returnResult(startTime, request, response, resultCode, message, "");
-                return;
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.returnError("网络堵塞，设备绑定失败，请稍后再试");
         }
+        int count = super.machineService.selectByMachineNum(machineInfo.getMachineNum());
         int count2 = super.machineService.selectByMachineNo(machineInfo.getMachineNo());
-        if (count2 > 0) {
-            message = "该设备信息已存在，请核实后录入";
-            returnResult(startTime, request, response, resultCode, message, "");
-            return;
+        if (count > 0 || count2 > 0) {
+            return ResultUtil.returnError("该设备信息已存在，请核实后录入");
         }
-        int i = super.machineService.insertByMachineNums(machineInfo);
+        int i = super.machineService.insertByMachineNum(machineInfo);
         if (i == 0) {
-            message = "设备新增失败";
-            returnResult(startTime, request, response, resultCode, message, i);
-            return;
+            return ResultUtil.returnError("设备新增失败");
         }
-        message = "设备新增成功";
-        resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, i);
+        return ResultUtil.returnSuccess(i);
     }
 
     /**
@@ -190,6 +169,7 @@ public class MachineController extends BaseController {
 
     /**
      * 设备导出
+     *
      * @param usageState
      * @param departmentId
      * @param request
@@ -222,5 +202,55 @@ public class MachineController extends BaseController {
             e.printStackTrace();
             ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
+    }
+
+    @ApiOperation(value = "获取所有设备")
+    @RequestMapping(value = "/selectAllMachine", method = RequestMethod.GET)
+    public CommonResult selectAllMachine(@RequestParam Integer departmentId,
+                                         @ApiParam(value = "设备类型id", required = true) @RequestParam Integer machineTypeId) {
+        try {
+            /********************** 参数初始化 **********************/
+            Map<String, Object> paraMap = new HashMap<>();
+            paraMap.put("departmentId", departmentId);
+            paraMap.put("machineType", machineTypeId);
+            List<ZsMachineInfo> list = super.machineService.selectAllMachines(paraMap);
+            return ResultUtil.returnSuccess(list);
+        } catch (Exception e) {
+            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "查找设备")
+    @RequestMapping(value = "/searchMachine", method = RequestMethod.GET)
+    public CommonResult<SearchMachineVOBase> searchMachine(@RequestParam Integer departmentId,
+                                                           @ApiParam(value = "设备id", required = true) @RequestParam Integer machineId) {
+        try {
+            /********************** 参数初始化 **********************/
+            Map<String, Object> paraMap = new HashMap<>();
+            paraMap.put("departmentId", departmentId);
+            paraMap.put("machineId", machineId);
+            CommonResult commonResult = super.machineService.searchMachine(paraMap);
+            return commonResult;
+        } catch (Exception e) {
+            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
+        }
+    }
+
+    /**
+     * 获取设备名称
+     *
+     * @return
+     */
+    @ApiOperation(value = "获取设备名称")
+    @RequestMapping(value = "/temperatureMachineName", method = RequestMethod.GET)
+    public CommonResult getTemperatureMachineName() {
+        try {
+            /********************** 参数初始化 **********************/
+            List<ZsMachineTypeInfo> list = super.machineService.getTemperatureMachineName();
+            return ResultUtil.returnSuccess(list);
+        } catch (Exception e) {
+            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
+        }
+
     }
 }

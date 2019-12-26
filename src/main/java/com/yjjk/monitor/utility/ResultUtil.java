@@ -80,4 +80,8 @@ public class ResultUtil {
     public static CommonResult returnError(ErrorCodeEnum status) {
         return returnError(status.getCode(), status.getDesc());
     }
+
+    public static CommonResult returnError(String msg) {
+        return returnError("300", msg);
+    }
 }

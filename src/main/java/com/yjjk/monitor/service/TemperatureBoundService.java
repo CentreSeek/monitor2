@@ -11,8 +11,8 @@
 package com.yjjk.monitor.service;
 
 import com.yjjk.monitor.entity.param.TemperatureBound;
-import com.yjjk.monitor.entity.vo.TemperatureBoundVO;
-import com.yjjk.monitor.entity.vo.UseMachineVO;
+import com.yjjk.monitor.entity.VO.TemperatureBoundVO;
+import com.yjjk.monitor.entity.VO.UseMachineVO;
 
 import java.util.List;
 

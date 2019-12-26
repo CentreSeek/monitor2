@@ -16,7 +16,7 @@
         <result column="department_name" jdbcType="VARCHAR" property="departmentName"/>
     </resultMap>
     <sql id="Base_Column_List">
-    machine_id, `name`, machine_model, machine_num, machine_no, department_id, usage_state, remark,
+        machine_id, `name`, machine_model, machine_num, machine_no, department_id, usage_state, remark,
     create_time, `status`
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -50,7 +50,8 @@
     </select>
     <select id="selectByUsageState" parameterType="com.yjjk.monitor.entity.ZsMachineInfo" resultMap="BaseResultMap">
         select
-        zmi.machine_id, zmi.`name`, zmi.machine_model, zmi.machine_num, zmi.machine_no, zmi.department_id, zmi.usage_state, zmi.remark,
+        zmi.machine_id, zmi.`name`, zmi.machine_model, zmi.machine_num, zmi.machine_no, zmi.department_id,
+        zmi.usage_state, zmi.remark,
         zmi.create_time, zmi.`status`, zdi.name as department_name
         from zs_machine_info zmi
         left join zs_department_info zdi on zmi.department_id = zdi.department_id
@@ -76,7 +77,8 @@
             limit #{startLine},#{pageSize}
         </if>
     </select>
-    <select id="export" parameterType="com.yjjk.monitor.entity.ZsMachineInfo" resultType="com.yjjk.monitor.entity.export.MachineExport">
+    <select id="export" parameterType="com.yjjk.monitor.entity.ZsMachineInfo"
+            resultType="com.yjjk.monitor.entity.export.MachineExport">
         select
         zmi.machine_no, zmi.`name`, zmi.machine_model, zmi.machine_num, zdi.name as department_name, zmi.usage_state,
         zmi.create_time, zmi.remark
@@ -99,31 +101,67 @@
         </where>
     </select>
     <select id="selectByMachineNum" parameterType="java.lang.String" resultType="java.lang.Integer">
-        select
-        count(1)
+        select count(1)
         from zs_machine_info
         where machine_num = #{machineNum,jdbcType=VARCHAR}
     </select>
     <select id="selectCountByMachineNo" parameterType="java.lang.String" resultType="java.lang.Integer">
-        select
-        count(1)
+        select count(1)
         from zs_machine_info
         where machine_no = #{machineNo,jdbcType=VARCHAR}
     </select>
-
+    <select id="selectAllMachines" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        zmi.machine_id,zmi.machine_no
+        from zs_machine_info zmi
+        left join zs_department_info zdi on zmi.department_id = zdi.department_id
+        LEFT JOIN zs_machine_type_info zmti ON zmi.`machine_type_id` = zmti.`id`
+        <where>
+            zmi.status = 0 and zdi.status = 0 and zmti.status = 0
+            and usage_state in (0,2)
+            <if test="departmentId != null">
+                and zmi.department_id = #{departmentId, jdbcType=INTEGER}
+            </if>
+            and zmi.status = 0
+            <if test="machineType != null">
+                and zmti.parent_id = #{machineType, jdbcType=INTEGER}
+            </if>
+        </where>
+        ORDER BY zmi.machine_id
+    </select>
+    <select id="searchRepeaterBaseInfo" parameterType="java.lang.Integer"
+            resultType="com.yjjk.monitor.entity.VO.SearchMachineVO">
+        SELECT zri.`room_id`, zri.`name` as roomName, zrpi.`id` AS repeaterId
+        FROM zs_room_info zri
+        LEFT JOIN zs_department_info zdi ON zri.`department_id` = zdi.`department_id` AND zdi.status = 0
+        LEFT JOIN zs_repeater_info zrpi ON zrpi.`department_id` = zdi.`department_id` AND zrpi.`room_id` = zri.`room_id`
+        AND zrpi.status = 0
+        AND zrpi.`linkStatus` = 0
+        WHERE zri.status = 0
+        <if test="departmentId != null">
+            and zdi.department_id = #{departmentId, jdbcType=INTEGER}
+        </if>
+        ORDER BY zri.`room_id`
+    </select>
+    <select id="getTemperatureMachineName" resultMap="BaseResultMap">
+        SELECT id, NAME
+        FROM `zs_machine_type_info`
+        WHERE TYPE = 0
+          AND LEVEL = 0;
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from zs_machine_info
-    where machine_id = #{machineId,jdbcType=INTEGER}
+        delete
+        from zs_machine_info
+        where machine_id = #{machineId,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="com.yjjk.monitor.entity.ZsMachineInfo">
-    insert into zs_machine_info (machine_id, `name`, machine_model, 
-      machine_num, machine_no, department_id, usage_state,
-      remark, create_time, `status`
-      )
-    values (#{machineId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{machineModel,jdbcType=VARCHAR}, 
-      #{machineNum,jdbcType=VARCHAR}, #{machineNo,jdbcType=VARCHAR}, #{departmentId,jdbcType=INTEGER}, #{usageState,jdbcType=INTEGER},
-      #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
-      )
+        insert into zs_machine_info (machine_id, `name`, machine_model,
+                                     machine_num, machine_no, department_id, usage_state,
+                                     remark, create_time, `status`)
+        values (#{machineId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{machineModel,jdbcType=VARCHAR},
+                #{machineNum,jdbcType=VARCHAR}, #{machineNo,jdbcType=VARCHAR}, #{departmentId,jdbcType=INTEGER},
+                #{usageState,jdbcType=INTEGER},
+                #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.yjjk.monitor.entity.ZsMachineInfo">
         insert into zs_machine_info
@@ -260,6 +298,79 @@
             #{item, jdbcType=VARCHAR})
         </foreach>
     </insert>
+    <insert id="insertByMachineNum" parameterType="com.yjjk.monitor.entity.ZsMachineInfo">
+        insert into zs_machine_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="machineId != null">
+                machine_id,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="machineModel != null">
+                machine_model,
+            </if>
+            <if test="departmentId != null">
+                department_id,
+            </if>
+            <if test="usageState != null">
+                usage_state,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="machineNo != null">
+                machine_no,
+            </if>
+            <if test="machineNum != null">
+                machine_num,
+            </if>
+            <if test="machineTypeId != null">
+                machine_type_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="machineId != null">
+                #{machineId,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="machineModel != null">
+                #{machineModel,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentId != null">
+                #{departmentId,jdbcType=INTEGER},
+            </if>
+            <if test="usageState != null">
+                #{usageState,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="machineNo != null">
+                #{machineNo,jdbcType=VARCHAR},
+            </if>
+            <if test="machineNum != null">
+                #{machineNum,jdbcType=VARCHAR},
+            </if>
+            <if test="machineTypeId != null">
+                #{machineTypeId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.yjjk.monitor.entity.ZsMachineInfo">
         update zs_machine_info
         <set>
@@ -294,15 +405,15 @@
         where machine_id = #{machineId,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.yjjk.monitor.entity.ZsMachineInfo">
-    update zs_machine_info
-    set `name` = #{name,jdbcType=VARCHAR},
-      machine_model = #{machineModel,jdbcType=VARCHAR},
-      machine_num = #{machineNum,jdbcType=VARCHAR},
-      department_id = #{departmentId,jdbcType=INTEGER},
-      usage_state = #{usageState,jdbcType=INTEGER},
-      remark = #{remark,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=INTEGER}
-    where machine_id = #{machineId,jdbcType=INTEGER}
-  </update>
+        update zs_machine_info
+        set `name`        = #{name,jdbcType=VARCHAR},
+            machine_model = #{machineModel,jdbcType=VARCHAR},
+            machine_num   = #{machineNum,jdbcType=VARCHAR},
+            department_id = #{departmentId,jdbcType=INTEGER},
+            usage_state   = #{usageState,jdbcType=INTEGER},
+            remark        = #{remark,jdbcType=VARCHAR},
+            create_time   = #{createTime,jdbcType=VARCHAR},
+            `status`      = #{status,jdbcType=INTEGER}
+        where machine_id = #{machineId,jdbcType=INTEGER}
+    </update>
 </mapper>

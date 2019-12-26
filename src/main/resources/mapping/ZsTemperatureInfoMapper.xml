@@ -20,6 +20,15 @@
     from zs_temperature_info
     where temperature_id = #{temperatureId,jdbcType=INTEGER}
   </select>
+
+  <select id="getByMachineId" resultType="com.yjjk.monitor.entity.ZsTemperatureInfo"
+          parameterType="java.lang.Integer">
+    SELECT zti.*
+    FROM zs_temperature_info zti
+    WHERE machine_id = #{machineId,jdbcType=INTEGER}
+    ORDER BY create_time DESC
+    LIMIT 1
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from zs_temperature_info
     where temperature_id = #{temperatureId,jdbcType=INTEGER}

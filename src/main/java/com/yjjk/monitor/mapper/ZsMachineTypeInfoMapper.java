@@ -2,7 +2,6 @@ package com.yjjk.monitor.mapper;
 
 import com.yjjk.monitor.entity.ZsMachineTypeInfo;
 import org.apache.ibatis.annotations.Mapper;
-import org.mybatis.spring.annotation.MapperScan;
 
 import java.util.List;
 
@@ -32,4 +31,10 @@ public interface ZsMachineTypeInfoMapper {
      * @return
      */
     List<ZsMachineTypeInfo> selectMachineNums(Integer id);
+
+    /**
+     * 获取体温设备名称
+     * @return
+     */
+    List<ZsMachineTypeInfo> getTemperatureMachineName();
 }

@@ -12,7 +12,7 @@ package com.yjjk.monitor.service.impl;
 
 import com.yjjk.monitor.constant.BoxConstant;
 import com.yjjk.monitor.entity.ZsBoxInfo;
-import com.yjjk.monitor.entity.vo.UseMachineVO;
+import com.yjjk.monitor.entity.VO.UseMachineVO;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.BoxService;
 import org.springframework.stereotype.Service;

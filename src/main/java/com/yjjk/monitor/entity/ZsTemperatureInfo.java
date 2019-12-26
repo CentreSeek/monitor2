@@ -13,9 +13,7 @@ package com.yjjk.monitor.entity;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @Description: 体温记录
@@ -35,8 +33,9 @@ public class ZsTemperatureInfo {
 
     private String temperatureStatus;
 
-    private Date createTime;
+    private String createTime;
 
     private Long timestamp;
+    private Integer repeaterId;
 
 }

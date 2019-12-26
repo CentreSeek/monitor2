@@ -8,7 +8,7 @@
  * <author>          <time>          <version>          <desc>
  * 作者姓名           修改时间           版本号              描述
  */
-package com.yjjk.monitor.entity.vo;
+package com.yjjk.monitor.entity.VO;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -20,14 +20,27 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class RecordHistory2Excel {
+public class RecordHistory {
 
+    private Long recordId;
     private String patientName;
     private String caseNum;
     private String departmentName;
-    private String room;
-    private String bed;
-    private String time;
-    private String temperature;
+    private String roomName;
+    private String bedName;
+    private String startTime;
+    private String endTime;
+    private Integer usageState;
+
+    /** mappingParam */
+    private Integer departmentId;
+    private String startDate;
+    private String endDate;
+    private Integer startLine;
+    private Integer pageSize;
+
+    /** requestParam */
+    private Integer currentPage;
+    private Integer timestamp;
 
 }

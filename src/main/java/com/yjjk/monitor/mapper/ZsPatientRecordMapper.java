@@ -1,11 +1,11 @@
 package com.yjjk.monitor.mapper;
 
 import com.yjjk.monitor.entity.ZsPatientRecord;
-import com.yjjk.monitor.entity.vo.RecordHistory2Excel;
+import com.yjjk.monitor.entity.VO.RecordHistory2Excel;
 import com.yjjk.monitor.entity.json.TemperatureHistory;
-import com.yjjk.monitor.entity.vo.PatientTemperature;
-import com.yjjk.monitor.entity.vo.RecordHistory;
-import com.yjjk.monitor.entity.vo.UseMachineVO;
+import com.yjjk.monitor.entity.VO.PatientTemperature;
+import com.yjjk.monitor.entity.VO.RecordHistory;
+import com.yjjk.monitor.entity.VO.UseMachineVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

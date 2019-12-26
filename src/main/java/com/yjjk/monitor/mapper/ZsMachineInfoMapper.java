@@ -1,11 +1,14 @@
 package com.yjjk.monitor.mapper;
 
 
+import com.yjjk.monitor.entity.VO.SearchMachineVO;
 import com.yjjk.monitor.entity.ZsMachineInfo;
+import com.yjjk.monitor.entity.ZsMachineTypeInfo;
 import com.yjjk.monitor.entity.export.MachineExport;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ZsMachineInfoMapper {
@@ -63,5 +66,31 @@ public interface ZsMachineInfoMapper {
      */
     int selectCountByMachineNo(String machineNum);
 
+    /**
+     * 获取所有设备
+     *
+     * @param map
+     * @return
+     */
+    List<ZsMachineInfo> selectAllMachines(Map<String, Object> map);
+    /**
+     * 查找设备基础信息
+     * @param departmentId
+     * @return
+     */
+    List<SearchMachineVO> searchRepeaterBaseInfo(Integer departmentId);
 
+    /**
+     * 获取体温设备名称
+     * @return
+     */
+    List<ZsMachineTypeInfo> getTemperatureMachineName();
+
+    /**
+     * insert---批量插入设备
+     *
+     * @param machineInfo
+     * @return
+     */
+    int insertByMachineNum(ZsMachineInfo machineInfo);
 }

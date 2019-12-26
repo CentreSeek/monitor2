@@ -11,8 +11,8 @@
         <result column="status" jdbcType="INTEGER" property="status"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, `name`, `level`, `type`, parent_id, create_time, `status`
-  </sql>
+        id, `name`, `level`, `type`, parent_id, create_time, `status`
+    </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -20,17 +20,31 @@
         where id = #{id,jdbcType=INTEGER}
     </select>
     <select id="selectMachineTypes" resultMap="BaseResultMap">
-    SELECT id,NAME FROM `zs_machine_type_info` WHERE TYPE = 1 AND LEVEL=0;
-  </select>
+        SELECT id, NAME
+        FROM `zs_machine_type_info`
+        WHERE TYPE = 1
+          AND LEVEL = 0;
+    </select>
 
     <select id="selectMachineNums" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT id,NAME FROM `zs_machine_type_info` WHERE parent_id = #{id,jdbcType=INTEGER} and TYPE = 1 AND LEVEL = 1;
-  </select>
+        SELECT id, NAME
+        FROM `zs_machine_type_info`
+        WHERE parent_id = #{id,jdbcType=INTEGER}
+          and TYPE = 1
+          AND LEVEL = 1;
+    </select>
+    <select id="getTemperatureMachineName" resultMap="BaseResultMap">
+        SELECT id, NAME
+        FROM `zs_machine_type_info`
+        WHERE TYPE = 0
+          AND LEVEL = 0;
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from zs_machine_type_info
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+        delete
+        from zs_machine_type_info
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
     <insert id="insert" parameterType="com.yjjk.monitor.entity.ZsMachineTypeInfo">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
@@ -115,13 +129,13 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.yjjk.monitor.entity.ZsMachineTypeInfo">
-    update zs_machine_type_info
-    set `name` = #{name,jdbcType=VARCHAR},
-      `level` = #{level,jdbcType=INTEGER},
-      `type` = #{type,jdbcType=INTEGER},
-      parent_id = #{parentId,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      `status` = #{status,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+        update zs_machine_type_info
+        set `name`      = #{name,jdbcType=VARCHAR},
+            `level`     = #{level,jdbcType=INTEGER},
+            `type`      = #{type,jdbcType=INTEGER},
+            parent_id   = #{parentId,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            `status`    = #{status,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 </mapper>

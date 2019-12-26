@@ -10,16 +10,21 @@
  */
 package com.yjjk.monitor.controller;
 
-import com.yjjk.monitor.entity.*;
-import com.yjjk.monitor.service.LoginStateService;
+import com.yjjk.monitor.entity.ZsManagerInfo;
 import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.PasswordUtils;
 import com.yjjk.monitor.utility.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author CentreS
@@ -142,6 +147,7 @@ public class ManagerController extends BaseController {
     @RequestMapping(value = "/manager", method = RequestMethod.GET)
     public void getManagerInfo(@RequestParam(value = "managerId", required = false) Integer managerId,
                                @RequestParam(value = "role", required = false) Integer role,
+                               @RequestParam(value = "departmentId", required = false) Integer departmentId,
                                @RequestParam(value = "currentPage", required = false) Integer currentPage,
                                @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                HttpServletRequest request, HttpServletResponse response) {
@@ -168,6 +174,9 @@ public class ManagerController extends BaseController {
                 message = "角色信息错误";
                 returnResult(startTime, request, response, resultCode, message, "");
                 return;
+            }
+            if (departmentId != null){
+                paramMap.put("departmentId",departmentId);
             }
             int totalCount = super.managerService.selectNormalListCount(paramMap);
             int startLine = (currentPage - 1) * (pageSize);

@@ -12,9 +12,9 @@ package com.yjjk.monitor.service;
 
 import com.yjjk.monitor.entity.ZsPatientRecord;
 import com.yjjk.monitor.entity.json.TemperatureHistory;
-import com.yjjk.monitor.entity.vo.RecordHistory;
-import com.yjjk.monitor.entity.vo.RecordHistory2Excel;
-import com.yjjk.monitor.entity.vo.UseMachineVO;
+import com.yjjk.monitor.entity.VO.RecordHistory;
+import com.yjjk.monitor.entity.VO.RecordHistory2Excel;
+import com.yjjk.monitor.entity.VO.UseMachineVO;
 
 import java.util.List;
 import java.util.Map;

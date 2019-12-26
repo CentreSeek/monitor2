@@ -10,10 +10,13 @@
  */
 package com.yjjk.monitor.service;
 
+import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.entity.ZsMachineInfo;
+import com.yjjk.monitor.entity.ZsMachineTypeInfo;
 import com.yjjk.monitor.entity.export.MachineExportVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 设备管理
@@ -43,6 +46,14 @@ public interface MachineService {
      * @return
      */
     int insertByMachineNums(ZsMachineInfo machineInfo);
+
+    /**
+     * 批量插入设备
+     * @param machineInfo
+     * @return
+     */
+    int insertByMachineNum(ZsMachineInfo machineInfo);
+
 
     /**
      * 查询设备总数(machineId, usageState)
@@ -92,4 +103,34 @@ public interface MachineService {
      * @return
      */
     int selectByMachineNo(String machineNo);
+
+    /**
+     * 获取所有设备
+     *
+     * @param map
+     * @return
+     */
+    List<ZsMachineInfo> selectAllMachines(Map<String, Object> map);
+
+    /**
+     * 查找设备
+     * @param map
+     * @return
+     */
+    CommonResult searchMachine(Map<String, Object> map);
+
+    /**
+     * 获取体温设备名称
+     * @return
+     */
+    List<ZsMachineTypeInfo> getTemperatureMachineName();
+
+    /**
+     * 绑定设备
+     * @param machineNum
+     * @return
+     * @throws Exception
+     */
+    boolean connectionService(String machineNum) throws Exception;
+
 }

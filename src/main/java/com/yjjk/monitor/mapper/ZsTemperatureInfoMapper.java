@@ -32,4 +32,11 @@ public interface ZsTemperatureInfoMapper {
      * @return
      */
     List<String> getExportTemperatures(String dateOfOneMonthAgo);
+
+    /**
+     * 获取某设备最新一条体温数据
+     * @param machineId
+     * @return
+     */
+    ZsTemperatureInfo getByMachineId(Integer machineId);
 }

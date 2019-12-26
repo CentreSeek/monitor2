@@ -14,8 +14,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +39,7 @@ public class ZsMachineInfo  {
     private Integer status;
     @ApiParam(value = "设备编号", required = true)
     private String machineNo;
+    private Integer machineTypeId;
 
     /** 批量导入：设备编号 */
     private List<String> machineNums;
