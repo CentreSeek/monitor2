@@ -54,15 +54,6 @@ public class MachineController extends BaseController {
     @RequestMapping(value = "/machine", method = RequestMethod.POST)
     public CommonResult addMachine(ZsMachineInfo machineInfo) {
         /********************** 参数初始化 **********************/
-        try {
-            boolean b = super.machineService.connectionService(machineInfo.getMachineNum());
-            if (!b) {
-                return ResultUtil.returnError("网络堵塞，设备绑定失败，请稍后再试");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError("网络堵塞，设备绑定失败，请稍后再试");
-        }
         int count = super.machineService.selectByMachineNum(machineInfo.getMachineNum());
         int count2 = super.machineService.selectByMachineNo(machineInfo.getMachineNo());
         if (count > 0 || count2 > 0) {
@@ -71,6 +62,16 @@ public class MachineController extends BaseController {
         int i = super.machineService.insertByMachineNum(machineInfo);
         if (i == 0) {
             return ResultUtil.returnError("设备新增失败");
+        } else {
+            try {
+                boolean b = super.machineService.connectionService(machineInfo.getMachineNum());
+                if (!b) {
+                    return ResultUtil.returnError("网络堵塞，设备绑定失败，请稍后再试");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.returnError("网络堵塞，设备绑定失败，请稍后再试");
+            }
         }
         return ResultUtil.returnSuccess(i);
     }
@@ -216,6 +217,7 @@ public class MachineController extends BaseController {
             List<ZsMachineInfo> list = super.machineService.selectAllMachines(paraMap);
             return ResultUtil.returnSuccess(list);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
     }
@@ -232,6 +234,7 @@ public class MachineController extends BaseController {
             CommonResult commonResult = super.machineService.searchMachine(paraMap);
             return commonResult;
         } catch (Exception e) {
+            e.printStackTrace();
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
     }
@@ -249,6 +252,7 @@ public class MachineController extends BaseController {
             List<ZsMachineTypeInfo> list = super.machineService.getTemperatureMachineName();
             return ResultUtil.returnSuccess(list);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
 

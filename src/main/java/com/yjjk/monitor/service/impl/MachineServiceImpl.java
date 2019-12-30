@@ -61,10 +61,12 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     public int insertByMachineNums(ZsMachineInfo machineInfo) {
         return super.ZsMachineInfoMapper.insertByMachineNums(machineInfo);
     }
+
     @Override
     public int insertByMachineNum(ZsMachineInfo machineInfo) {
         return this.ZsMachineInfoMapper.insertByMachineNum(machineInfo);
     }
+
     @Override
     public int selectCount(ZsMachineInfo machineInfo) {
         return super.ZsMachineInfoMapper.selectCount(machineInfo);
@@ -74,6 +76,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     public List<ZsMachineInfo> selectByUsageState(ZsMachineInfo machineInfo) {
         return super.ZsMachineInfoMapper.selectByUsageState(machineInfo);
     }
+
     @Override
     public List<MachineExportVO> export(ZsMachineInfo machineInfo) {
         List<MachineExport> list = super.ZsMachineInfoMapper.export(machineInfo);
@@ -103,6 +106,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     public int selectByMachineNo(String machineNo) {
         return super.ZsMachineInfoMapper.selectCountByMachineNo(machineNo);
     }
+
     @Override
     public List<ZsMachineInfo> selectAllMachines(Map<String, Object> map) {
         return super.ZsMachineInfoMapper.selectAllMachines(map);
@@ -134,11 +138,13 @@ public class MachineServiceImpl extends BaseService implements MachineService {
             for (int i = 0; i < list.size(); i++) {
                 if (temperatureInfo.getRepeaterId().equals(list.get(i).getRepeaterId())) {
                     flag = true;
-                    // 5秒内数据为有效数据
-                    if (DateUtil.timeDifferentLong(temperatureInfo.getCreateTime(), DateUtil.getCurrentTime()) > 1000 * 5) {
+                    // 5m内数据为有效数据
+                    if (DateUtil.timeDifferentLong(temperatureInfo.getCreateTime(), DateUtil.getCurrentTime()) <= 5) {
                         list.get(i).setRepeaterStatus(SearchMachineConstant.FIND);
+                        list.get(i).setLastRecordTime(temperatureInfo.getCreateTime());
                         searchMachineVOBase.setStatus(0);
                         searchMachineVOBase.setRoomName(list.get(i).getRoomName());
+                        searchMachineVOBase.setLastRecordTime(temperatureInfo.getCreateTime());
                     } else {
                         list.get(i).setRepeaterStatus(SearchMachineConstant.NOT_FIND);
                         list.get(i).setLastRecordTime(temperatureInfo.getCreateTime());
@@ -146,7 +152,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
                         searchMachineVOBase.setRoomName(list.get(i).getRoomName());
                         return ResultUtil.returnSuccess(searchMachineVOBase, "没有搜索到设备");
                     }
-                }else if (i == list.size()-1 && !flag){
+                } else if (i == list.size() - 1 && !flag) {
                     searchMachineVOBase.setStatus(2);
                     return ResultUtil.returnSuccess(searchMachineVOBase, "没有搜索到设备");
                 }

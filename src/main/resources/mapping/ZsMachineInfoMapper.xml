@@ -136,7 +136,7 @@
         LEFT JOIN zs_department_info zdi ON zri.`department_id` = zdi.`department_id` AND zdi.status = 0
         LEFT JOIN zs_repeater_info zrpi ON zrpi.`department_id` = zdi.`department_id` AND zrpi.`room_id` = zri.`room_id`
         AND zrpi.status = 0
-        AND zrpi.`linkStatus` = 0
+        AND zrpi.`linkStatus` <![CDATA[<>]]> 2
         WHERE zri.status = 0
         <if test="departmentId != null">
             and zdi.department_id = #{departmentId, jdbcType=INTEGER}
