@@ -22,6 +22,10 @@ package com.yjjk.monitor.configer;
 public enum ErrorCodeEnum {
     SUCCESS("200", "success"),
 
+    ADD_PATIENT_ERROR("300","新增病人信息失败"),
+    ADD_RECORD_ERROR("300","新增记录失败"),
+    EXIST_RECORD("300","该病人已在其他床位启用设备"),
+
     PARAM_EMPTY("301", "必选参数为空"),
     PARAM_ERROR("302", "参数格式错误"),
     TOKEN_ERROR("303", "token错误"),
@@ -29,6 +33,7 @@ public enum ErrorCodeEnum {
 
     NON_RECORD("320", "未找到该条记录"),
     ERROR_RECORD("321", "错误记录"),
+
 
     UPDATE_ERROR("330", "更新失败"),
 

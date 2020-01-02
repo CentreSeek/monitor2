@@ -13,16 +13,19 @@ package com.yjjk.monitor.controller;
 import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
+import com.yjjk.monitor.constant.MachineConstant;
+import com.yjjk.monitor.constant.PatientRecordConstant;
 import com.yjjk.monitor.constant.TemperatureConstant;
+import com.yjjk.monitor.entity.VO.RecordHistory;
+import com.yjjk.monitor.entity.VO.RecordHistory2Excel;
+import com.yjjk.monitor.entity.VO.TemperatureBoundVO;
+import com.yjjk.monitor.entity.VO.UseMachineVO;
+import com.yjjk.monitor.entity.ZsMachineInfo;
 import com.yjjk.monitor.entity.ZsManagerInfo;
 import com.yjjk.monitor.entity.ZsPatientInfo;
 import com.yjjk.monitor.entity.ZsPatientRecord;
 import com.yjjk.monitor.entity.json.TemperatureHistory;
 import com.yjjk.monitor.entity.param.TemperatureBound;
-import com.yjjk.monitor.entity.VO.RecordHistory;
-import com.yjjk.monitor.entity.VO.RecordHistory2Excel;
-import com.yjjk.monitor.entity.VO.TemperatureBoundVO;
-import com.yjjk.monitor.entity.VO.UseMachineVO;
 import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
@@ -35,6 +38,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -62,6 +69,67 @@ public class PatientController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PatientController.class);
 
+//    /**
+//     * 启用设备
+//     *
+//     * @param bedId
+//     * @param machineId
+//     * @param name
+//     * @param caseNum
+//     * @param request
+//     * @param response
+//     */
+//    @RequestMapping(value = "/patient", method = RequestMethod.POST)
+//    public synchronized void addMachine(@RequestParam(value = "bedId") Integer bedId,
+//                                        @RequestParam(value = "machineId") Integer machineId,
+//                                        @RequestParam(value = "name") String name,
+//                                        @RequestParam(value = "caseNum") String caseNum,
+//                                        @RequestParam(value = "managerId") Integer managerId,
+//                                        HttpServletRequest request, HttpServletResponse response) {
+//        /********************** 参数初始化 **********************/
+//        long startTime = System.currentTimeMillis();
+//        boolean resultCode = false;
+//        String message = "";
+//
+//        int patientCount = patientRecordService.selectByBedId(bedId);
+//        if (!StringUtils.isNullorEmpty(patientCount)) {
+//            message = "该病床已绑定病人";
+//            returnResult(startTime, request, response, resultCode, message, "");
+//            return;
+//        }
+//        ZsManagerInfo managerInfo = super.managerService.getManagerInfo(managerId);
+//        ZsPatientInfo zsPatientInfo1 = super.patientService.selectByCaseNum(caseNum);
+//        if (zsPatientInfo1 != null) {
+//            ZsPatientRecord zsPatientRecord = super.patientRecordService.selectByPatientId(zsPatientInfo1.getPatientId());
+//            if (zsPatientRecord != null) {
+//                message = "该病人已在其他病床启用设备";
+//                returnResult(startTime, request, response, resultCode, message, "");
+//                return;
+//            } else {
+//                zsPatientInfo1.setName(name);
+//                // 更新病人信息
+//                super.patientService.updateName(zsPatientInfo1);
+//            }
+//        }
+//        ZsPatientInfo zsPatientInfo = super.patientService.addPatient(name, caseNum, bedId, managerInfo.getDepartmentId());
+//        if (StringUtils.isNullorEmpty(zsPatientInfo)) {
+//            message = "新增病人信息失败";
+//            returnResult(startTime, request, response, resultCode, message, "");
+//            return;
+//        }
+//        ZsPatientRecord patientRecord = new ZsPatientRecord();
+//        patientRecord.setStartTime(DateUtil.getCurrentTime()).setMachineId(machineId).setPatientId(zsPatientInfo.getPatientId()).setBedId(bedId);
+//        int i = super.patientRecordService.addPatientRecord(patientRecord);
+//        if (i == 0) {
+//            message = "新增使用信息失败";
+//            returnResult(startTime, request, response, resultCode, message, "");
+//            return;
+//        }
+//        message = "成功";
+//        resultCode = true;
+//        returnResult(startTime, request, response, resultCode, message, "");
+//    }
+
     /**
      * 启用设备
      *
@@ -69,58 +137,49 @@ public class PatientController extends BaseController {
      * @param machineId
      * @param name
      * @param caseNum
-     * @param request
-     * @param response
      */
+    @Transactional(rollbackFor = Exception.class)
+    @ApiOperation(value = "启用设备")
     @RequestMapping(value = "/patient", method = RequestMethod.POST)
-    public synchronized void addMachine(@RequestParam(value = "bedId") Integer bedId,
-                                        @RequestParam(value = "machineId") Integer machineId,
-                                        @RequestParam(value = "name") String name,
-                                        @RequestParam(value = "caseNum") String caseNum,
-                                        @RequestParam(value = "managerId") Integer managerId,
-                                        HttpServletRequest request, HttpServletResponse response) {
+    public synchronized CommonResult startMachine(@RequestParam(value = "bedId") Integer bedId,
+                                                  @RequestParam(value = "machineId") Integer machineId,
+                                                  @RequestParam(value = "name") @Size(max = 8) String name,
+                                                  @RequestParam(value = "caseNum") String caseNum,
+                                                  @RequestParam(value = "managerId") Integer managerId) {
         /********************** 参数初始化 **********************/
-        long startTime = System.currentTimeMillis();
-        boolean resultCode = false;
-        String message = "";
-
-        int patientCount = patientRecordService.selectByBedId(bedId);
-        if (!StringUtils.isNullorEmpty(patientCount)) {
-            message = "该病床已绑定病人";
-            returnResult(startTime, request, response, resultCode, message, "");
-            return;
-        }
-        ZsManagerInfo managerInfo = super.managerService.getManagerInfo(managerId);
-        ZsPatientInfo zsPatientInfo1 = super.patientService.selectByCaseNum(caseNum);
-        if (zsPatientInfo1 != null) {
-            ZsPatientRecord zsPatientRecord = super.patientRecordService.selectByPatientId(zsPatientInfo1.getPatientId());
-            if (zsPatientRecord != null) {
-                message = "该病人已在其他病床启用设备";
-                returnResult(startTime, request, response, resultCode, message, "");
-                return;
-            } else {
-                zsPatientInfo1.setName(name);
-                // 更新病人信息
-                super.patientService.updateName(zsPatientInfo1);
+        ZsManagerInfo managerInfo = this.managerService.getManagerInfo(managerId);
+        ZsPatientInfo zsPatientInfo = this.patientService.selectByCaseNum(caseNum);
+        if (zsPatientInfo != null) {
+            ZsPatientRecord zsPatientRecord = this.patientRecordService.selectByPatientId(zsPatientInfo.getPatientId());
+            if (zsPatientRecord != null && zsPatientRecord.getUsageState() == PatientRecordConstant.USAGE_STATE_USED) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return ResultUtil.returnError(ErrorCodeEnum.EXIST_RECORD);
             }
+            zsPatientInfo.setName(name);
+            zsPatientInfo.setBedId(bedId);
+
+            this.patientService.updateName(zsPatientInfo);
+        } else {
+            zsPatientInfo = this.patientService.addPatient(name, caseNum, bedId, managerInfo.getDepartmentId());
         }
-        ZsPatientInfo zsPatientInfo = super.patientService.addPatient(name, caseNum, bedId, managerInfo.getDepartmentId());
         if (StringUtils.isNullorEmpty(zsPatientInfo)) {
-            message = "新增病人信息失败";
-            returnResult(startTime, request, response, resultCode, message, "");
-            return;
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.returnError(ErrorCodeEnum.ADD_PATIENT_ERROR);
         }
+
         ZsPatientRecord patientRecord = new ZsPatientRecord();
-        patientRecord.setStartTime(DateUtil.getCurrentTime()).setMachineId(machineId).setPatientId(zsPatientInfo.getPatientId()).setBedId(bedId);
-        int i = super.patientRecordService.addPatientRecord(patientRecord);
+        patientRecord.setBedId(bedId).setStartTime(DateUtil.getCurrentTime()).setMachineId(machineId).
+                setPatientId(zsPatientInfo.getPatientId());
+        int i = 0;
+        i = this.patientRecordService.addPatientRecord(patientRecord);
         if (i == 0) {
-            message = "新增使用信息失败";
-            returnResult(startTime, request, response, resultCode, message, "");
-            return;
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.returnError(ErrorCodeEnum.ADD_RECORD_ERROR);
         }
-        message = "成功";
-        resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, "");
+        ZsMachineInfo machineInfo = new ZsMachineInfo();
+        machineInfo.setMachineId(machineId).setUsageState(MachineConstant.USAGE_STATE_USED);
+        super.machineService.updateByMachineId(machineInfo);
+        return ResultUtil.returnSuccess("启用成功");
     }
 
     /**
@@ -179,7 +238,7 @@ public class PatientController extends BaseController {
             }
             stopRecord(recordId, request, response);
             ZsPatientInfo patientInfo = patientService.getByPrimaryKey(patientRecord.getPatientId());
-            addMachine(patientRecord.getBedId(), machineId, patientInfo.getName(), patientInfo.getCaseNum(), managerId, request, response);
+            startMachine(patientRecord.getBedId(), machineId, patientInfo.getName(), patientInfo.getCaseNum(), managerId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -238,7 +297,10 @@ public class PatientController extends BaseController {
             departmentId = managerInfo.getDepartmentId();
         }
         // 监控信息
-        List<UseMachineVO> monitorsInfo = super.patientRecordService.getMonitorsInfo(departmentId);
+//        List<UseMachineVO> monitorsInfo = super.patientRecordService.getMonitorsInfo(departmentId);
+        List<UseMachineVO> monitorsInfo = this.patientRecordService.getMonitorsInfo(departmentId);
+        monitorsInfo = this.patientRecordService.updateTemperature(monitorsInfo, departmentId);
+
         // 根据病床id筛选监控信息
         monitorsInfo = super.patientRecordService.selectiveByBedId(monitorsInfo, start == null ? 0 : start, end == null ? Integer.MAX_VALUE : end);
         // 设备是否为使用中设备
@@ -495,37 +557,36 @@ public class PatientController extends BaseController {
         }
     }
 
-    //    @RequestMapping(value = "/test", method = RequestMethod.GET)
-//    public void test() {
-//        try {
-//            /********************** 参数初始化 **********************/
-//            String date = DateUtil.getOneMonthAgo();
-//            super.hospitalService.temperatureInfoPersistent(date);
-//        } catch (Exception e) {
-//            LOGGER.error("业务异常信息：[{}]", e.getMessage(), e);
-//        }
-//    }
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @ApiOperation("更换床位")
     @RequestMapping(value = {"/bed"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT})
-    public CommonResult changeBed(@ApiParam(value = "recordId", required = true) @RequestParam("recordId") Long recordId,
-                                  @ApiParam(value = "新床位号", required = true) @RequestParam("newBedId") Integer newBedId) {
+    public synchronized CommonResult changeBed(@ApiParam(value = "新床位号", required = true) @RequestParam("newBedId") Integer newBedId,
+                                               @ApiParam(value = "现床位号", required = true) @RequestParam("currentBedId") Integer currentBedId) {
         try {
-            ZsPatientRecord patientRecord = this.patientRecordService.selectByPrimaryKey(recordId);
-            if (StringUtils.isNullorEmpty(patientRecord)) {
+            List<ZsPatientRecord> targetBed = super.patientRecordService.getUsageByBedId(newBedId);
+            if (!StringUtils.isNullorEmpty(targetBed)) {
+                return ResultUtil.returnError("目标床位已有病人，请确认床位信息输入正确");
+            }
+            List<ZsPatientRecord> list = super.patientRecordService.getUsageByBedId(currentBedId);
+            if (StringUtils.isNullorEmpty(list)) {
                 return ResultUtil.returnError(ErrorCodeEnum.NON_RECORD);
             }
+            ZsPatientInfo zsPatientInfo = new ZsPatientInfo();
+            zsPatientInfo.setBedId(newBedId);
+            this.patientService.updateName(zsPatientInfo);
+
             ZsPatientRecord zsPatientRecord = new ZsPatientRecord();
             zsPatientRecord.setBedId(newBedId);
-            zsPatientRecord.setRecordId(recordId);
-            int i = this.patientRecordService.updateByPrimaryKey(zsPatientRecord);
-            if (i == 1) {
-                return ResultUtil.returnSuccess(Integer.valueOf(i));
+            zsPatientRecord.setRecordId(list.get(0).getRecordId());
+            int j = this.patientRecordService.updateByPrimaryKey(zsPatientRecord);
+            if (j == 0) {
+                return ResultUtil.returnError(ErrorCodeEnum.UPDATE_ERROR);
             }
-            return ResultUtil.returnError(ErrorCodeEnum.UPDATE_ERROR);
+            return ResultUtil.returnSuccess("");
         } catch (Exception e) {
             LOGGER.error("业务异常信息：[{}]", e.getMessage(), e);
+            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
-        return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
     }
 
 }

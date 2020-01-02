@@ -94,4 +94,11 @@ public interface ZsPatientRecordMapper {
     List<RecordHistory2Excel> getExportList(Map<String, Object> paraMap);
 
     ZsPatientRecord selectByRecordId(Long recordId);
+
+    /**
+     * 通过病床信息获取使用中的record
+     * @param bedId
+     * @return
+     */
+    List<ZsPatientRecord> getUsageByBedId(Integer bedId);
 }

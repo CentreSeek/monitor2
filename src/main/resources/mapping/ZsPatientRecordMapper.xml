@@ -212,6 +212,15 @@
         </if>
     </select>
 
+    <select id="getUsageByBedId" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from zs_patient_record
+        where bed_id = #{bedId,jdbcType=INTEGER} and usage_state = 0 and status = 0
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from zs_patient_record
     where record_id = #{recordId,jdbcType=BIGINT}

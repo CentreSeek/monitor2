@@ -59,6 +59,14 @@ public interface PatientRecordService {
     List<UseMachineVO> getMonitorsInfo(Integer departmentId);
 
     /**
+     * 添加体温数据
+     * @param list
+     * @param departmentId
+     * @return
+     */
+    List<UseMachineVO> updateTemperature(List<UseMachineVO> list, Integer departmentId);
+
+    /**
      * 通过病床信息筛选
      *
      * @param list
@@ -154,4 +162,12 @@ public interface PatientRecordService {
      * @return
      */
     Map<String, Object> parseTemperature(List<TemperatureHistory> list, Map<String, Object> paraMap, Integer machineId);
+
+
+    /**
+     * 通过病床信息获取使用中的record
+     * @param bedId
+     * @return
+     */
+    List<ZsPatientRecord> getUsageByBedId(Integer bedId);
 }
