@@ -16,7 +16,7 @@
     </resultMap>
     <sql id="Base_Column_List">
     record_id, patient_id, machine_id, start_time, end_time, usage_state, create_time, 
-    `status`
+    `status`,bed_id
   </sql>
     <sql id="Blob_Column_List">
     temperature_history
