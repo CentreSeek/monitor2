@@ -28,7 +28,7 @@ public enum ErrorCodeEnum {
 
     PARAM_EMPTY("301", "必选参数为空"),
     PARAM_ERROR("302", "参数格式错误"),
-    TOKEN_ERROR("303", "token错误"),
+    TOKEN_ERROR("333", "token错误"),
     TEMPERATURE_BOUND_DEPARTMENT_ERROR("310", "不能修改默认规则"),
 
     NON_RECORD("320", "未找到该条记录"),
