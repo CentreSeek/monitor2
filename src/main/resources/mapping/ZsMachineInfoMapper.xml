@@ -196,6 +196,9 @@
             <if test="status != null">
                 `status`,
             </if>
+            <if test="machineTypeId != null">
+                `machine_type_id`,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="machineId != null">
@@ -227,6 +230,9 @@
             </if>
             <if test="status != null">
                 #{status,jdbcType=INTEGER},
+            </if>
+            <if test="machineTypeId != null">
+                #{machineTypeId,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -413,7 +419,8 @@
             usage_state   = #{usageState,jdbcType=INTEGER},
             remark        = #{remark,jdbcType=VARCHAR},
             create_time   = #{createTime,jdbcType=VARCHAR},
-            `status`      = #{status,jdbcType=INTEGER}
+            `status`      = #{status,jdbcType=INTEGER},
+            machine_type_id = #{machineTypeId,jdbcType=INTEGER}
         where machine_id = #{machineId,jdbcType=INTEGER}
     </update>
 </mapper>
