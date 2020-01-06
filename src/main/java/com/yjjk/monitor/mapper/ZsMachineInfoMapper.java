@@ -67,6 +67,13 @@ public interface ZsMachineInfoMapper {
     int selectCountByMachineNo(String machineNum);
 
     /**
+     * 查询设备类型id
+     * @param machineModel
+     * @return
+     */
+    int selectByMachineModelId(String machineModel);
+
+    /**
      * 获取所有设备
      *
      * @param map

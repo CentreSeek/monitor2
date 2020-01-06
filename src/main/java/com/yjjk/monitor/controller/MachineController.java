@@ -59,6 +59,7 @@ public class MachineController extends BaseController {
         if (count > 0 || count2 > 0) {
             return ResultUtil.returnError("该设备信息已存在，请核实后录入");
         }
+        machineInfo.setMachineTypeId(super.machineService.selectByMachineModel(machineInfo.getMachineModel()));
         int i = super.machineService.insertByMachineNum(machineInfo);
         if (i == 0) {
             return ResultUtil.returnError("设备新增失败");

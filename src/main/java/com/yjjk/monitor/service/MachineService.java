@@ -105,6 +105,13 @@ public interface MachineService {
     int selectByMachineNo(String machineNo);
 
     /**
+     * 使用设备型号查询设备信息
+     * @param machineModel
+     * @return
+     */
+    Integer selectByMachineModel(String machineModel);
+
+    /**
      * 获取所有设备
      *
      * @param map

@@ -108,6 +108,11 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     }
 
     @Override
+    public Integer selectByMachineModel(String machineModel) {
+        return super.ZsMachineInfoMapper.selectByMachineModelId(machineModel);
+    }
+
+    @Override
     public List<ZsMachineInfo> selectAllMachines(Map<String, Object> map) {
         return super.ZsMachineInfoMapper.selectAllMachines(map);
     }

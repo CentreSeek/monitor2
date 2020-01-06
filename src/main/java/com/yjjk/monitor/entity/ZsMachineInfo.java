@@ -39,7 +39,7 @@ public class ZsMachineInfo  {
     private Integer status;
     @ApiParam(value = "设备编号", required = true)
     private String machineNo;
-    @ApiParam(value = "设备类型id", required = true)
+    @ApiParam(value = "设备类型id")
     private Integer machineTypeId;
 
     /** 批量导入：设备编号 */
