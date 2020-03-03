@@ -22,22 +22,22 @@ package com.yjjk.monitor.configer;
 public enum ErrorCodeEnum {
     SUCCESS("200", "success"),
 
-    ADD_PATIENT_ERROR("300","新增病人信息失败"),
-    ADD_RECORD_ERROR("300","新增记录失败"),
-    EXIST_RECORD("300","该病人已在其他床位启用设备"),
+    ADD_PATIENT_ERROR("300","add patient failed"),
+    ADD_RECORD_ERROR("300","add record failed"),
+    EXIST_RECORD("300","the patient is recording on other bed"),
 
-    PARAM_EMPTY("301", "必选参数为空"),
-    PARAM_ERROR("302", "参数格式错误"),
-    TOKEN_ERROR("333", "token错误"),
-    TEMPERATURE_BOUND_DEPARTMENT_ERROR("310", "不能修改默认规则"),
+    PARAM_EMPTY("301", "the required param is null"),
+    PARAM_ERROR("302", "parameter format error"),
+    TOKEN_ERROR("333", "token error"),
+    TEMPERATURE_BOUND_DEPARTMENT_ERROR("310", "cannot change the default rule"),
 
-    NON_RECORD("320", "未找到该条记录"),
-    ERROR_RECORD("321", "错误记录"),
+    NON_RECORD("320", "cannot find the record"),
+    ERROR_RECORD("321", "record error"),
 
 
-    UPDATE_ERROR("330", "更新失败"),
+    UPDATE_ERROR("330", "update error"),
 
-    UNKNOWN_ERROR("500", "系统繁忙，请稍后再试....");
+    UNKNOWN_ERROR("500", "system busyness");
 
     private String code;
 
