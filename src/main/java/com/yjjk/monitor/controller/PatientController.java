@@ -187,27 +187,16 @@ public class PatientController extends BaseController {
      *
      * @param name
      * @param caseNum
-     * @param request
-     * @param response
      */
     @RequestMapping(value = "/check", method = RequestMethod.GET)
-    public synchronized void checkPatient(@RequestParam(value = "name") String name,
-                                          @RequestParam(value = "caseNum") String caseNum,
-                                          HttpServletRequest request, HttpServletResponse response) {
+    public synchronized CommonResult checkPatient(@RequestParam(value = "name") String name,
+                                                  @RequestParam(value = "caseNum") String caseNum) {
         /********************** 参数初始化 **********************/
-        long startTime = System.currentTimeMillis();
-        boolean resultCode = false;
-        String message = "";
-
         ZsPatientInfo zsPatientInfo1 = super.patientService.selectByCaseNum(caseNum);
         if (zsPatientInfo1 != null && zsPatientInfo1.getName() != name) {
-            message = "该病例已存在";
-            returnResult(startTime, request, response, resultCode, message, zsPatientInfo1);
-            return;
+            return ResultUtil.returnError(ErrorCodeEnum.PATIENT_EXIST_ERROR);
         }
-        message = "成功";
-        resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, "");
+        return ResultUtil.returnSuccess("");
     }
 
 
@@ -216,69 +205,46 @@ public class PatientController extends BaseController {
      *
      * @param recordId
      * @param machineId
-     * @param request
-     * @param response
      */
     @ApiOperation("更换设备")
     @RequestMapping(value = "/changeMachine", method = RequestMethod.PUT)
-    public void changeMachine(@RequestParam(value = "recordId") Long recordId,
-                              @RequestParam(value = "machineId") Integer machineId,
-                              @RequestParam(value = "managerId") Integer managerId,
-                              HttpServletRequest request, HttpServletResponse response) {
+    public CommonResult changeMachine(@RequestParam(value = "recordId") Long recordId,
+                                      @RequestParam(value = "machineId") Integer machineId,
+                                      @RequestParam(value = "managerId") Integer managerId) {
         /********************** 参数初始化 **********************/
-        long startTime = System.currentTimeMillis();
-        boolean resultCode = false;
-        String message = "";
         try {
             ZsPatientRecord patientRecord = super.patientRecordService.selectByPrimaryKey(recordId);
             if (StringUtils.isNullorEmpty(patientRecord)) {
-                message = "获取历史记录失败";
-                returnResult(startTime, request, response, resultCode, message, "");
-                return;
+                return ResultUtil.returnError(ErrorCodeEnum.PATIENT_GET_RECORD_ERROR);
             }
-            stopRecord(recordId, request, response);
+            stopRecord(recordId);
             ZsPatientInfo patientInfo = patientService.getByPrimaryKey(patientRecord.getPatientId());
             startMachine(patientRecord.getBedId(), machineId, patientInfo.getName(), patientInfo.getCaseNum(), managerId);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        message = "更换成功";
-        resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, "");
+        return ResultUtil.returnSuccess("");
     }
 
     /**
      * 停止检测
      *
      * @param recordId
-     * @param request
-     * @param response
      */
     @RequestMapping(value = "/record", method = RequestMethod.PUT)
-    public void stopRecord(@RequestParam(value = "recordId") Long recordId,
-                           HttpServletRequest request, HttpServletResponse response) {
+    public CommonResult stopRecord(@RequestParam(value = "recordId") Long recordId) {
         /********************** 参数初始化 **********************/
-        long startTime = System.currentTimeMillis();
-        boolean resultCode = false;
-        String message = "";
 
         ZsPatientRecord patientRecord = super.patientRecordService.selectByPrimaryKey(recordId);
         if (StringUtils.isNullorEmpty(patientRecord)) {
-            message = "未找到该记录";
-            returnResult(startTime, request, response, resultCode, message, "");
-            return;
+            return ResultUtil.returnError(ErrorCodeEnum.PATIENT_RECORD_NOT_FIND);
         }
 
         int i = super.patientRecordService.stopMonitoring(patientRecord);
         if (i == 0) {
-            message = "停用失败";
-            returnResult(startTime, request, response, resultCode, message, i);
-            return;
+            return ResultUtil.returnError(ErrorCodeEnum.PATIENT_STOP_ERROR);
         }
-        message = "停用成功";
-        resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, i);
+        return ResultUtil.returnSuccess(i);
     }
 
     /**
@@ -357,22 +323,15 @@ public class PatientController extends BaseController {
      * 查询历史记录
      *
      * @param recordHistory
-     * @param request
-     * @param response
      */
     @RequestMapping(value = "/record", method = RequestMethod.GET)
-    public void getRecordHistory(RecordHistory recordHistory, HttpServletRequest request, HttpServletResponse response) {
+    public CommonResult getRecordHistory(RecordHistory recordHistory) {
         /********************** 参数初始化 **********************/
-        long startTime = System.currentTimeMillis();
-        boolean resultCode = false;
-        String message = "";
         Map<String, Object> map = new HashMap<>();
 
         if (!StringUtils.isNullorEmpty(recordHistory.getCurrentPage()) && !StringUtils.isNullorEmpty(recordHistory.getPageSize())) {
             if (recordHistory.getCurrentPage() <= 0) {
-                message = "页码出错";
-                returnResult(startTime, request, response, resultCode, message, "");
-                return;
+                return ResultUtil.returnError(ErrorCodeEnum.PAGE_INFO_ERROR);
             }
             int currentPage = recordHistory.getCurrentPage();
             int pageSize = recordHistory.getPageSize();
@@ -389,9 +348,7 @@ public class PatientController extends BaseController {
 
         List<RecordHistory> list = super.patientRecordService.getRecordHistory(recordHistory);
         map.put("list", list == null ? "" : list);
-        message = "查询成功";
-        resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, map);
+        return ResultUtil.returnSuccess(map);
     }
 
     /**
@@ -402,20 +359,15 @@ public class PatientController extends BaseController {
      * @param response
      */
     @RequestMapping(value = "/temperature", method = RequestMethod.GET)
-    public void getTemperatureHistory(@RequestParam(value = "recordId") Long recordId,
+    public CommonResult getTemperatureHistory(@RequestParam(value = "recordId") Long recordId,
                                       HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
-        long startTime = System.currentTimeMillis();
-        boolean resultCode = false;
-        String message = "";
         Map<String, Object> reqMap = new HashMap<>(2);
         Map<String, Object> paraMap = new HashMap<>();
 
         ZsPatientRecord patientRecord = super.patientRecordService.selectByPrimaryKey(recordId);
         if (StringUtils.isNullorEmpty(patientRecord)) {
-            message = "未找到该记录信息";
-            returnResult(startTime, request, response, resultCode, message, "");
-            return;
+            return ResultUtil.returnError(ErrorCodeEnum.PATIENT_RECORD_NOT_FIND);
         }
         String endTime = patientRecord.getEndTime();
         if (StringUtils.isNullorEmpty(endTime)) {
@@ -439,9 +391,7 @@ public class PatientController extends BaseController {
         reqMap.put("list", StringUtils.isNullorEmpty(list) ? "" : list);
         reqMap.put("startTime", StringUtils.isNullorEmpty(list) ? "" : DateUtil.integerForward(list.get(0).getDateTime()));
         reqMap.put("endTime", StringUtils.isNullorEmpty(list) ? "" : DateUtil.integerForward(list.get(list.size() - 1).getDateTime()));
-        message = "查询成功";
-        resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, reqMap);
+        return ResultUtil.returnSuccess(reqMap);
     }
 
     @RequestMapping(value = "/export", method = RequestMethod.GET)
@@ -565,7 +515,7 @@ public class PatientController extends BaseController {
         try {
             List<ZsPatientRecord> targetBed = super.patientRecordService.getUsageByBedId(newBedId);
             if (!StringUtils.isNullorEmpty(targetBed)) {
-                return ResultUtil.returnError("目标床位已有病人，请确认床位信息输入正确");
+                return ResultUtil.returnError(ErrorCodeEnum.PATIENT_CHANGE_BED_ERROR);
             }
             List<ZsPatientRecord> list = super.patientRecordService.getUsageByBedId(currentBedId);
             if (StringUtils.isNullorEmpty(list)) {

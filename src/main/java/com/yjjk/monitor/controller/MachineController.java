@@ -57,21 +57,21 @@ public class MachineController extends BaseController {
         int count = super.machineService.selectByMachineNum(machineInfo.getMachineNum());
         int count2 = super.machineService.selectByMachineNo(machineInfo.getMachineNo());
         if (count > 0 || count2 > 0) {
-            return ResultUtil.returnError("该设备信息已存在，请核实后录入");
+            return ResultUtil.returnError(ErrorCodeEnum.MACHINE_EXIST_ERROR);
         }
         machineInfo.setMachineTypeId(super.machineService.selectByMachineModel(machineInfo.getMachineModel()));
         int i = super.machineService.insertByMachineNum(machineInfo);
         if (i == 0) {
-            return ResultUtil.returnError("设备新增失败");
+            return ResultUtil.returnError(ErrorCodeEnum.MACHINE_INSERT_ERROR);
         } else {
             try {
                 boolean b = super.machineService.connectionService(machineInfo.getMachineNum());
                 if (!b) {
-                    return ResultUtil.returnError("网络堵塞，设备绑定失败，请稍后再试");
+                    return ResultUtil.returnError(ErrorCodeEnum.MACHINE_NET_ERROR);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return ResultUtil.returnError("网络堵塞，设备绑定失败，请稍后再试");
+                return ResultUtil.returnError(ErrorCodeEnum.MACHINE_NET_ERROR);
             }
         }
         return ResultUtil.returnSuccess(i);
@@ -82,33 +82,21 @@ public class MachineController extends BaseController {
      *
      * @param machineId
      * @param remark
-     * @param request
-     * @param response
      */
     @RequestMapping(value = "/machine", method = RequestMethod.DELETE)
-    public void updateMachine(@RequestParam(value = "machineId") Integer machineId,
-                              @RequestParam(value = "remark", required = false) String remark,
-                              HttpServletRequest request, HttpServletResponse response) {
+    public CommonResult updateMachine(@RequestParam(value = "machineId") Integer machineId,
+                              @RequestParam(value = "remark", required = false) String remark) {
         /********************** 参数初始化 **********************/
-        long startTime = System.currentTimeMillis();
-        boolean resultCode = false;
-        String message = "";
         ZsMachineInfo zsMachineInfo = super.machineService.selectByPrimaryKey(machineId);
         // 使用中设备
         if (zsMachineInfo.getUsageState() == 2) {
-            message = "停用失败,设备正在使用中";
-            returnResult(startTime, request, response, resultCode, message, "");
-            return;
+            return ResultUtil.returnError(ErrorCodeEnum.MACHINE_USING_ERROR);
         }
         int i = super.machineService.deleteMachine(machineId, remark);
         if (i == 0) {
-            message = "设备停用失败";
-            returnResult(startTime, request, response, resultCode, message, i);
-            return;
+            return ResultUtil.returnError(ErrorCodeEnum.MACHINE_STOP_ERROR);
         }
-        message = "设备停用成功";
-        resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, i);
+        return ResultUtil.returnSuccess(i);
     }
 
     /**
@@ -117,20 +105,14 @@ public class MachineController extends BaseController {
      * @param usageState
      * @param currentPage
      * @param pageSize
-     * @param request
-     * @param response
      */
     @ApiOperation(value = "获取设备信息")
     @RequestMapping(value = "/machine", method = RequestMethod.GET)
-    public void updateMachine(@RequestParam(value = "usageState", required = false) Integer usageState,
+    public CommonResult updateMachine(@RequestParam(value = "usageState", required = false) Integer usageState,
                               @RequestParam(value = "departmentId", required = false) Integer departmentId,
                               @RequestParam(value = "currentPage", required = false) Integer currentPage,
-                              @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                              HttpServletRequest request, HttpServletResponse response) {
+                              @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         /********************** 参数初始化 **********************/
-        long startTime = System.currentTimeMillis();
-        boolean resultCode = false;
-        String message = "";
         Map<String, Object> map = new HashMap<>();
         ZsMachineInfo machineInfo = new ZsMachineInfo();
         // 设备检索条件
@@ -142,9 +124,7 @@ public class MachineController extends BaseController {
             } else if (usageState == 2) {
                 machineInfo.setNormalStatus("normal");
             } else if (usageState > 2) {
-                message = "参数错误";
-                returnResult(startTime, request, response, resultCode, message, map);
-                return;
+                return ResultUtil.returnError(ErrorCodeEnum.PARAM_ERROR);
             }
         }
 
@@ -164,9 +144,7 @@ public class MachineController extends BaseController {
 
         List<ZsMachineInfo> list = super.machineService.selectByUsageState(machineInfo);
         map.put("list", list == null ? "" : list);
-        message = "查询成功";
-        resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, map);
+        return ResultUtil.returnSuccess(map);
     }
 
     /**
