@@ -42,7 +42,7 @@ public class Swagger2Config {
     public Docket controllerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfoBuilder()
-                        .title("寻央大大的接口管理模块")
+                        .title("智能监护系统（体温版）")
                         .description("体温检测系统")
                         .contact(new Contact("CentreS", null, null))
                         .version("1.2")

@@ -149,7 +149,7 @@ public class DateUtil {
             hour = hour < 0 ? 0 : hour;
             min = min < 0 ? 0 : min;
             s = s < 0 ? 0 : s;
-            return day + "天" + hour + "小时" + min + "分";
+            return day + "-" + hour + "-" + min;
         } catch (ParseException e) {
             e.printStackTrace();
         }

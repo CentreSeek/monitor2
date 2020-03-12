@@ -30,7 +30,7 @@ public enum ErrorCodeEnum {
     UPDATE_ERROR("305", "更新失败"),
 
     NON_RECORD("320", "无法找到病护记录"),
-    ERROR_RECORD("321", "记录错误"),
+//    ERROR_RECORD("321", "记录错误"),
     /********** MachineController **********/
     MACHINE_INSERT_ERROR("340", "设备新增失败"),
     MACHINE_EXIST_ERROR("341", "该设备信息已存在，请核实后录入"),
