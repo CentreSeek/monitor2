@@ -149,6 +149,10 @@ public class PatientController extends BaseController {
         /********************** 参数初始化 **********************/
         ZsManagerInfo managerInfo = this.managerService.getManagerInfo(managerId);
         ZsPatientInfo zsPatientInfo = this.patientService.selectByCaseNum(caseNum);
+        List<ZsPatientRecord> usageByBedId = super.patientRecordService.getUsageByBedId(bedId);
+        if (!StringUtils.isNullorEmpty(usageByBedId)){
+            return ResultUtil.returnError(ErrorCodeEnum.PATIENT_CHANGE_BED_ERROR);
+        }
         if (zsPatientInfo != null) {
             ZsPatientRecord zsPatientRecord = this.patientRecordService.selectByPatientId(zsPatientInfo.getPatientId());
             if (zsPatientRecord != null && zsPatientRecord.getUsageState() == PatientRecordConstant.USAGE_STATE_USED) {
