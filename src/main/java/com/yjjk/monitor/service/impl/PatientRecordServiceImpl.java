@@ -13,14 +13,14 @@ package com.yjjk.monitor.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.constant.MonitorRecord;
 import com.yjjk.monitor.constant.TemperatureConstant;
-import com.yjjk.monitor.entity.ZsMachineInfo;
-import com.yjjk.monitor.entity.ZsPatientRecord;
-import com.yjjk.monitor.entity.ZsTemperatureBound;
-import com.yjjk.monitor.entity.json.TemperatureHistory;
 import com.yjjk.monitor.entity.VO.PatientTemperature;
 import com.yjjk.monitor.entity.VO.RecordHistory;
 import com.yjjk.monitor.entity.VO.RecordHistory2Excel;
 import com.yjjk.monitor.entity.VO.UseMachineVO;
+import com.yjjk.monitor.entity.ZsMachineInfo;
+import com.yjjk.monitor.entity.ZsPatientRecord;
+import com.yjjk.monitor.entity.ZsTemperatureBound;
+import com.yjjk.monitor.entity.json.TemperatureHistory;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.PatientRecordService;
 import com.yjjk.monitor.utility.DateUtil;
@@ -321,21 +321,23 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
         boolean flag = false;
         double highestTemperature = 0.0;
         for (int i = 0; i < list.size(); i++) {
-
-            if (Double.parseDouble(list.get(i).getTemperature()) >= zsTemperatureBound.getHighAlert()) {
-                flag = true;
-                if (highestTemperature < Double.parseDouble(list.get(i).getTemperature())) {
-                    highestTemperature = Double.parseDouble(list.get(i).getTemperature());
-                }
-            } else {
-                if (flag == true) {
-                    flag = false;
-                    count++;
-                }
+            if (highestTemperature < Double.parseDouble(list.get(i).getTemperature())) {
+                highestTemperature = Double.parseDouble(list.get(i).getTemperature());
             }
-            if (flag == true && i == list.size() - 1) {
+            if (Double.parseDouble(list.get(i).getTemperature()) >= zsTemperatureBound.getHighAlert()) {
                 count++;
             }
+//            if (Double.parseDouble(list.get(i).getTemperature()) >= zsTemperatureBound.getHighAlert()) {
+//                flag = true;
+//            } else {
+//                if (flag == true) {
+//                    flag = false;
+//                    count++;
+//                }
+//            }
+//            if (flag == true && i == list.size() - 1) {
+//                count++;
+//            }
         }
         paraMap.put("highestTemperatureCount", count);
         paraMap.put("highestTemperature", highestTemperature);
