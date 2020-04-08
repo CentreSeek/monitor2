@@ -187,7 +187,7 @@
         zri.`name` AS room,
         zbi.`name` AS bed,
         b.create_time as time,
-        CONCAT(b.temperature,'℃') as temperature
+        b.temperature as temperature
         FROM
         `zs_patient_record` zpr
         LEFT JOIN `zs_patient_info` zpi

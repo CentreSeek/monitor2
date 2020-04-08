@@ -456,7 +456,7 @@ public class PatientController extends BaseController {
             row.createCell(3).setCellValue("房号");
             row.createCell(4).setCellValue("床位");
             row.createCell(5).setCellValue("时间点");
-            row.createCell(6).setCellValue("体温");
+            row.createCell(6).setCellValue("体温(℃)");
             for (int i = 0; i < list.size(); i++) {
                 row = sheet.createRow(i + 2);
                 RecordHistory2Excel record = list.get(i);
@@ -480,7 +480,7 @@ public class PatientController extends BaseController {
             row.createCell(3).setCellValue("room number");
             row.createCell(4).setCellValue("bed number");
             row.createCell(5).setCellValue("time");
-            row.createCell(6).setCellValue("date");
+            row.createCell(6).setCellValue("date(℉)");
             for (int i = 0; i < list.size(); i++) {
                 row = sheet.createRow(i + 2);
                 RecordHistory2Excel record = list.get(i);
