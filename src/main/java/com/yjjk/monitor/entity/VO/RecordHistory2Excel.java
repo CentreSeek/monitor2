@@ -30,4 +30,6 @@ public class RecordHistory2Excel {
     private String time;
     private String temperature;
 
+    private String history;
+
 }

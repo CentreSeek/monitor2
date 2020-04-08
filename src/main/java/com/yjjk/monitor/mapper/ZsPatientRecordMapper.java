@@ -93,6 +93,8 @@ public interface ZsPatientRecordMapper {
      */
     List<RecordHistory2Excel> getExportList(Map<String, Object> paraMap);
 
+    RecordHistory2Excel getPrivateExport(Integer recordId);
+
     ZsPatientRecord selectByRecordId(Long recordId);
 
     /**

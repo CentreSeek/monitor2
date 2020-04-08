@@ -155,6 +155,13 @@ public interface PatientRecordService {
     List<RecordHistory2Excel> getExportList(Map<String, Object> paraMap);
 
     /**
+     * 获取个人体温记录
+     * @param paraMap
+     * @return
+     */
+    List<RecordHistory2Excel> getPrivateExport(Map<String, Object> paraMap);
+
+    /**
      * 处理体温数据
      * @param list
      * @param paraMap

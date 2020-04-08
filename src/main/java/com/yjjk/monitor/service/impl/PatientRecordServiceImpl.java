@@ -28,6 +28,7 @@ import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -301,6 +302,29 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
             paraMap.put("departmentId", departmentId);
         }
         return super.ZsPatientRecordMapper.getExportList(paraMap);
+    }
+
+    @Override
+    public List<RecordHistory2Excel> getPrivateExport(Map<String, Object> paraMap) {
+        RecordHistory2Excel select = super.ZsPatientRecordMapper.getPrivateExport((int) paraMap.get("recordId"));
+        List<TemperatureHistory> list = JSON.parseArray(select.getHistory(), TemperatureHistory.class);
+        List<RecordHistory2Excel> result = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            if (paraMap.get("temperature") == null){
+                RecordHistory2Excel temp = new RecordHistory2Excel();
+                temp.setBed(select.getBed()).setCaseNum(select.getCaseNum()).setDepartmentName(select.getDepartmentName())
+                        .setPatientName(select.getPatientName()).setRoom(select.getRoom())
+                        .setTemperature(list.get(i).getTemperature()).setTime(list.get(i).getDateTime());
+                result.add(temp);
+            }else if (Double.parseDouble(list.get(i).getTemperature()) > (double) paraMap.get("temperature")) {
+                RecordHistory2Excel temp = new RecordHistory2Excel();
+                temp.setBed(select.getBed()).setCaseNum(select.getCaseNum()).setDepartmentName(select.getDepartmentName())
+                        .setPatientName(select.getPatientName()).setRoom(select.getRoom())
+                        .setTemperature(list.get(i).getTemperature()).setTime(list.get(i).getDateTime());
+                result.add(temp);
+            }
+        }
+        return result;
     }
 
     @Override
