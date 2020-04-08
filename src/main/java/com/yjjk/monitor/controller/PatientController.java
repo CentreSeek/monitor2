@@ -490,7 +490,7 @@ public class PatientController extends BaseController {
                 row.createCell(3).setCellValue(record.getRoom());
                 row.createCell(4).setCellValue(record.getBed());
                 row.createCell(5).setCellValue(record.getTime() == null ? null : record.getTime());
-                row.createCell(6).setCellValue(MathUtils.centigrade2Fahrenheit(Double.parseDouble(record.getTemperature() == null ? "0.0" : record.getTemperature()), 2));
+                row.createCell(6).setCellValue(MathUtils.centigrade2Fahrenheit(Double.parseDouble(record.getTemperature() == null ? "0.0" : record.getTemperature()), 1));
             }
         }
         sheet.setDefaultRowHeight((short) (16.5 * 20));
