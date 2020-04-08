@@ -27,6 +27,7 @@ import com.yjjk.monitor.entity.ZsPatientRecord;
 import com.yjjk.monitor.entity.json.TemperatureHistory;
 import com.yjjk.monitor.entity.param.TemperatureBound;
 import com.yjjk.monitor.utility.DateUtil;
+import com.yjjk.monitor.utility.MathUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
 import io.swagger.annotations.Api;
@@ -150,7 +151,7 @@ public class PatientController extends BaseController {
         ZsManagerInfo managerInfo = this.managerService.getManagerInfo(managerId);
         ZsPatientInfo zsPatientInfo = this.patientService.selectByCaseNum(caseNum);
         List<ZsPatientRecord> usageByBedId = super.patientRecordService.getUsageByBedId(bedId);
-        if (!StringUtils.isNullorEmpty(usageByBedId)){
+        if (!StringUtils.isNullorEmpty(usageByBedId)) {
             return ResultUtil.returnError(ErrorCodeEnum.PATIENT_CHANGE_BED_ERROR);
         }
         if (zsPatientInfo != null) {
@@ -364,7 +365,7 @@ public class PatientController extends BaseController {
      */
     @RequestMapping(value = "/temperature", method = RequestMethod.GET)
     public CommonResult getTemperatureHistory(@RequestParam(value = "recordId") Long recordId,
-                                      HttpServletRequest request, HttpServletResponse response) {
+                                              HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
         Map<String, Object> reqMap = new HashMap<>(2);
         Map<String, Object> paraMap = new HashMap<>();
@@ -400,6 +401,7 @@ public class PatientController extends BaseController {
 
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public void export(@RequestParam(value = "timeList") List<String> timeList,
+                       @ApiParam(value = "语言 0：中文 1：英文", required = true) @RequestParam(value = "language") Integer language,
                        @RequestParam(value = "token") String token,
                        HttpServletResponse response) throws IOException {
         if (timeList.size() == 0) {
@@ -423,47 +425,73 @@ public class PatientController extends BaseController {
         // 创建第一个单元格
         row = sheet.createRow(0);
         row.setHeight((short) (26.25 * 20));
-        // 为第一行单元格设值
-        row.createCell(0).setCellValue("温度监测平台使用日志");
+        // 选择导出对象版本
+        if (language == 0) {
+            // 为第一行单元格设值
+            row.createCell(0).setCellValue("温度监测平台使用日志");
 
-        /*
-         * 为标题设计空间
-         * firstRow从第1行开始
-         * lastRow从第0行结束
-         *
-         * 从第1个单元格开始
-         * 从第3个单元格结束
-         */
-        CellRangeAddress rowRegion = new CellRangeAddress(0, 0, 0, 6);
-        sheet.addMergedRegion(rowRegion);
+            /*
+             * 为标题设计空间
+             * firstRow从第1行开始
+             * lastRow从第0行结束
+             *
+             * 从第1个单元格开始
+             * 从第3个单元格结束
+             */
+            CellRangeAddress rowRegion = new CellRangeAddress(0, 0, 0, 6);
+            sheet.addMergedRegion(rowRegion);
 
-        /*
-         * 动态获取数据库列 sql语句 select COLUMN_NAME from INFORMATION_SCHEMA.Columns where table_name='user' and table_schema='test'
-         * 第一个table_name 表名字
-         * 第二个table_name 数据库名称
-         * */
-        row = sheet.createRow(1);
-        //设置行高
-        row.setHeight((short) (22.50 * 20));
-        //为单元格设值
-        row.createCell(0).setCellValue("姓名");
-        row.createCell(1).setCellValue("住院号");
-        row.createCell(2).setCellValue("科室");
-        row.createCell(3).setCellValue("房号");
-        row.createCell(4).setCellValue("床位");
-        row.createCell(5).setCellValue("时间点");
-        row.createCell(6).setCellValue("体温");
-
-        for (int i = 0; i < list.size(); i++) {
-            row = sheet.createRow(i + 2);
-            RecordHistory2Excel record = list.get(i);
-            row.createCell(0).setCellValue(record.getPatientName());
-            row.createCell(1).setCellValue(record.getCaseNum());
-            row.createCell(2).setCellValue(record.getDepartmentName());
-            row.createCell(3).setCellValue(record.getRoom());
-            row.createCell(4).setCellValue(record.getBed());
-            row.createCell(5).setCellValue(record.getTime());
-            row.createCell(6).setCellValue(record.getTemperature());
+            /*
+             * 动态获取数据库列 sql语句 select COLUMN_NAME from INFORMATION_SCHEMA.Columns where table_name='user' and table_schema='test'
+             * 第一个table_name 表名字
+             * 第二个table_name 数据库名称
+             * */
+            row = sheet.createRow(1);
+            //设置行高
+            row.setHeight((short) (22.50 * 20));
+            //为单元格设值
+            row.createCell(0).setCellValue("姓名");
+            row.createCell(1).setCellValue("住院号");
+            row.createCell(2).setCellValue("科室");
+            row.createCell(3).setCellValue("房号");
+            row.createCell(4).setCellValue("床位");
+            row.createCell(5).setCellValue("时间点");
+            row.createCell(6).setCellValue("体温");
+            for (int i = 0; i < list.size(); i++) {
+                row = sheet.createRow(i + 2);
+                RecordHistory2Excel record = list.get(i);
+                row.createCell(0).setCellValue(record.getPatientName());
+                row.createCell(1).setCellValue(record.getCaseNum());
+                row.createCell(2).setCellValue(record.getDepartmentName());
+                row.createCell(3).setCellValue(record.getRoom());
+                row.createCell(4).setCellValue(record.getBed());
+                row.createCell(5).setCellValue(record.getTime());
+                row.createCell(6).setCellValue(record.getTemperature());
+            }
+        } else if (language == 1) {
+            row.createCell(0).setCellValue("Thermometry log");
+            CellRangeAddress rowRegion = new CellRangeAddress(0, 0, 0, 6);
+            sheet.addMergedRegion(rowRegion);
+            row = sheet.createRow(1);
+            row.setHeight((short) (22.50 * 20));
+            row.createCell(0).setCellValue("name");
+            row.createCell(1).setCellValue("hospital number");
+            row.createCell(2).setCellValue("department");
+            row.createCell(3).setCellValue("room number");
+            row.createCell(4).setCellValue("bed number");
+            row.createCell(5).setCellValue("time");
+            row.createCell(6).setCellValue("date");
+            for (int i = 0; i < list.size(); i++) {
+                row = sheet.createRow(i + 2);
+                RecordHistory2Excel record = list.get(i);
+                row.createCell(0).setCellValue(record.getPatientName());
+                row.createCell(1).setCellValue(record.getCaseNum());
+                row.createCell(2).setCellValue(record.getDepartmentName());
+                row.createCell(3).setCellValue(record.getRoom());
+                row.createCell(4).setCellValue(record.getBed());
+                row.createCell(5).setCellValue(record.getTime() == null ? null : record.getTime());
+                row.createCell(6).setCellValue(MathUtils.centigrade2Fahrenheit(Double.parseDouble(record.getTemperature() == null ? "0.0" : record.getTemperature()), 2));
+            }
         }
         sheet.setDefaultRowHeight((short) (16.5 * 20));
         //列宽自适应

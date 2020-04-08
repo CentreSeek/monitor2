@@ -321,7 +321,7 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
         boolean flag = false;
         double highestTemperature = 0.0;
         for (int i = 0; i < list.size(); i++) {
-            if (highestTemperature < Double.parseDouble(list.get(i).getTemperature())) {
+            if (highestTemperature < Double.parseDouble(list.get(i).getTemperature()) && Double.parseDouble(list.get(i).getTemperature()) > zsTemperatureBound.getLowAlert()) {
                 highestTemperature = Double.parseDouble(list.get(i).getTemperature());
             }
             if (Double.parseDouble(list.get(i).getTemperature()) >= zsTemperatureBound.getHighAlert()) {
