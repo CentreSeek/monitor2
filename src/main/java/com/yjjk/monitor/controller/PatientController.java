@@ -465,8 +465,12 @@ public class PatientController extends BaseController {
                 row.createCell(2).setCellValue(record.getDepartmentName());
                 row.createCell(3).setCellValue(record.getRoom());
                 row.createCell(4).setCellValue(record.getBed());
-                row.createCell(5).setCellValue(record.getTime());
-                row.createCell(6).setCellValue(record.getTemperature());
+                if (!StringUtils.isNullorEmpty(record.getTime())) {
+                    row.createCell(5).setCellValue(record.getTime());
+                }
+                if (!StringUtils.isNullorEmpty(record.getTemperature())) {
+                    row.createCell(6).setCellValue(MathUtils.centigrade2Fahrenheit(Double.parseDouble(record.getTemperature()), 1));
+                }
             }
         } else if (language == 1) {
             row.createCell(0).setCellValue("Thermometry log");
@@ -490,7 +494,9 @@ public class PatientController extends BaseController {
                 row.createCell(3).setCellValue(record.getRoom());
                 row.createCell(4).setCellValue(record.getBed());
                 row.createCell(5).setCellValue(record.getTime() == null ? null : record.getTime());
-                row.createCell(6).setCellValue(MathUtils.centigrade2Fahrenheit(Double.parseDouble(record.getTemperature() == null ? "0.0" : record.getTemperature()), 1));
+                if (!StringUtils.isNullorEmpty(record.getTemperature())) {
+                    row.createCell(6).setCellValue(MathUtils.centigrade2Fahrenheit(Double.parseDouble(record.getTemperature()), 1));
+                }
             }
         }
         sheet.setDefaultRowHeight((short) (16.5 * 20));
@@ -508,6 +514,7 @@ public class PatientController extends BaseController {
 //        os.flush();
 //        os.close();
     }
+
 
     @ApiOperation("设置体温监测规则")
     @RequestMapping(value = "/bound", method = RequestMethod.PUT)
