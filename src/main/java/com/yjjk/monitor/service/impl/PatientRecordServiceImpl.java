@@ -12,6 +12,7 @@ package com.yjjk.monitor.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.constant.MonitorRecord;
+import com.yjjk.monitor.constant.PatientRecordConstant;
 import com.yjjk.monitor.constant.TemperatureConstant;
 import com.yjjk.monitor.entity.VO.PatientTemperature;
 import com.yjjk.monitor.entity.VO.RecordHistory;
@@ -308,11 +309,17 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
     @Override
     public List<RecordHistory2Excel> getPrivateExport(Map<String, Object> paraMap) {
         RecordHistory2Excel select = super.ZsPatientRecordMapper.getPrivateExport((int) paraMap.get("recordId"));
-        List<TemperatureHistory> list = JSON.parseArray(select.getHistory(), TemperatureHistory.class);
-        List<RecordHistory2Excel> result = new ArrayList<>();
-        if (StringUtils.isNullorEmpty(list)){
-            return null;
+        List<TemperatureHistory> list;
+        if (select.getUsageState().equals(PatientRecordConstant.USAGE_STATE_UNUSED)) {
+            list = JSON.parseArray(select.getHistory(), TemperatureHistory.class);
+
+        } else {
+            paraMap.put("endTime", DateUtil.getCurrentTime());
+            paraMap.put("patientId", select.getPatientId());
+            list = super.ZsPatientRecordMapper.selectTemperatureHistory(paraMap);
         }
+
+        List<RecordHistory2Excel> result = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             if (paraMap.get("temperature") == null) {
                 RecordHistory2Excel temp = new RecordHistory2Excel();

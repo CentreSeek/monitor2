@@ -227,7 +227,9 @@
         zdi.`name` AS departmentName,
         zri.`name` AS room,
         zbi.`name` AS bed,
-        zpr.temperature_history as history
+        zpr.temperature_history as history,
+        zpr.patient_id,
+        zpr.usage_state
         FROM
         `zs_patient_record` zpr
         LEFT JOIN `zs_patient_info` zpi

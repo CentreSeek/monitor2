@@ -31,5 +31,7 @@ public class RecordHistory2Excel {
     private String temperature;
 
     private String history;
+    private Integer patientId;
+    private Integer usageState;
 
 }
