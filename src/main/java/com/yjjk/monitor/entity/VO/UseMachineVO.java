@@ -62,6 +62,8 @@ public class UseMachineVO {
     /** temperature */
     @ApiModelProperty(value = "temperature：体温")
     private String temperature;
+    @ApiModelProperty(value = "temperature：华氏度")
+    private String fahrenheit;
     @ApiModelProperty(value = "temperature：设备电量")
     private Integer pattery;
     @ApiModelProperty(value = "temperature：状态")

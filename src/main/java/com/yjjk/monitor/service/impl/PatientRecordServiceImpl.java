@@ -24,6 +24,7 @@ import com.yjjk.monitor.entity.json.TemperatureHistory;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.PatientRecordService;
 import com.yjjk.monitor.utility.DateUtil;
+import com.yjjk.monitor.utility.MathUtils;
 import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,7 +142,7 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
                             if (monitorList.get(i).getMachineId().equals(temperatureList.get(j).getMachineId())) {
                                 // 初始化状态：使用中
                                 monitorList.get(i).setRecordState(MonitorRecord.RECORD_STATE_USAGE);
-                                // 温度小于30℃提示未按规范粘贴
+                                // 温度小于30℃提示未按规范粘贴 / L
                                 if (Double.parseDouble(temperatureList.get(j).getTemperature()) < 30.0) {
                                     monitorList.get(i).setRecordState(MonitorRecord.RECORD_STATE_ERR_USED);
                                 }
@@ -309,14 +310,17 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
         RecordHistory2Excel select = super.ZsPatientRecordMapper.getPrivateExport((int) paraMap.get("recordId"));
         List<TemperatureHistory> list = JSON.parseArray(select.getHistory(), TemperatureHistory.class);
         List<RecordHistory2Excel> result = new ArrayList<>();
+        if (StringUtils.isNullorEmpty(list)){
+            return null;
+        }
         for (int i = 0; i < list.size(); i++) {
-            if (paraMap.get("temperature") == null){
+            if (paraMap.get("temperature") == null) {
                 RecordHistory2Excel temp = new RecordHistory2Excel();
                 temp.setBed(select.getBed()).setCaseNum(select.getCaseNum()).setDepartmentName(select.getDepartmentName())
                         .setPatientName(select.getPatientName()).setRoom(select.getRoom())
                         .setTemperature(list.get(i).getTemperature()).setTime(list.get(i).getDateTime());
                 result.add(temp);
-            }else if (Double.parseDouble(list.get(i).getTemperature()) > (double) paraMap.get("temperature")) {
+            } else if (Double.parseDouble(list.get(i).getTemperature()) > (double) paraMap.get("temperature")) {
                 RecordHistory2Excel temp = new RecordHistory2Excel();
                 temp.setBed(select.getBed()).setCaseNum(select.getCaseNum()).setDepartmentName(select.getDepartmentName())
                         .setPatientName(select.getPatientName()).setRoom(select.getRoom())
@@ -345,6 +349,7 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
         boolean flag = false;
         double highestTemperature = 0.0;
         for (int i = 0; i < list.size(); i++) {
+            list.get(i).setFahrenheit(String.valueOf(MathUtils.centigrade2Fahrenheit(Double.parseDouble(list.get(i).getTemperature()))));
             if (highestTemperature < Double.parseDouble(list.get(i).getTemperature()) && Double.parseDouble(list.get(i).getTemperature()) > zsTemperatureBound.getLowAlert()) {
                 highestTemperature = Double.parseDouble(list.get(i).getTemperature());
             }
@@ -365,6 +370,7 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
         }
         paraMap.put("highestTemperatureCount", count);
         paraMap.put("highestTemperature", highestTemperature);
+        paraMap.put("highestFahrenheit", String.valueOf(MathUtils.centigrade2Fahrenheit(highestTemperature)));
         return paraMap;
     }
 

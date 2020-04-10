@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
@@ -361,12 +360,9 @@ public class PatientController extends BaseController {
      * 查询体温历史记录
      *
      * @param recordId
-     * @param request
-     * @param response
      */
     @RequestMapping(value = "/temperature", method = RequestMethod.GET)
-    public CommonResult getTemperatureHistory(@RequestParam(value = "recordId") Long recordId,
-                                              HttpServletRequest request, HttpServletResponse response) {
+    public CommonResult getTemperatureHistory(@RequestParam(value = "recordId") Long recordId) {
         /********************** 参数初始化 **********************/
         Map<String, Object> reqMap = new HashMap<>(2);
         Map<String, Object> paraMap = new HashMap<>();
@@ -517,7 +513,7 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(value = "/privateExport", method = RequestMethod.GET)
-    public void privateExport(@ApiParam(value = "筛选规则，筛选大于该摄氏度的体温")@RequestParam(value = "temperature", required = false) Double temperature,
+    public void privateExport(@ApiParam(value = "筛选规则，筛选大于该摄氏度的体温") @RequestParam(value = "temperature", required = false) Double temperature,
                               @ApiParam(value = "语言 0：中文 1：英文", required = true) @RequestParam(value = "language") Integer language,
                               @ApiParam(value = "recordId", required = true) @RequestParam(value = "recordId") Integer recordId,
                               HttpServletResponse response) throws IOException {
@@ -566,21 +562,24 @@ public class PatientController extends BaseController {
             row.createCell(4).setCellValue("床位");
             row.createCell(5).setCellValue("时间点");
             row.createCell(6).setCellValue("体温(℃)");
-            for (int i = 0; i < list.size(); i++) {
-                row = sheet.createRow(i + 2);
-                RecordHistory2Excel record = list.get(i);
-                row.createCell(0).setCellValue(record.getPatientName());
-                row.createCell(1).setCellValue(record.getCaseNum());
-                row.createCell(2).setCellValue(record.getDepartmentName());
-                row.createCell(3).setCellValue(record.getRoom());
-                row.createCell(4).setCellValue(record.getBed());
-                if (!StringUtils.isNullorEmpty(record.getTime())) {
-                    row.createCell(5).setCellValue(record.getTime());
-                }
-                if (!StringUtils.isNullorEmpty(record.getTemperature())) {
-                    row.createCell(6).setCellValue(record.getTemperature());
+            if (!StringUtils.isNullorEmpty(list)) {
+                for (int i = 0; i < list.size(); i++) {
+                    row = sheet.createRow(i + 2);
+                    RecordHistory2Excel record = list.get(i);
+                    row.createCell(0).setCellValue(record.getPatientName());
+                    row.createCell(1).setCellValue(record.getCaseNum());
+                    row.createCell(2).setCellValue(record.getDepartmentName());
+                    row.createCell(3).setCellValue(record.getRoom());
+                    row.createCell(4).setCellValue(record.getBed());
+                    if (!StringUtils.isNullorEmpty(record.getTime())) {
+                        row.createCell(5).setCellValue(record.getTime());
+                    }
+                    if (!StringUtils.isNullorEmpty(record.getTemperature())) {
+                        row.createCell(6).setCellValue(record.getTemperature());
+                    }
                 }
             }
+
         } else if (language == 1) {
             row.createCell(0).setCellValue("Thermometry log");
             CellRangeAddress rowRegion = new CellRangeAddress(0, 0, 0, 6);
@@ -594,17 +593,19 @@ public class PatientController extends BaseController {
             row.createCell(4).setCellValue("bed number");
             row.createCell(5).setCellValue("time");
             row.createCell(6).setCellValue("date(℉)");
-            for (int i = 0; i < list.size(); i++) {
-                row = sheet.createRow(i + 2);
-                RecordHistory2Excel record = list.get(i);
-                row.createCell(0).setCellValue(record.getPatientName());
-                row.createCell(1).setCellValue(record.getCaseNum());
-                row.createCell(2).setCellValue(record.getDepartmentName());
-                row.createCell(3).setCellValue(record.getRoom());
-                row.createCell(4).setCellValue(record.getBed());
-                row.createCell(5).setCellValue(record.getTime() == null ? null : record.getTime());
-                if (!StringUtils.isNullorEmpty(record.getTemperature())) {
-                    row.createCell(6).setCellValue(MathUtils.centigrade2Fahrenheit(Double.parseDouble(record.getTemperature()), 1));
+            if (!StringUtils.isNullorEmpty(list)) {
+                for (int i = 0; i < list.size(); i++) {
+                    row = sheet.createRow(i + 2);
+                    RecordHistory2Excel record = list.get(i);
+                    row.createCell(0).setCellValue(record.getPatientName());
+                    row.createCell(1).setCellValue(record.getCaseNum());
+                    row.createCell(2).setCellValue(record.getDepartmentName());
+                    row.createCell(3).setCellValue(record.getRoom());
+                    row.createCell(4).setCellValue(record.getBed());
+                    row.createCell(5).setCellValue(record.getTime() == null ? null : record.getTime());
+                    if (!StringUtils.isNullorEmpty(record.getTemperature())) {
+                        row.createCell(6).setCellValue(MathUtils.centigrade2Fahrenheit(Double.parseDouble(record.getTemperature()), 1));
+                    }
                 }
             }
         }

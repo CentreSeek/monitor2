@@ -41,6 +41,8 @@ public class TemperatureBoundVO {
     private Double highAlert;
     @ApiModelProperty(value = "下拉列表")
     private Double[] list;
+    @ApiModelProperty(value = "华氏度下拉列表")
+    private Double[][] fahrenheitList;
     @ApiModelProperty(value = "规则类型：default 默认规则 department 科室规则")
     private String type;
 }

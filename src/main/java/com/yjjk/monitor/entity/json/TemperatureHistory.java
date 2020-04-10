@@ -23,5 +23,6 @@ import lombok.experimental.Accessors;
 public class TemperatureHistory {
 
     private String temperature;
+    private String fahrenheit;
     private String dateTime;
 }

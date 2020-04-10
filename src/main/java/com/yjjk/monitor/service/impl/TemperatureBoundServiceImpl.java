@@ -11,13 +11,14 @@
 package com.yjjk.monitor.service.impl;
 
 import com.yjjk.monitor.constant.TemperatureConstant;
-import com.yjjk.monitor.entity.ZsTemperatureBound;
-import com.yjjk.monitor.entity.param.TemperatureBound;
 import com.yjjk.monitor.entity.VO.TemperatureBoundVO;
 import com.yjjk.monitor.entity.VO.UseMachineVO;
+import com.yjjk.monitor.entity.ZsTemperatureBound;
+import com.yjjk.monitor.entity.param.TemperatureBound;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.TemperatureBoundService;
 import com.yjjk.monitor.utility.DateUtil;
+import com.yjjk.monitor.utility.MathUtils;
 import com.yjjk.monitor.utility.ReflectUtils;
 import org.springframework.stereotype.Service;
 
@@ -36,14 +37,56 @@ public class TemperatureBoundServiceImpl extends BaseService implements Temperat
     public List<TemperatureBoundVO> getDefaultAlert(Integer departmentId) {
         List<TemperatureBoundVO> list = new ArrayList<>();
         ZsTemperatureBound defaultTemperature = super.zsTemperatureBoundMapper.selectByPrimaryKey(TemperatureConstant.DEFAULT_DEPARTMENT_ID);
-        list.add(ReflectUtils.transformToBean(defaultTemperature,
-                TemperatureBoundVO.class).setList(TemperatureConstant.TEMPERATURE_LIST).setType(TemperatureConstant.ALERT_TYPE_DEFAULT));
+        TemperatureBoundVO temperatureBoundVO = ReflectUtils.transformToBean(defaultTemperature,
+                TemperatureBoundVO.class);
+        list.add(temperatureBoundVO.setList(TemperatureConstant.TEMPERATURE_LIST).setType(TemperatureConstant.ALERT_TYPE_DEFAULT).setFahrenheitList(TemperatureConstant.FAHRENHEIT_LIST));
         ZsTemperatureBound departmentTemperature = super.zsTemperatureBoundMapper.selectByPrimaryKey(departmentId);
         if (departmentTemperature == null) {
             departmentTemperature = defaultTemperature;
         }
-        list.add(ReflectUtils.transformToBean(departmentTemperature, TemperatureBoundVO.class).setList(TemperatureConstant.TEMPERATURE_LIST).setType(TemperatureConstant.ALERT_TYPE_DEPARTMENT));
+        TemperatureBoundVO temperatureBoundVO1 = ReflectUtils.transformToBean(departmentTemperature, TemperatureBoundVO.class);
+        list.add(temperatureBoundVO1.setList(TemperatureConstant.TEMPERATURE_LIST).setType(TemperatureConstant.ALERT_TYPE_DEPARTMENT));
+        list.add(transFahrenheit(temperatureBoundVO1));
+        list.add(transFahrenheit(temperatureBoundVO).setType(TemperatureConstant.ALERT_TYPE_FAHRENHEIT));
         return list;
+    }
+
+    @Override
+    public TemperatureBoundVO transFahrenheit(TemperatureBoundVO pojo) {
+        Double highAlert = null;
+        Double highTemperature = null;
+        Double lowAlert = null;
+        Double lowTemperature = null;
+        Double normalTemperature = null;
+        for (int i = 0; i < TemperatureConstant.FAHRENHEIT_LIST.length; i++) {
+            if (TemperatureConstant.FAHRENHEIT_LIST[i][1].equals(pojo.getHighAlert())) {
+                highAlert = TemperatureConstant.FAHRENHEIT_LIST[i][0];
+            }
+            if (TemperatureConstant.FAHRENHEIT_LIST[i][1].equals(pojo.getHighTemperature())) {
+                highTemperature = TemperatureConstant.FAHRENHEIT_LIST[i][0];
+            }
+            if (TemperatureConstant.FAHRENHEIT_LIST[i][1].equals(pojo.getLowAlert())) {
+                lowAlert = TemperatureConstant.FAHRENHEIT_LIST[i][0];
+            }
+            if (TemperatureConstant.FAHRENHEIT_LIST[i][1].equals(pojo.getLowTemperature())) {
+                lowTemperature = TemperatureConstant.FAHRENHEIT_LIST[i][0];
+            }
+            if (TemperatureConstant.FAHRENHEIT_LIST[i][1].equals(pojo.getNormalTemperature())) {
+                normalTemperature = TemperatureConstant.FAHRENHEIT_LIST[i][0];
+            }
+        }
+
+        TemperatureBoundVO temp = new TemperatureBoundVO();
+        temp.setHighAlert(highAlert)
+                .setHighTemperature(highTemperature)
+                .setLowAlert(lowAlert)
+                .setLowTemperature(lowTemperature)
+                .setNormalTemperature(normalTemperature)
+                .setTemperatureAlert(pojo.getTemperatureAlert())
+                .setDepartmentId(pojo.getDepartmentId())
+                .setFahrenheitList(TemperatureConstant.FAHRENHEIT_LIST)
+                .setType(TemperatureConstant.ALERT_TYPE_FAHRENHEIT);
+        return temp;
     }
 
     @Override
@@ -71,6 +114,7 @@ public class TemperatureBoundServiceImpl extends BaseService implements Temperat
         for (int i = 0; i < monitorsInfo.size(); i++) {
             if (monitorsInfo.get(i).getTemperature() != null) {
                 Double temperature = Double.parseDouble(monitorsInfo.get(i).getTemperature());
+                monitorsInfo.get(i).setFahrenheit(String.valueOf(MathUtils.centigrade2Fahrenheit(temperature, 1)));
                 /** 设置体温状态 */
                 if (temperature <= temperatureBound.getLowTemperature()) {
                     monitorsInfo.get(i).setTemperatureStatus(TemperatureConstant.LOW_TEMPERATURE);
@@ -82,7 +126,7 @@ public class TemperatureBoundServiceImpl extends BaseService implements Temperat
                     monitorsInfo.get(i).setTemperatureStatus(TemperatureConstant.HIGH_TEMPERATURE);
                 }
                 /** 设置体温预警 */
-                if (temperatureBound.getTemperatureAlert().equals(TemperatureConstant.ALERT_STATUS_CLOSE)){
+                if (temperatureBound.getTemperatureAlert().equals(TemperatureConstant.ALERT_STATUS_CLOSE)) {
                     break;
                 }
                 if (temperature <= temperatureBound.getLowAlert()) {

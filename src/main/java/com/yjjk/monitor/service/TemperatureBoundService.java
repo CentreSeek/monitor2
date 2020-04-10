@@ -30,6 +30,13 @@ public interface TemperatureBoundService {
     List<TemperatureBoundVO> getDefaultAlert(Integer departmentId);
 
     /**
+     * 将体温转换成华氏度
+     * @param pojo
+     * @return
+     */
+    TemperatureBoundVO transFahrenheit(TemperatureBoundVO pojo);
+
+    /**
      * 设置体温规则
      * @param param
      * @return
