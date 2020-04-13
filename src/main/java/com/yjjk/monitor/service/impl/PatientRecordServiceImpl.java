@@ -380,7 +380,7 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
             highestTemperature = null;
         }
         paraMap.put("highestTemperatureCount", count);
-        paraMap.put("highestTemperature", highestTemperature);
+        paraMap.put("highestTemperature", String.valueOf(highestTemperature));
         paraMap.put("highestFahrenheit", String.valueOf(MathUtils.centigrade2Fahrenheit(highestTemperature)));
         return paraMap;
     }
