@@ -13,7 +13,6 @@ package com.yjjk.monitor.controller;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.entity.ZsBedInfo;
 import com.yjjk.monitor.entity.ZsDepartmentInfo;
-import com.yjjk.monitor.entity.ZsManagerInfo;
 import com.yjjk.monitor.entity.ZsRoomInfo;
 import com.yjjk.monitor.utility.ResultUtil;
 import io.swagger.annotations.ApiOperation;
@@ -40,13 +39,14 @@ public class HospitalController extends BaseController {
 
     /**
      * 查询科室信息
+     *
      * @param departmentId
      * @param request
      * @param response
      */
     @RequestMapping(value = "/department", method = RequestMethod.GET)
     public void selectDetail(@RequestParam(value = "departmentId", required = false) Integer departmentId,
-                           HttpServletRequest request, HttpServletResponse response) {
+                             HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
         long startTime = System.currentTimeMillis();
         boolean resultCode = false;
@@ -56,11 +56,12 @@ public class HospitalController extends BaseController {
         List<ZsDepartmentInfo> list = super.hospitalService.selectDetail(departmentId);
         message = "信息查询成功";
         resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, list == null ? "":list);
+        returnResult(startTime, request, response, resultCode, message, list == null ? "" : list);
     }
 
     /**
      * 查询科室信息
+     *
      * @param request
      * @param response
      */
@@ -75,18 +76,19 @@ public class HospitalController extends BaseController {
         List<ZsDepartmentInfo> list = super.hospitalService.selectDepartments();
         message = "信息查询成功";
         resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, list == null ? "":list);
+        returnResult(startTime, request, response, resultCode, message, list == null ? "" : list);
     }
 
     /**
      * 查询房间信息
+     *
      * @param departmentId
      * @param request
      * @param response
      */
     @RequestMapping(value = "/rooms", method = RequestMethod.GET)
     public void getRooms(@RequestParam(value = "departmentId", required = true) Integer departmentId,
-                           HttpServletRequest request, HttpServletResponse response) {
+                         HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
         long startTime = System.currentTimeMillis();
         boolean resultCode = false;
@@ -96,15 +98,12 @@ public class HospitalController extends BaseController {
         List<ZsRoomInfo> list = super.hospitalService.selectRooms(departmentId);
         message = "信息查询成功";
         resultCode = true;
-        returnResult(startTime, request, response, resultCode, message, list == null ? "":list);
+        returnResult(startTime, request, response, resultCode, message, list == null ? "" : list);
     }
 
     @ApiOperation("体温监测获取空床位")
-    @RequestMapping(value={"/temperatureEmptyBeds"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
-    public CommonResult<List<ZsBedInfo>> getTemperatureEmptyBeds(@RequestParam("token") String token)
-    {
-        ZsManagerInfo managerInfo = this.managerService.selectByToken(token);
-        Integer departmentId = managerInfo.getDepartmentId();
+    @RequestMapping(value = {"/temperatureEmptyBeds"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    public CommonResult<List<ZsBedInfo>> getTemperatureEmptyBeds(@RequestParam("departmentId") Integer departmentId) {
         Map<String, Object> paraMap = new HashMap();
         paraMap.put("departmentId", departmentId);
         List<ZsBedInfo> zsBedInfos = this.hospitalService.selectEmptyBeds(paraMap);

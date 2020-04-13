@@ -145,9 +145,9 @@ public class PatientController extends BaseController {
                                                   @RequestParam(value = "machineId") Integer machineId,
                                                   @RequestParam(value = "name") @Size(max = 8) String name,
                                                   @RequestParam(value = "caseNum") String caseNum,
-                                                  @RequestParam(value = "managerId") Integer managerId) {
+                                                  @RequestParam(value = "departmentId") Integer departmentId) {
         /********************** 参数初始化 **********************/
-        ZsManagerInfo managerInfo = this.managerService.getManagerInfo(managerId);
+//        ZsManagerInfo managerInfo = this.managerService.getManagerInfo(managerId);
         ZsPatientInfo zsPatientInfo = this.patientService.selectByCaseNum(caseNum);
         List<ZsPatientRecord> usageByBedId = super.patientRecordService.getUsageByBedId(bedId);
         if (!StringUtils.isNullorEmpty(usageByBedId)) {
@@ -164,7 +164,7 @@ public class PatientController extends BaseController {
 
             this.patientService.updateName(zsPatientInfo);
         } else {
-            zsPatientInfo = this.patientService.addPatient(name, caseNum, bedId, managerInfo.getDepartmentId());
+            zsPatientInfo = this.patientService.addPatient(name, caseNum, bedId,departmentId);
         }
         if (StringUtils.isNullorEmpty(zsPatientInfo)) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -214,7 +214,7 @@ public class PatientController extends BaseController {
     @RequestMapping(value = "/changeMachine", method = RequestMethod.PUT)
     public CommonResult changeMachine(@RequestParam(value = "recordId") Long recordId,
                                       @RequestParam(value = "machineId") Integer machineId,
-                                      @RequestParam(value = "managerId") Integer managerId) {
+                                      @RequestParam(value = "departmentId") Integer departmentId) {
         /********************** 参数初始化 **********************/
         try {
             ZsPatientRecord patientRecord = super.patientRecordService.selectByPrimaryKey(recordId);
@@ -223,7 +223,7 @@ public class PatientController extends BaseController {
             }
             stopRecord(recordId);
             ZsPatientInfo patientInfo = patientService.getByPrimaryKey(patientRecord.getPatientId());
-            startMachine(patientRecord.getBedId(), machineId, patientInfo.getName(), patientInfo.getCaseNum(), managerId);
+            startMachine(patientRecord.getBedId(), machineId, patientInfo.getName(), patientInfo.getCaseNum(), departmentId);
         } catch (Exception e) {
             e.printStackTrace();
         }
