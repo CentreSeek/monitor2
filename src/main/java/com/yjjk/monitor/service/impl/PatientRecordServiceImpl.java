@@ -354,7 +354,7 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
         // 统计高温数据
         int count = 0;
         boolean flag = false;
-        Double highestTemperature = null;
+        Double highestTemperature = 0.0;
         for (int i = 0; i < list.size(); i++) {
             list.get(i).setFahrenheit(String.valueOf(MathUtils.centigrade2Fahrenheit(Double.parseDouble(list.get(i).getTemperature()))));
             if (highestTemperature < Double.parseDouble(list.get(i).getTemperature())) {
@@ -375,6 +375,9 @@ public class PatientRecordServiceImpl extends BaseService implements PatientReco
 //            if (flag == true && i == list.size() - 1) {
 //                count++;
 //            }
+        }
+        if (highestTemperature == 0.0) {
+            highestTemperature = null;
         }
         paraMap.put("highestTemperatureCount", count);
         paraMap.put("highestTemperature", highestTemperature);
