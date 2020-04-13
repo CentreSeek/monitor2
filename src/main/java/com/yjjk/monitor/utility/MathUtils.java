@@ -17,12 +17,15 @@ public class MathUtils {
      * @param scale  保留的小数位
      * @return
      */
-    public static double centigrade2Fahrenheit(double degree, int scale) {
+    public static Double centigrade2Fahrenheit(Double degree, int scale) {
+        if (degree == null) {
+            return null;
+        }
         double d = 32 + degree * 1.8;
         return new BigDecimal(d).setScale(scale, BigDecimal.ROUND_DOWN).doubleValue();
     }
 
-    public static double centigrade2Fahrenheit(double degree) {
+    public static Double centigrade2Fahrenheit(Double degree) {
         return centigrade2Fahrenheit(degree, 1);
     }
 
@@ -33,12 +36,12 @@ public class MathUtils {
      * @param scale  保留的小数位
      * @return
      */
-    public static double fahrenheit2Centigrade(double degree, int scale) {
+    public static Double fahrenheit2Centigrade(Double degree, int scale) {
         double d = (degree - 32) / 1.8;
         return new BigDecimal(d).setScale(scale, BigDecimal.ROUND_DOWN).doubleValue();
     }
 
-    public static double fahrenheit2Centigrade(double degree) {
+    public static Double fahrenheit2Centigrade(Double degree) {
         return fahrenheit2Centigrade(degree, 1);
 
     }
