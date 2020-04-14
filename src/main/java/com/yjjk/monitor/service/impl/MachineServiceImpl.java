@@ -19,6 +19,7 @@ import com.yjjk.monitor.entity.VO.SearchMachineVOBase;
 import com.yjjk.monitor.entity.ZsMachineInfo;
 import com.yjjk.monitor.entity.ZsMachineTypeInfo;
 import com.yjjk.monitor.entity.ZsTemperatureInfo;
+import com.yjjk.monitor.entity.config.MachineConfig;
 import com.yjjk.monitor.entity.export.MachineExport;
 import com.yjjk.monitor.entity.export.MachineExportVO;
 import com.yjjk.monitor.entity.transaction.BackgroundResult;
@@ -170,7 +171,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     public boolean connectionService(String machineNum) throws Exception {
         Map map = new HashMap();
         map.put("deviceId", machineNum);
-        String s = NetUtils.doPost(EcgConstant.ADD_TEMPERATURE_MACHINE, map);
+        String s = NetUtils.doPost(machineConfig.getUrl(), map);
         BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
         logger.debug(s);
         if (s != null && backgroundResult.getCode().equals("200")) {

@@ -11,6 +11,7 @@
 package com.yjjk.monitor.service;
 
 
+import com.yjjk.monitor.entity.config.MachineConfig;
 import com.yjjk.monitor.mapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,10 @@ public class BaseService {
     protected ZsTemperatureBoundMapper zsTemperatureBoundMapper;
     @Resource
     protected ZsBoxInfoMapper zsBoxInfoMapper;
+
+
+    @Resource
+    protected MachineConfig machineConfig;
 
 
 }
