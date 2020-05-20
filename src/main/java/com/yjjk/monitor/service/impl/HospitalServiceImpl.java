@@ -11,9 +11,9 @@
 package com.yjjk.monitor.service.impl;
 
 import com.yjjk.monitor.constant.ExportConstant;
-import com.yjjk.monitor.entity.ZsBedInfo;
-import com.yjjk.monitor.entity.ZsDepartmentInfo;
-import com.yjjk.monitor.entity.ZsRoomInfo;
+import com.yjjk.monitor.entity.pojo.HospitalBed;
+import com.yjjk.monitor.entity.pojo.HospitalDepartment;
+import com.yjjk.monitor.entity.pojo.HospitalRoom;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.HospitalService;
 import com.yjjk.monitor.utility.ExcelUtils;
@@ -32,8 +32,8 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
 
 
     @Override
-    public List<ZsDepartmentInfo> selectDetail(Integer departmentId) {
-        return super.ZsDepartmentInfoMapper.selectDetail(departmentId);
+    public List<HospitalDepartment> selectDetail(Integer departmentId) {
+        return super.HospitalDepartmentMapper.selectDetail(departmentId);
     }
 
     @Override
@@ -50,17 +50,17 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
     }
 
     @Override
-    public List<ZsDepartmentInfo> selectDepartments() {
-        return super.ZsDepartmentInfoMapper.selectDepartments();
+    public List<HospitalDepartment> selectDepartments() {
+        return super.HospitalDepartmentMapper.selectDepartments();
     }
 
     @Override
-    public List<ZsRoomInfo> selectRooms(Integer departmentId) {
-        return super.ZsRoomInfoMapper.selectRooms(departmentId);
+    public List<HospitalRoom> selectRooms(Integer departmentId) {
+        return super.HospitalRoomMapper.selectRooms(departmentId);
     }
 
     @Override
-    public List<ZsBedInfo> selectEmptyBeds(Map<String, Object> paraMap) {
-        return this.ZsBedInfoMapper.selectEmptyBeds(paraMap);
+    public List<HospitalBed> selectEmptyBeds(Map<String, Object> paraMap) {
+        return this.HospitalBedMapper.selectEmptyBeds(paraMap);
     }
 }

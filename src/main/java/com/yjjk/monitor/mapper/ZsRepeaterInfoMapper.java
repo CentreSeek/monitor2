@@ -1,28 +1,15 @@
 package com.yjjk.monitor.mapper;
 
-import com.yjjk.monitor.entity.ZsRepeaterInfo;
-import org.apache.ibatis.annotations.Mapper;
-import org.mybatis.spring.annotation.MapperScan;
+import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
+import com.yjjk.monitor.my.mapper.MyMapper;
 
-import javax.validation.constraints.Max;
 import java.util.List;
 
-@Mapper
-public interface ZsRepeaterInfoMapper {
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(ZsRepeaterInfo record);
-
-    int insertSelective(ZsRepeaterInfo record);
-
-    ZsRepeaterInfo selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(ZsRepeaterInfo record);
-
-    int updateByPrimaryKey(ZsRepeaterInfo record);
+public interface ZsRepeaterInfoMapper extends MyMapper<ZsRepeaterInfo> {
 
     /**
      * 分页查询路由信息
+     *
      * @param record
      * @return
      */
@@ -30,8 +17,32 @@ public interface ZsRepeaterInfoMapper {
 
     /**
      * 查询路由总数
+     *
      * @param record
      * @return
      */
     int selectRepeaterCount(ZsRepeaterInfo record);
+
+    /**
+     * @param bedId
+     * @return int
+     * @Description 查询repeaterId
+     */
+    int selectByBedId(Integer bedId);
+
+    /**
+     * 查询该床位连接的中继器数量
+     *
+     * @param bedId
+     * @return
+     */
+    int hasRepeaterCount(Integer bedId);
+
+    /**
+     * 获取当前房间绑定的路由总数
+     *
+     * @param zsRepeaterInfo
+     * @return int
+     */
+    int isExistRepeater(ZsRepeaterInfo zsRepeaterInfo);
 }

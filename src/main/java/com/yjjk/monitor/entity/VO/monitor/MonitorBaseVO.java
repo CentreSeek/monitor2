@@ -1,0 +1,55 @@
+package com.yjjk.monitor.entity.VO.monitor;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+/**
+ * @program: monitor2
+ * @description: 监控页面
+ * @author: CentreS
+ * @create: 2020-05-11 16:54:39
+ **/
+@Data
+@Accessors(chain = true)
+@ApiModel("监控页面")
+public class MonitorBaseVO {
+    private MonitorBloodVO monitorBloodVO;
+    private MonitorRespiratoryRateVO monitorRespiratoryRateVO;
+    private MonitorHeartRateVO monitorHeartRateVO;
+    private MonitorTemperatureVO monitorTemperatureVO;
+
+    @ApiModelProperty(value = "base：病单号")
+    private Integer baseId;
+    /**
+     * patientInfo
+     */
+    @ApiModelProperty(value = "patientInfo:病人名")
+    private String patientName;
+    @ApiModelProperty(value = "patientInfo:病历号")
+    private String caseNum;
+
+    /**
+     * 病房信息
+     */
+    @ApiModelProperty(value = "病房信息:病床ID")
+    private Integer bedId;
+    @ApiModelProperty(value = "病房信息:病床名")
+    private String bedName;
+    @ApiModelProperty(value = "病房信息：是否存在异常数据 0-未启用 1-正常 2-异常1 3-异常2")
+    private Integer errorStatus;
+    @ApiModelProperty(value = "离床感应：使用情况 0-未使用 1-使用")
+    private Integer sleepingUsage;
+    @ApiModelProperty(value = "离床感应：离床状态 0-离床 1-在床")
+    private Integer sleepingState;
+    @ApiModelProperty(value = "离床感应：离床时间")
+    private String sleepingLeaveTimes;
+
+    private Integer recordTemperatureId;
+    private Integer recordEcgId;
+    private Integer recordBloodId;
+    private Integer recordSleepingId;
+
+
+}

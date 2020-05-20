@@ -10,7 +10,7 @@
  */
 package com.yjjk.monitor.service;
 
-import com.yjjk.monitor.entity.ZsManagerInfo;
+import com.yjjk.monitor.entity.pojo.ManagerInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ public interface ManagerService {
      * @param managerInfo
      * @return
      */
-    int insertManager(ZsManagerInfo managerInfo);
+    int insertManager(ManagerInfo managerInfo);
 
     /**
      * 更新管理员信息
@@ -36,7 +36,7 @@ public interface ManagerService {
      * @param managerInfo
      * @return
      */
-    int updateManger(ZsManagerInfo managerInfo);
+    int updateManger(ManagerInfo managerInfo);
 
     /**
      * 获取管理员信息
@@ -44,14 +44,14 @@ public interface ManagerService {
      * @param managerId
      * @return
      */
-    ZsManagerInfo getManagerInfo(Integer managerId);
+    ManagerInfo getManagerInfo(Integer managerId);
 
     /**
      * 查询所有正常管理员
      *
      * @return
      */
-    List<ZsManagerInfo> selectNormalList(Map<String, Object> paramMap);
+    List<ManagerInfo> selectNormalList(Map<String, Object> paramMap);
 
     /**
      * 查询所有正常管理员
@@ -63,10 +63,9 @@ public interface ManagerService {
     /**
      * 管理员登录
      *
-     * @param managerInfo
      * @return
      */
-    boolean login(ZsManagerInfo managerInfo, String secret);
+    boolean login(String password, String md5);
 
     /**
      * 动态查找管理员信息
@@ -74,7 +73,7 @@ public interface ManagerService {
      * @param managerInfo
      * @return
      */
-    ZsManagerInfo selectByAccount(ZsManagerInfo managerInfo);
+    ManagerInfo selectByAccount(ManagerInfo managerInfo);
 
     /**
      * 使用token查找管理员信息
@@ -82,5 +81,5 @@ public interface ManagerService {
      * @param token
      * @return
      */
-    ZsManagerInfo selectByToken(String token);
+    ManagerInfo selectByToken(String token);
 }

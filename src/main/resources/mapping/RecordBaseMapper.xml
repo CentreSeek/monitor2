@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yjjk.monitor.mapper.RecordBaseMapper">
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.RecordBase">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="patient_id" property="patientId" jdbcType="INTEGER"/>
+        <result column="bed_id" property="bedId" jdbcType="INTEGER"/>
+        <result column="start_time" property="startTime" jdbcType="VARCHAR"/>
+        <result column="end_time" property="endTime" jdbcType="VARCHAR"/>
+        <result column="record_temperature_id" property="recordTemperatureId" jdbcType="INTEGER"/>
+        <result column="record_ecg_id" property="recordEcgId" jdbcType="INTEGER"/>
+        <result column="record_blood_id" property="recordBloodId" jdbcType="INTEGER"/>
+        <result column="record_sleeping_id" property="recordSleepingId" jdbcType="INTEGER"/>
+        <result column="usage_status" property="usageStatus" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="created_time" property="createdTime" jdbcType="VARCHAR"/>
+        <result column="updated_time" property="updatedTime" jdbcType="VARCHAR"/>
+        <result column="log" property="log" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <select id="getAllBaseRecords" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO">
+        SELECT rb.`id`    AS baseId,
+               pin.`name` AS patientName,
+               pin.`case_num`,
+               hb.`bed_id`,
+               hb.`name`  AS bedName
+        FROM record_base rb
+                 LEFT JOIN hospital_bed hb
+                           ON rb.`bed_id` = hb.`bed_id`
+                 LEFT JOIN hospital_room hr
+                           ON hb.`room_id` = hr.`room_id`
+                 LEFT JOIN hospital_department hd
+                           ON hr.`department_id` = hd.`department_id`
+                 LEFT JOIN
+             patient_info pin ON rb.`patient_id` = pin.`patient_id`
+        WHERE rb.status = 0
+          and hb.status = 0
+          and hr.status = 0
+          and hd.status = 0
+          and pin.status = 0
+          and rb.usage_status = 0
+          and hd.department_id = #{departmentId,jdbcType=INTEGER}
+    </select>
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yjjk.monitor.mapper.ManagerInfoMapper">
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.ManagerInfo">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="post" jdbcType="VARCHAR" property="post"/>
+        <result column="department_id" jdbcType="INTEGER" property="departmentId"/>
+        <result column="department_name" jdbcType="VARCHAR" property="departmentName"/>
+        <result column="sex" jdbcType="INTEGER" property="sex"/>
+        <result column="role" jdbcType="INTEGER" property="role"/>
+        <result column="login_time" jdbcType="VARCHAR" property="loginTime"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, account, `password`, `name`, phone, post, department_id, sex, `role`, login_time,
+        create_time, `status`
+    </sql>
+    <select id="selectNormalList" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        zmi.id, zmi.account, zmi.`password`, zmi.`name`, zmi.phone, zmi.post, zmi.department_id, zmi.sex, zmi.`role`, zmi.login_time,
+        zmi.create_time, zmi.`status`, zdi.name as department_name
+        from manager_info zmi
+        left join hospital_department zdi on zmi.department_id = zdi.department_id
+        where zmi.status = 0
+        <if test="id != null">
+            and zmi.id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="role != null">
+            and zmi.`role` = #{role,jdbcType=INTEGER}
+        </if>
+        <if test="roles != null">
+            and (zmi.`role` = 1 or zmi.`role` = 2)
+        </if>
+        <if test="departmentId != null">
+            and zmi.department_id = #{departmentId,jdbcType=INTEGER}
+        </if>
+        <if test="startLine != null and pageSize != null">
+            limit #{startLine},#{pageSize}
+        </if>
+    </select>
+    <select id="selectNormalListCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select
+        count(1)
+        from manager_info zmi
+        left join hospital_department zdi on zmi.department_id = zdi.department_id
+        where zmi.status = 0
+        <if test="id != null">
+            and zmi.id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="role != null">
+            and zmi.`role` = #{role,jdbcType=INTEGER}
+        </if>
+        <if test="roles != null">
+            and (zmi.`role` = 1 or zmi.`role` = 2)
+        </if>
+        <if test="departmentId != null">
+            and zmi.department_id = #{departmentId,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <select id="selectByAccount" parameterType="com.yjjk.monitor.entity.pojo.ManagerInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from manager_info
+        <where>
+            <if test="account != null">
+                account = #{account,jdbcType=VARCHAR}
+            </if>
+            and status = 0
+        </where>
+    </select>
+    <select id="selectByToken" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        zmi.id, zmi.account, zmi.`password`, zmi.`name`, zmi.phone, zmi.post, zmi.department_id, zmi.sex, zmi.`role`, zmi.login_time,
+        zmi.create_time, zmi.`status`
+        FROM `login_state` zls
+        LEFT JOIN manager_info zmi ON zmi.`id` = zls.`manager_id`
+        <where>
+            zls.`token` = #{token,jdbcType=VARCHAR}
+            and zmi.status = 0
+        </where>
+    </select>
+</mapper>

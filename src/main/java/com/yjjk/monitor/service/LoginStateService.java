@@ -10,7 +10,7 @@
  */
 package com.yjjk.monitor.service;
 
-import com.yjjk.monitor.entity.ZsLoginState;
+import com.yjjk.monitor.entity.pojo.ManagerInfo;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,4 +42,10 @@ public interface LoginStateService {
      * @return
      */
     boolean checkLogin(String token, String ip);
+    /**
+     * 使用token获取管理员资料
+     * @param token
+     * @return
+     */
+    ManagerInfo selectByToken(String token);
 }

@@ -12,7 +12,7 @@ package com.yjjk.monitor.controller;
 
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
-import com.yjjk.monitor.entity.ZsManagerInfo;
+import com.yjjk.monitor.entity.pojo.ManagerInfo;
 import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.PasswordUtils;
 import com.yjjk.monitor.utility.ResultUtil;
@@ -46,14 +46,14 @@ public class ManagerController extends BaseController {
      * @param response
      */
     @RequestMapping(value = "/manager", method = RequestMethod.POST)
-    public CommonResult addManager(ZsManagerInfo managerInfo, HttpServletRequest request, HttpServletResponse response) {
+    public CommonResult addManager(ManagerInfo managerInfo, HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
         if (StringUtils.isNullorEmpty(managerInfo.getAccount()) || StringUtils.isNullorEmpty(managerInfo.getPassword())
                 || StringUtils.isNullorEmpty(managerInfo.getName()) || StringUtils.isNullorEmpty(managerInfo.getPhone())
                 || managerInfo.getSex() == null || StringUtils.isNullorEmpty(managerInfo.getDepartmentId())) {
             return ResultUtil.returnError(ErrorCodeEnum.PARAM_ERROR);
         }
-        ZsManagerInfo temp = super.managerService.selectByAccount(managerInfo);
+        ManagerInfo temp = super.managerService.selectByAccount(managerInfo);
         if (!StringUtils.isNullorEmpty(temp)) {
             return ResultUtil.returnError(ErrorCodeEnum.MANAGER_EXIST_ERROR);
         }
@@ -76,9 +76,9 @@ public class ManagerController extends BaseController {
      * @param response
      */
     @RequestMapping(value = "/manager", method = RequestMethod.PUT)
-    public CommonResult updateManager(ZsManagerInfo managerInfo, HttpServletRequest request, HttpServletResponse response) {
+    public CommonResult updateManager(ManagerInfo managerInfo, HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
-        if (StringUtils.isNullorEmpty(managerInfo.getManagerId())) {
+        if (StringUtils.isNullorEmpty(managerInfo.getId())) {
             return ResultUtil.returnError(ErrorCodeEnum.PARAM_ERROR);
         }
 
@@ -94,16 +94,16 @@ public class ManagerController extends BaseController {
     /**
      * 删除管理员
      *
-     * @param managerId
+     * @param Id
      * @param request
      * @param response
      */
     @RequestMapping(value = "/manager", method = RequestMethod.DELETE)
-    public CommonResult updateManager(@RequestParam(value = "managerId") Integer managerId,
+    public CommonResult updateManager(@RequestParam(value = "Id") Integer Id,
                                       HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
-        ZsManagerInfo managerInfo = new ZsManagerInfo();
-        managerInfo.setManagerId(managerId);
+        ManagerInfo managerInfo = new ManagerInfo();
+        managerInfo.setId(Id);
         managerInfo.setStatus(1);
 
         int i = super.managerService.updateManger(managerInfo);
@@ -116,26 +116,23 @@ public class ManagerController extends BaseController {
     /**
      * 获取管理员信息
      *
-     * @param managerId
-     * @param request
-     * @param response
+     * @param Id
      */
     @RequestMapping(value = "/manager", method = RequestMethod.GET)
-    public CommonResult getManagerInfo(@RequestParam(value = "managerId", required = false) Integer managerId,
+    public CommonResult getManagerInfo(@RequestParam(value = "Id", required = false) Integer Id,
                                        @RequestParam(value = "role", required = false) Integer role,
                                        @RequestParam(value = "departmentId", required = false) Integer departmentId,
                                        @RequestParam(value = "currentPage", required = false) Integer currentPage,
-                                       @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                       HttpServletRequest request, HttpServletResponse response) {
+                                       @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         /********************** 参数初始化 **********************/
-        if (managerId == null && (currentPage == null || currentPage <= 0 || pageSize == null || pageSize <= 0)) {
+        if (Id == null && (currentPage == null || currentPage <= 0 || pageSize == null || pageSize <= 0)) {
             return ResultUtil.returnError(ErrorCodeEnum.PARAM_ERROR);
         }
 
-        List<ZsManagerInfo> zsManagerInfos;
+        List<ManagerInfo> ManagerInfos;
         Map<String, Object> paramMap = new HashMap<>();
         Map<String, Object> reqMap = new HashMap<>();
-        if (StringUtils.isNullorEmpty(managerId)) {
+        if (StringUtils.isNullorEmpty(Id)) {
             // 超管查询管理员+科室管理员账号, 管理员查看科室管理员账号
             if (role == 0) {
                 paramMap.put("roles", "get");
@@ -155,15 +152,15 @@ public class ManagerController extends BaseController {
             reqMap.put("totalPage", totalPage);
             reqMap.put("currentPage", currentPage);
         } else {
-            paramMap.put("managerId", managerId);
+            paramMap.put("Id", Id);
         }
-        zsManagerInfos = super.managerService.selectNormalList(paramMap);
-//        if (StringUtils.isNullorEmpty(zsManagerInfos)) {
+        ManagerInfos = super.managerService.selectNormalList(paramMap);
+//        if (StringUtils.isNullorEmpty(ManagerInfos)) {
 //            message = "获取失败";
 //            returnResult(startTime, request, response, resultCode, message, "");
 //            return;
 //        }
-        reqMap.put("list", zsManagerInfos);
+        reqMap.put("list", ManagerInfos);
         return ResultUtil.returnSuccess(reqMap);
     }
 
@@ -181,19 +178,20 @@ public class ManagerController extends BaseController {
                                      @RequestParam(value = "password") String password,
                                      HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
-        ZsManagerInfo param = new ZsManagerInfo();
+        ManagerInfo param = new ManagerInfo();
         param.setAccount(account);
 
-        ZsManagerInfo managerInfo = super.managerService.selectByAccount(param);
+        ManagerInfo managerInfo = super.managerService.selectByAccount(param);
         if (managerInfo == null) {
             return ResultUtil.returnError(ErrorCodeEnum.MANAGER_NOT_EXIST);
         }
-        boolean login = super.managerService.login(param.setPassword(password), managerInfo.getPassword());
+        boolean login = super.managerService.login(password, managerInfo.getPassword());
         if (!login) {
             return ResultUtil.returnError(ErrorCodeEnum.MANAGER_PASSWORD_ERROR);
         }
-        super.managerService.updateManger(managerInfo.setLoginTime(DateUtil.getCurrentTime()));
-        String token = super.loginStateService.login(request, managerInfo.getManagerId());
+        managerInfo.setLoginTime(DateUtil.getCurrentTime());
+        super.managerService.updateManger(managerInfo);
+        String token = super.loginStateService.login(request, managerInfo.getId());
         List<Integer> posts = new ArrayList<>();
         switch (managerInfo.getRole()) {
             case 0:
@@ -244,18 +242,18 @@ public class ManagerController extends BaseController {
     /**
      * 权限验证
      *
-     * @param managerId
+     * @param Id
      * @param model
      * @param request
      * @param response
      */
     @RequestMapping(value = "/access", method = RequestMethod.GET)
-    public CommonResult managerLogin(@RequestParam(value = "managerId") Integer managerId,
+    public CommonResult managerLogin(@RequestParam(value = "Id") Integer Id,
                                      @RequestParam(value = "model") Integer model,
                                      HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
 
-        ZsManagerInfo managerInfo = super.managerService.getManagerInfo(managerId);
+        ManagerInfo managerInfo = super.managerService.getManagerInfo(Id);
         if (managerInfo == null) {
             return ResultUtil.returnError(ErrorCodeEnum.MANAGER_NOT_EXIST);
         }

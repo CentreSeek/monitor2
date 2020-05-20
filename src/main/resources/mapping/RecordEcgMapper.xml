@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yjjk.monitor.mapper.RecordEcgMapper">
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.RecordEcg">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="base_id" property="baseId" jdbcType="INTEGER"/>
+        <result column="machine_id" property="machineId" jdbcType="INTEGER"/>
+        <result column="record_status" property="recordStatus" jdbcType="INTEGER"/>
+        <result column="start_time" property="startTime" jdbcType="VARCHAR"/>
+        <result column="end_time" property="endTime" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="created_time" property="createdTime" jdbcType="VARCHAR"/>
+        <result column="updated_time" property="updatedTime" jdbcType="VARCHAR"/>
+        <result column="history" property="history" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <select id="getHistories" parameterType="java.util.Map" resultType="com.yjjk.monitor.entity.history.EcgHistoryData">
+        select
+        heart_rate,respiratory_rate,timestamp
+        from zs_health_info
+        <where>
+            <if test="machineId != null">
+                and `machine_id` = #{machineId,jdbcType=INTEGER},
+            </if>
+        </where>
+        ORDER BY timestamp
+    </select>
+    <select id="getHeartRate" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.VO.monitor.MonitorHeartRateVO">
+        SELECT
+        re.`id`,
+        re.`record_status`,
+        zmi.`machine_id`,
+        zmi.machine_no,
+        zmi.machine_num,
+        zmi.battery,
+        zmi.`box_battery`,
+        zhi.heart_rate
+        FROM
+        record_ecg re
+        LEFT JOIN zs_machine_info zmi
+        ON re.`machine_id` = zmi.`machine_id`
+        LEFT JOIN
+        (SELECT * FROM zs_health_info WHERE machine_id = #{machineId,jdbcType=INTEGER} AND TIMESTAMPDIFF(MINUTE,
+        create_time, CONCAT(CURDATE(),' ',CURTIME()))<![CDATA[<]]> 3 ORDER BY create_time DESC LIMIT 1) zhi
+        <where>
+            <if test="recordId != null">
+                and `record_id` = #{recordId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <select id="getRespiratoryRate" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.VO.monitor.MonitorRespiratoryRateVO">
+        SELECT
+        re.`id`,
+        re.`record_status`,
+        zmi.`machine_id`,
+        zmi.machine_no,
+        zmi.machine_num,
+        zmi.battery,
+        zmi.`box_battery`,
+        zhi.respiratory_rate
+        FROM
+        record_ecg re
+        LEFT JOIN zs_machine_info zmi
+        ON re.`machine_id` = zmi.`machine_id`
+        LEFT JOIN
+        (SELECT * FROM zs_health_info WHERE machine_id = #{machineId,jdbcType=INTEGER} AND TIMESTAMPDIFF(MINUTE,
+        create_time, CONCAT(CURDATE(),' ',CURTIME()))<![CDATA[<]]> 3 ORDER BY create_time DESC LIMIT 1) zhi  on zhi.machine_id = re.`machine_id`
+        <where>
+            <if test="recordId != null">
+                and re.`id` = #{recordId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+</mapper>

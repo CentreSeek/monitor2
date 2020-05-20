@@ -14,9 +14,9 @@ import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.MachineConstant;
 import com.yjjk.monitor.entity.VO.SearchMachineVOBase;
-import com.yjjk.monitor.entity.ZsMachineInfo;
-import com.yjjk.monitor.entity.ZsMachineTypeInfo;
 import com.yjjk.monitor.entity.export.MachineExportVO;
+import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
+import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
 import com.yjjk.monitor.utility.ExcelUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
@@ -50,7 +50,7 @@ public class MachineController extends BaseController {
      *
      * @param machineInfo
      */
-    @ApiOperation(value = "新增设备")
+    @ApiOperation(value = "page设备管理：新增设备")
     @RequestMapping(value = "/machine", method = RequestMethod.POST)
     public CommonResult addMachine(ZsMachineInfo machineInfo) {
         /********************** 参数初始化 **********************/
@@ -83,9 +83,10 @@ public class MachineController extends BaseController {
      * @param machineId
      * @param remark
      */
+    @ApiOperation(value = "page设备管理：停用设备")
     @RequestMapping(value = "/machine", method = RequestMethod.DELETE)
     public CommonResult updateMachine(@RequestParam(value = "machineId") Integer machineId,
-                              @RequestParam(value = "remark", required = false) String remark) {
+                                      @RequestParam(value = "remark", required = false) String remark) {
         /********************** 参数初始化 **********************/
         ZsMachineInfo zsMachineInfo = super.machineService.selectByPrimaryKey(machineId);
         // 使用中设备
@@ -106,12 +107,12 @@ public class MachineController extends BaseController {
      * @param currentPage
      * @param pageSize
      */
-    @ApiOperation(value = "获取设备信息")
+    @ApiOperation(value = "page设备管理：获取设备信息")
     @RequestMapping(value = "/machine", method = RequestMethod.GET)
-    public CommonResult updateMachine(@RequestParam(value = "usageState", required = false) Integer usageState,
-                              @RequestParam(value = "departmentId", required = false) Integer departmentId,
-                              @RequestParam(value = "currentPage", required = false) Integer currentPage,
-                              @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+    public CommonResult getMachine(@RequestParam(value = "usageState", required = false) Integer usageState,
+                                   @RequestParam(value = "departmentId", required = false) Integer departmentId,
+                                   @RequestParam(value = "currentPage", required = false) Integer currentPage,
+                                   @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         /********************** 参数初始化 **********************/
         Map<String, Object> map = new HashMap<>();
         ZsMachineInfo machineInfo = new ZsMachineInfo();
@@ -147,6 +148,20 @@ public class MachineController extends BaseController {
         return ResultUtil.returnSuccess(map);
     }
 
+    @ApiOperation(value = "page监控模块-list：获取设备信息")
+    @RequestMapping(value = "/machineList", method = RequestMethod.GET)
+    public CommonResult getMachineList(@ApiParam(value = "模糊查询") @RequestParam(value = "name", required = false) String name,
+                                       @RequestParam(value = "departmentId", required = false) Integer departmentId,
+                                       @ApiParam(value = "设备类型：名称", required = true) @RequestParam(value = "machineTypeId") Integer machineTypeId) {
+        /********************** 参数初始化 **********************/
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("departmentId", departmentId);
+        map.put("machineTypeId", machineTypeId);
+        List<ZsMachineInfo> list = super.machineService.selectUsageListByTypeId(map);
+        return ResultUtil.returnSuccess(list);
+    }
+
     /**
      * 设备导出
      *
@@ -155,7 +170,7 @@ public class MachineController extends BaseController {
      * @param request
      * @param response
      */
-    @ApiOperation(value = "设备信息导出")
+    @ApiOperation(value = "page设备管理：设备信息导出")
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public void export(@RequestParam(value = "usageState", required = false) Integer usageState,
                        @RequestParam(value = "departmentId", required = false) Integer departmentId,
@@ -184,7 +199,7 @@ public class MachineController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "获取所有设备")
+    @ApiOperation(value = "page设备管理：获取所有设备")
     @RequestMapping(value = "/selectAllMachine", method = RequestMethod.GET)
     public CommonResult selectAllMachine(@RequestParam Integer departmentId,
                                          @ApiParam(value = "设备类型id", required = true) @RequestParam Integer machineTypeId) {
@@ -201,7 +216,7 @@ public class MachineController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "查找设备")
+    @ApiOperation(value = "page设备管理：查找设备")
     @RequestMapping(value = "/searchMachine", method = RequestMethod.GET)
     public CommonResult<SearchMachineVOBase> searchMachine(@RequestParam Integer departmentId,
                                                            @ApiParam(value = "设备id", required = true) @RequestParam Integer machineId) {
@@ -219,17 +234,30 @@ public class MachineController extends BaseController {
     }
 
     /**
-     * 获取设备名称
+     * 获取设备类型
      *
      * @return
      */
-    @ApiOperation(value = "获取设备名称")
+    @ApiOperation(value = "list：获取设备类型")
     @RequestMapping(value = "/temperatureMachineName", method = RequestMethod.GET)
     public CommonResult getTemperatureMachineName() {
         try {
             /********************** 参数初始化 **********************/
-            List<ZsMachineTypeInfo> list = super.machineService.getTemperatureMachineName();
+            List<MachineTypeInfo> list = super.machineService.getTemperatureMachineName();
             return ResultUtil.returnSuccess(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
+        }
+
+    }
+
+    @ApiOperation(value = "page首页-更换设备：获取设备编号")
+    @RequestMapping(value = "/machineNum", method = RequestMethod.GET)
+    public CommonResult getMachineNumByRecordAndMachineType(@ApiParam(value = "设备类型id", required = true) @RequestParam Integer machineTypeId,
+                                                            @ApiParam(value = "recordId", required = true) @RequestParam Integer recordId) {
+        try {
+            return ResultUtil.returnSuccess(null);
         } catch (Exception e) {
             e.printStackTrace();
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);

@@ -10,9 +10,9 @@
  */
 package com.yjjk.monitor.service.impl;
 
+import com.yjjk.monitor.entity.pojo.ManagerInfo;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.ManagerService;
-import com.yjjk.monitor.entity.*;
 import com.yjjk.monitor.utility.PasswordUtils;
 import org.springframework.stereotype.Service;
 
@@ -28,42 +28,47 @@ import java.util.Map;
 public class ManagerServiceImpl extends BaseService implements ManagerService {
 
     @Override
-    public int insertManager(ZsManagerInfo managerInfo) {
-        return super.ZsManagerInfoMapper.insertSelective(managerInfo);
+    public int insertManager(ManagerInfo managerInfo) {
+        return super.ManagerInfoMapper.insertSelective(managerInfo);
     }
 
     @Override
-    public int updateManger(ZsManagerInfo managerInfo) {
-        return super.ZsManagerInfoMapper.updateByPrimaryKeySelective(managerInfo);
+    public int updateManger(ManagerInfo managerInfo) {
+        return super.ManagerInfoMapper.updateByPrimaryKeySelective(managerInfo);
     }
 
     @Override
-    public ZsManagerInfo getManagerInfo(Integer managerId) {
-        return super.ZsManagerInfoMapper.selectByPrimaryKey(managerId);
+    public ManagerInfo getManagerInfo(Integer managerId) {
+        return super.ManagerInfoMapper.selectByPrimaryKey(managerId);
     }
 
     @Override
-    public List<ZsManagerInfo> selectNormalList(Map<String, Object> paramMap) {
-        return super.ZsManagerInfoMapper.selectNormalList(paramMap);
+    public List<ManagerInfo> selectNormalList(Map<String, Object> paramMap) {
+        return super.ManagerInfoMapper.selectNormalList(paramMap);
     }
 
     @Override
     public int selectNormalListCount(Map<String, Object> paramMap) {
-        return super.ZsManagerInfoMapper.selectNormalListCount(paramMap);
+        return super.ManagerInfoMapper.selectNormalListCount(paramMap);
     }
 
     @Override
-    public boolean login(ZsManagerInfo managerInfo, String secret) {
-        return PasswordUtils.verify(managerInfo.getPassword(), secret);
+    public boolean login(String password, String md5) {
+        return PasswordUtils.verify(password, md5);
+    }
+
+    public static void main(String[] args) {
+        boolean verify = PasswordUtils.verify("123456", "d071D7009e01d7ce10eF94B989f73136703e3E39F23Ac746");
+        System.out.println(verify);
     }
 
     @Override
-    public ZsManagerInfo selectByAccount(ZsManagerInfo managerInfo) {
-        return super.ZsManagerInfoMapper.selectByAccount(managerInfo);
+    public ManagerInfo selectByAccount(ManagerInfo managerInfo) {
+        return super.ManagerInfoMapper.selectByAccount(managerInfo);
     }
 
     @Override
-    public ZsManagerInfo selectByToken(String token) {
-        return super.ZsManagerInfoMapper.selectByToken(token);
+    public ManagerInfo selectByToken(String token) {
+        return super.ManagerInfoMapper.selectByToken(token);
     }
 }

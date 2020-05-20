@@ -11,10 +11,33 @@
 package com.yjjk.monitor.service;
 
 
+import com.yjjk.monitor.entity.config.ConnectRepeater;
 import com.yjjk.monitor.entity.config.MachineConfig;
-import com.yjjk.monitor.mapper.*;
+import com.yjjk.monitor.entity.pojo.ZsBloodOxygenInfo;
+import com.yjjk.monitor.mapper.HospitalBedMapper;
+import com.yjjk.monitor.mapper.HospitalDepartmentMapper;
+import com.yjjk.monitor.mapper.HospitalRoomMapper;
+import com.yjjk.monitor.mapper.LoginStateMapper;
+import com.yjjk.monitor.mapper.MachineTypeInfoMapper;
+import com.yjjk.monitor.mapper.ManagerInfoMapper;
+import com.yjjk.monitor.mapper.MonitorRuleMapper;
+import com.yjjk.monitor.mapper.PatientInfoMapper;
+import com.yjjk.monitor.mapper.RecordBaseMapper;
+import com.yjjk.monitor.mapper.RecordBloodMapper;
+import com.yjjk.monitor.mapper.RecordEcgMapper;
+import com.yjjk.monitor.mapper.RecordSleepingMapper;
+import com.yjjk.monitor.mapper.RecordTemperatureMapper;
+import com.yjjk.monitor.mapper.TemperatureBoundMapper;
+import com.yjjk.monitor.mapper.ZsBloodOxygenInfoMapper;
+import com.yjjk.monitor.mapper.ZsHealthInfoMapper;
+import com.yjjk.monitor.mapper.ZsMachineInfoMapper;
+import com.yjjk.monitor.mapper.ZsPatientRecordMapper;
+import com.yjjk.monitor.mapper.ZsRepeaterInfoMapper;
+import com.yjjk.monitor.mapper.ZsSleepingBeltInfoMapper;
+import com.yjjk.monitor.mapper.ZsTemperatureInfoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 
@@ -25,36 +48,53 @@ import javax.annotation.Resource;
  */
 public class BaseService {
     protected static Logger logger = LoggerFactory.getLogger(BaseService.class);
-    @Resource
-    protected ZsBedInfoMapper ZsBedInfoMapper;
-    @Resource
-    protected ZsDepartmentInfoMapper ZsDepartmentInfoMapper;
-    @Resource
+    @Autowired
+    protected HospitalBedMapper HospitalBedMapper;
+    @Autowired
+    protected HospitalDepartmentMapper HospitalDepartmentMapper;
+    @Autowired
     protected ZsMachineInfoMapper ZsMachineInfoMapper;
-    @Resource
-    protected ZsManagerInfoMapper ZsManagerInfoMapper;
-    @Resource
-    protected ZsPatientInfoMapper ZsPatientInfoMapper;
-    @Resource
+    @Autowired
+    protected ManagerInfoMapper ManagerInfoMapper;
+    @Autowired
+    protected PatientInfoMapper PatientInfoMapper;
+    @Autowired
     protected ZsPatientRecordMapper ZsPatientRecordMapper;
-    @Resource
-    protected ZsRoomInfoMapper ZsRoomInfoMapper;
-    @Resource
+    @Autowired
+    protected HospitalRoomMapper HospitalRoomMapper;
+    @Autowired
     protected ZsTemperatureInfoMapper zsTemperatureInfoMapper;
-    @Resource
-    protected ZsLoginStateMapper zsLoginStateMapper;
-    @Resource
-    protected ZsMachineTypeInfoMapper zsMachineTypeInfoMapper;
-    @Resource
+    @Autowired
+    protected ZsBloodOxygenInfoMapper zsBloodOxygenInfoMapper;
+    @Autowired
+    protected ZsHealthInfoMapper zsHealthInfoMapper;
+    @Autowired
+    protected ZsSleepingBeltInfoMapper zsSleepingBeltInfoMapper;
+    @Autowired
+    protected LoginStateMapper loginStateMapper;
+    @Autowired
+    protected MachineTypeInfoMapper machineTypeInfoMapper;
+    @Autowired
     protected ZsRepeaterInfoMapper zsRepeaterInfoMapper;
-    @Resource
-    protected ZsTemperatureBoundMapper zsTemperatureBoundMapper;
-    @Resource
-    protected ZsBoxInfoMapper zsBoxInfoMapper;
+    @Autowired
+    protected TemperatureBoundMapper temperatureBoundMapper;
+    @Autowired
+    protected RecordBaseMapper recordBaseMapper;
+    @Autowired
+    protected RecordBloodMapper recordBloodMapper;
+    @Autowired
+    protected RecordEcgMapper recordEcgMapper;
+    @Autowired
+    protected RecordSleepingMapper recordSleepingMapper;
+    @Autowired
+    protected RecordTemperatureMapper recordTemperatureMapper;
+    @Autowired
+    protected MonitorRuleMapper monitorRuleMapper;
 
-
-    @Resource
+    @Autowired
     protected MachineConfig machineConfig;
+    @Autowired
+    protected ConnectRepeater connectRepeater;
 
 
 }

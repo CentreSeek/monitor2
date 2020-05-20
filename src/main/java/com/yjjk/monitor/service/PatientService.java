@@ -10,42 +10,56 @@
  */
 package com.yjjk.monitor.service;
 
-import com.yjjk.monitor.entity.ZsPatientInfo;
+import com.yjjk.monitor.entity.pojo.PatientInfo;
 
 /**
- * @Description: 病人模块
  * @author CentreS
+ * @Description: 病人模块
  * @create 2019/7/22
  */
 public interface PatientService {
 
+
     /**
-     * 新增病人
+     * 使用病历号查询病人
+     *
+     * @param caseNum
+     * @return
+     */
+    PatientInfo selectByCaseNum(String caseNum);
+
+    /**
+     * 更新病人姓名
+     *
+     * @param record
+     * @return
+     */
+    int updateName(PatientInfo record);
+
+    /**
+     * 使用病人id获取病人资料
+     *
+     * @param patientId
+     * @return
+     */
+    PatientInfo getByPrimaryKey(Integer patientId);
+
+    /**
+     * 查询患者信息并返回id
+     *
      * @param name
      * @param caseNum
      * @param bedId
      * @return
      */
-    ZsPatientInfo addPatient(String name, String caseNum, Integer bedId, Integer departmentId);
+    Integer checkPatient(String name, String caseNum, Integer bedId);
 
     /**
-     * 使用病历号查询病人
-     * @param caseNum
+     * 获取当前床位病人信息
+     *
+     * @param bedId
      * @return
      */
-    ZsPatientInfo selectByCaseNum(String caseNum);
+    PatientInfo getPatientInfo(Integer bedId);
 
-    /**
-     * 更新病人姓名
-     * @param record
-     * @return
-     */
-    int updateName(ZsPatientInfo record);
-
-    /**
-     * 使用病人id获取病人资料
-     * @param patientId
-     * @return
-     */
-    ZsPatientInfo getByPrimaryKey(Integer patientId);
 }

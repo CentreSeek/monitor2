@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yjjk.monitor.mapper.MachineTypeInfoMapper">
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.MachineTypeInfo">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="level" jdbcType="INTEGER" property="level"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="rank" jdbcType="INTEGER" property="rank"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, `name`, `level`, `type`, parent_id, create_time, `status`
+    </sql>
+    <select id="selectMachineTypes" resultMap="BaseResultMap">
+        SELECT id, NAME
+        FROM `machine_type_info`
+        WHERE TYPE = 1
+          AND LEVEL = 0;
+    </select>
+
+    <select id="selectMachineNums" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT id, NAME
+        FROM `machine_type_info`
+        WHERE parent_id = #{id,jdbcType=INTEGER}
+          and TYPE = 1
+          AND LEVEL = 1;
+    </select>
+    <select id="getTemperatureMachineName" resultMap="BaseResultMap">
+        SELECT id, NAME
+        FROM `machine_type_info`
+        WHERE TYPE = 0
+          AND LEVEL = 0;
+    </select>
+
+    <insert id="insert" parameterType="com.yjjk.monitor.entity.pojo.MachineTypeInfo">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into machine_type_info (id, `name`, `level`,
+        `type`, parent_id, create_time,
+        `status`)
+        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER},
+        #{type,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{createTime,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER})
+    </insert>
+</mapper>

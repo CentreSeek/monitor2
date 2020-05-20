@@ -67,7 +67,7 @@ public class WeblogAspect {
     public synchronized Object loginCheck(ProceedingJoinPoint joinPoint) throws Throwable {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
-        String token = request.getParameter("token");
+        String token = request.getHeader("token");
         Signature signature = joinPoint.getSignature();
         if (!signature.getName().equals("managerLogin") && !signature.getName().equals("managerLoginOut")) {
             if (token == null) {

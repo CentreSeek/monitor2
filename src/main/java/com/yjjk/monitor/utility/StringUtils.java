@@ -141,6 +141,7 @@ public class StringUtils {
 
     /**
      * 设备编号匹配规则
+     *
      * @param machineNo
      * @return
      */
@@ -179,6 +180,19 @@ public class StringUtils {
             builder.append("☆");
         }
         return builder.toString();
+    }
+
+    /**
+     * 获取模糊查询名字
+     * @param name
+     * @return
+     */
+    public static String getLikeName(String name) {
+        if (name == null || name.length() <= 0) {
+            return "%%";
+        }
+        return "%" + name + "%";
+
     }
 
     //    public static void main(String[] args) {

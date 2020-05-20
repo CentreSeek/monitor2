@@ -11,22 +11,43 @@
 package com.yjjk.monitor.service;
 
 import com.yjjk.monitor.configer.CommonResult;
-import com.yjjk.monitor.entity.ZsMachineInfo;
-import com.yjjk.monitor.entity.ZsMachineTypeInfo;
+import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.export.MachineExportVO;
+import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
+import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * @Description: 设备管理
  * @author CentreS
+ * @Description: 设备管理
  * @create 2019/7/18
  */
 public interface MachineService {
 
     /**
+     * 启用设备-通知数据采集服务器
+     *
+     * @param machineId
+     * @param connectionType
+     * @return
+     * @throws Exception
+     */
+    CommonResult startMachine(Integer machineId, String connectionType) throws Exception;
+
+    /**
+     * 更换设备-通知数据采集服务器
+     * @param oldMachineId
+     * @param newMachineId
+     * @return
+     * @throws Exception
+     */
+    CommonResult changeMachine(Integer oldMachineId, Integer newMachineId) throws Exception;
+
+    /**
      * 新增设备
+     *
      * @param machineInfo
      * @return
      */
@@ -34,6 +55,7 @@ public interface MachineService {
 
     /**
      * 删除设备
+     *
      * @param machineId
      * @param remark
      * @return
@@ -42,6 +64,7 @@ public interface MachineService {
 
     /**
      * 批量插入设备
+     *
      * @param machineInfo
      * @return
      */
@@ -49,6 +72,7 @@ public interface MachineService {
 
     /**
      * 批量插入设备
+     *
      * @param machineInfo
      * @return
      */
@@ -57,6 +81,7 @@ public interface MachineService {
 
     /**
      * 查询设备总数(machineId, usageState)
+     *
      * @param machineInfo
      * @return
      */
@@ -64,13 +89,17 @@ public interface MachineService {
 
     /**
      * 根据设备的使用状态查询
+     *
      * @param machineInfo
      * @return
      */
     List<ZsMachineInfo> selectByUsageState(ZsMachineInfo machineInfo);
 
+    List<ZsMachineInfo> selectUsageListByTypeId(Map<String, Object> paraMap);
+
     /**
      * 设备导出
+     *
      * @param machineInfo
      * @return
      */
@@ -78,6 +107,7 @@ public interface MachineService {
 
     /**
      * 更新设备信息
+     *
      * @param machineInfo
      * @return
      */
@@ -85,6 +115,7 @@ public interface MachineService {
 
     /**
      * 查找设备信息
+     *
      * @param machineId
      * @return
      */
@@ -92,6 +123,7 @@ public interface MachineService {
 
     /**
      * 使用SN编号查询设备数量
+     *
      * @param machineNum
      * @return
      */
@@ -99,6 +131,7 @@ public interface MachineService {
 
     /**
      * 使用设备编号查询设备数量
+     *
      * @param machineNo
      * @return
      */
@@ -106,6 +139,7 @@ public interface MachineService {
 
     /**
      * 使用设备型号查询设备信息
+     *
      * @param machineModel
      * @return
      */
@@ -121,6 +155,7 @@ public interface MachineService {
 
     /**
      * 查找设备
+     *
      * @param map
      * @return
      */
@@ -128,16 +163,19 @@ public interface MachineService {
 
     /**
      * 获取体温设备名称
+     *
      * @return
      */
-    List<ZsMachineTypeInfo> getTemperatureMachineName();
+    List<MachineTypeInfo> getTemperatureMachineName();
 
     /**
-     * 绑定设备
+     * 绑定ecg设备
+     *
      * @param machineNum
      * @return
      * @throws Exception
      */
     boolean connectionService(String machineNum) throws Exception;
+
 
 }

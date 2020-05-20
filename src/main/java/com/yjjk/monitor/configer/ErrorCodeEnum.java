@@ -47,11 +47,14 @@ public enum ErrorCodeEnum {
     MANAGER_PASSWORD_ERROR("356", "密码错误"),
     MANAGER_LOGIN_OUT_ERROR("357", "登出失败"),
     MANAGER_REFUSE("358", "权限验证失败"),
-    /********** PatientController **********/
+    /********** MonitorController **********/
+    EXIST_RECORD("360", "该用户已在其他床位启用监护"),
+    ERROR_MACHINE_TYPE("361", "设备类型有误"),
+    ERROR_USAGE_ECG("362","该床位无法使用心电设备"),
+    ERROR_CONNECT_ECG("363","心电设备连接失败"),
     PATIENT_EXIST_ERROR("360", "该病例已存在"),
     ADD_PATIENT_ERROR("361", "添加用户失败"),
     ADD_RECORD_ERROR("362", "添加记录失败"),
-    EXIST_RECORD("363", "该用户已在其他床位启用监护"),
     PATIENT_GET_RECORD_ERROR("364", "获取历史记录失败"),
     PATIENT_RECORD_NOT_FIND("365", "未找到该记录"),
     PATIENT_STOP_ERROR("366", "停用失败"),

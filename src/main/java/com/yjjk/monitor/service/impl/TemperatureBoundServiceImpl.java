@@ -13,8 +13,8 @@ package com.yjjk.monitor.service.impl;
 import com.yjjk.monitor.constant.TemperatureConstant;
 import com.yjjk.monitor.entity.VO.TemperatureBoundVO;
 import com.yjjk.monitor.entity.VO.UseMachineVO;
-import com.yjjk.monitor.entity.ZsTemperatureBound;
-import com.yjjk.monitor.entity.param.TemperatureBound;
+import com.yjjk.monitor.entity.param.TemperatureBoundParam;
+import com.yjjk.monitor.entity.pojo.TemperatureBound;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.TemperatureBoundService;
 import com.yjjk.monitor.utility.DateUtil;
@@ -36,11 +36,11 @@ public class TemperatureBoundServiceImpl extends BaseService implements Temperat
     @Override
     public List<TemperatureBoundVO> getDefaultAlert(Integer departmentId) {
         List<TemperatureBoundVO> list = new ArrayList<>();
-        ZsTemperatureBound defaultTemperature = super.zsTemperatureBoundMapper.selectByPrimaryKey(TemperatureConstant.DEFAULT_DEPARTMENT_ID);
+        TemperatureBound defaultTemperature = super.temperatureBoundMapper.selectByPrimaryKey(TemperatureConstant.DEFAULT_DEPARTMENT_ID);
         TemperatureBoundVO temperatureBoundVO = ReflectUtils.transformToBean(defaultTemperature,
                 TemperatureBoundVO.class);
         list.add(temperatureBoundVO.setList(TemperatureConstant.TEMPERATURE_LIST).setType(TemperatureConstant.ALERT_TYPE_DEFAULT).setFahrenheitList(TemperatureConstant.FAHRENHEIT_LIST));
-        ZsTemperatureBound departmentTemperature = super.zsTemperatureBoundMapper.selectByPrimaryKey(departmentId);
+        TemperatureBound departmentTemperature = super.temperatureBoundMapper.selectByPrimaryKey(departmentId);
         if (departmentTemperature == null) {
             departmentTemperature = defaultTemperature;
         }
@@ -89,27 +89,28 @@ public class TemperatureBoundServiceImpl extends BaseService implements Temperat
         return temp;
     }
 
+
     @Override
-    public Integer setTemperatureBound(TemperatureBound param) {
-        ZsTemperatureBound zsTemperatureBound =
-                super.zsTemperatureBoundMapper.selectByPrimaryKey(param.getDepartmentId());
+    public Integer setTemperatureBound(TemperatureBoundParam param) {
+        TemperatureBound zsTemperatureBound =
+                super.temperatureBoundMapper.selectByPrimaryKey(param.getDepartmentId());
         int i = 0;
         if (zsTemperatureBound != null) {
-            i = super.zsTemperatureBoundMapper.updateByPrimaryKeySelective(ReflectUtils.transformToBean(param,
-                    ZsTemperatureBound.class).setChangeTime(DateUtil.getCurrentTime()));
+            i = super.temperatureBoundMapper.updateByPrimaryKeySelective(ReflectUtils.transformToBean(param,
+                    TemperatureBound.class).setChangeTime(DateUtil.getCurrentTime()));
         } else {
-            i = super.zsTemperatureBoundMapper.insertSelective(ReflectUtils.transformToBean(param,
-                    ZsTemperatureBound.class));
+            i = super.temperatureBoundMapper.insertSelective(ReflectUtils.transformToBean(param,
+                    TemperatureBound.class));
         }
         return i;
     }
 
     @Override
     public List<UseMachineVO> updateUseMachine(List<UseMachineVO> monitorsInfo, Integer departmentId) {
-        ZsTemperatureBound temperatureBound = super.zsTemperatureBoundMapper.selectByPrimaryKey(departmentId);
+        TemperatureBound temperatureBound = super.temperatureBoundMapper.selectByPrimaryKey(departmentId);
         if (temperatureBound == null) {
             // 获取默认规则
-            temperatureBound = super.zsTemperatureBoundMapper.selectByPrimaryKey(TemperatureConstant.DEFAULT_DEPARTMENT_ID);
+            temperatureBound = super.temperatureBoundMapper.selectByPrimaryKey(TemperatureConstant.DEFAULT_DEPARTMENT_ID);
         }
         for (int i = 0; i < monitorsInfo.size(); i++) {
             if (monitorsInfo.get(i).getTemperature() != null) {

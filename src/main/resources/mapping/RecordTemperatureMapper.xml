@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yjjk.monitor.mapper.RecordTemperatureMapper">
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.RecordTemperature">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="base_id" property="baseId" jdbcType="INTEGER"/>
+        <result column="machine_id" property="machineId" jdbcType="INTEGER"/>
+        <result column="record_status" property="recordStatus" jdbcType="INTEGER"/>
+        <result column="start_time" property="startTime" jdbcType="VARCHAR"/>
+        <result column="end_time" property="endTime" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="created_time" property="createdTime" jdbcType="VARCHAR"/>
+        <result column="updated_time" property="updatedTime" jdbcType="VARCHAR"/>
+        <result column="history" property="history" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <select id="getHistories" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.history.TemperatureHistoryData">
+        select
+        temperature,timestamp
+        from zs_temperature_info
+        <where>
+            <if test="machineId != null">
+                and `machine_id` = #{machineId,jdbcType=INTEGER}
+            </if>
+        </where>
+        ORDER BY timestamp
+    </select>
+    <select id="getTemperature" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.VO.monitor.MonitorTemperatureVO">
+        SELECT
+        rt.`id`,
+        rt.`record_status`,
+        zmi.`machine_id`,
+        zmi.machine_no,
+        zmi.machine_num,
+        zmi.battery,
+        zmi.`box_battery`,
+        zti.temperature
+        FROM
+        record_temperature rt
+        LEFT JOIN zs_machine_info zmi
+        ON rt.`machine_id` = zmi.`machine_id`
+        LEFT JOIN
+        (SELECT * FROM zs_temperature_info WHERE machine_id = #{machineId,jdbcType=INTEGER} AND TIMESTAMPDIFF(MINUTE,
+        create_time, CONCAT(CURDATE(),' ',CURTIME()))<![CDATA[<]]> 3 ORDER BY create_time DESC LIMIT 1) zti on zti.machine_id = rt.`machine_id`
+        <where>
+            <if test="recordId != null">
+                and rt.`id` = #{recordId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+</mapper>

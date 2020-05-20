@@ -25,7 +25,14 @@ import com.yjjk.monitor.configer.ErrorCodeEnum;
  */
 public class ResultUtil {
 
-
+    public static <T> CommonResult<T> returnSuccess() {
+        CommonResult<T> result = new CommonResult();
+        result.setCode(ErrorCodeEnum.SUCCESS.getCode());
+        result.setSuccess(true);
+        result.setData(null);
+        result.setMessage(ErrorCodeEnum.SUCCESS.getDesc());
+        return result;
+    }
     /**
      * return success
      *

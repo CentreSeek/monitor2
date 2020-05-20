@@ -63,15 +63,13 @@ public class BaseController {
     @Resource
     protected PatientService patientService;
     @Resource
-    protected PatientRecordService patientRecordService;
+    protected MonitorService monitorService;
     @Resource
     protected LoginStateService loginStateService;
     @Resource
     protected RepeaterService repeaterService;
     @Resource
     protected TemperatureBoundService temperatureBoundService;
-    @Resource
-    protected BoxService boxService;
 
 
 

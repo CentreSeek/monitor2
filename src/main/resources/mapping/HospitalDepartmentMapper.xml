@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yjjk.monitor.mapper.HospitalDepartmentMapper">
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.HospitalDepartment">
+        <id column="department_id" jdbcType="INTEGER" property="departmentId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="hospital_name" jdbcType="VARCHAR" property="hospitalName"/>
+        <collection property="rooms" ofType="com.yjjk.monitor.entity.pojo.HospitalRoom" javaType="ArrayList">
+            <id column="room_id" jdbcType="INTEGER" property="roomId"/>
+            <result column="room_department_id" jdbcType="INTEGER" property="departmentId"/>
+            <result column="room_name" jdbcType="VARCHAR" property="name"/>
+            <result column="room_create_time" jdbcType="VARCHAR" property="createTime"/>
+            <result column="room_status" jdbcType="INTEGER" property="status"/>
+            <collection property="beds" ofType="com.yjjk.monitor.entity.pojo.HospitalBed" javaType="ArrayList">
+                <id column="bed_id" jdbcType="INTEGER" property="bedId"/>
+                <result column="bed_room_id" jdbcType="INTEGER" property="roomId"/>
+                <result column="bed_name" jdbcType="VARCHAR" property="name"/>
+                <result column="bed_create_time" jdbcType="VARCHAR" property="createTime"/>
+                <result column="bed_status" jdbcType="INTEGER" property="status"/>
+            </collection>
+        </collection>
+    </resultMap>
+    <sql id="Base_Column_List">
+    department_id, `name`, create_time, `status`
+  </sql>
+    <select id="selectDetail" parameterType="com.yjjk.monitor.entity.pojo.HospitalDepartment" resultMap="BaseResultMap">
+        select
+        zdi.department_id, zdi.name, zdi.create_time, zdi.status,
+        zri.room_id , zri.department_id as room_department_id, zri.name as room_name, zri.create_time as room_create_time, zri.status as room_status,
+        zbi.bed_id as bed_id, zbi.room_id as bed_room_id, zbi.name as bed_name, zbi.create_time as bed_create_time, zbi.status as bed_status, zhi.hospital_name
+        from hospital_department zdi
+        left join hospital_room zri on zdi.department_id = zri.department_id
+        left join hospital_bed zbi on zri.room_id = zbi.room_id
+        join hospital_info zhi
+        <where>
+            <if test="departmentId != null">
+                and zdi.department_id = #{departmentId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectDepartments" resultType="com.yjjk.monitor.entity.pojo.HospitalDepartment">
+        select
+        department_id as departmentId, name
+        from hospital_department
+        where status = 0
+    </select>
+
+</mapper>

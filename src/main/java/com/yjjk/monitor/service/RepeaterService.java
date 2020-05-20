@@ -10,8 +10,8 @@
  */
 package com.yjjk.monitor.service;
 
-import com.yjjk.monitor.entity.ZsMachineTypeInfo;
-import com.yjjk.monitor.entity.ZsRepeaterInfo;
+import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
+import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
 
 import java.util.List;
 
@@ -26,14 +26,14 @@ public interface RepeaterService {
      * 查询设备名称
      * @return
      */
-    List<ZsMachineTypeInfo> selectMachineTypes();
+    List<MachineTypeInfo> selectMachineTypes();
 
     /**
      * 查询设备型号
      * @param id
      * @return
      */
-    List<ZsMachineTypeInfo> selectMachineNums(Integer id);
+    List<MachineTypeInfo> selectMachineNums(Integer id);
 
 
     /**

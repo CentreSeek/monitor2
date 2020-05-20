@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yjjk.monitor.mapper.LoginStateMapper">
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.LoginState">
+        <id column="token" jdbcType="VARCHAR" property="token"/>
+        <result column="ip" jdbcType="VARCHAR" property="ip"/>
+        <result column="managerId" jdbcType="INTEGER" property="managerId"/>
+        <result column="login_out" jdbcType="VARCHAR" property="loginOut"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    token, ip, manager_id, login_out, `status`
+  </sql>
+    <select id="selectByManagerId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from login_state
+        where manager_id = #{managerId,jdbcType=INTEGER} and status = 0
+    </select>
+    <select id="selectDepartmentIdByToken" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT department_id
+        FROM `manager_info` zmi
+                 LEFT JOIN `login_state` zls ON zmi.`id` = zls.`manager_id`
+        WHERE zls.token = #{token,jdbcType=VARCHAR}
+          AND zmi.status = 0
+    </select>
+    <select id="selectByToken" parameterType="java.lang.String" resultType="com.yjjk.monitor.entity.pojo.ManagerInfo">
+        SELECT *
+        FROM `manager_info` zmi
+                 LEFT JOIN `login_state` zls ON zmi.`id` = zls.`manager_id`
+        WHERE zls.token = #{token,jdbcType=VARCHAR}
+    </select>
+</mapper>

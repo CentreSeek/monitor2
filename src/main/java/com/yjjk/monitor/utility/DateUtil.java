@@ -54,6 +54,10 @@ public class DateUtil {
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ft.format(date);
     }
+    public static Long getCurrentTimeLong() {
+        Date date = new Date();
+        return date.getTime();
+    }
 
     /**
      * 历史记录导出文件名

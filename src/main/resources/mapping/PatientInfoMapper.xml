@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yjjk.monitor.mapper.PatientInfoMapper">
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.PatientInfo">
+        <id column="patient_id" jdbcType="INTEGER" property="patientId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="case_num" jdbcType="VARCHAR" property="caseNum"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    patient_id, `name`, case_num,  create_time, `status`
+  </sql>
+    <select id="selectByTemplate" parameterType="com.yjjk.monitor.entity.pojo.PatientInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from patient_info
+        <where>
+            <if test="name != null">
+                and `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="caseNum != null">
+                and case_num = #{caseNum,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                and `status` = #{status,jdbcType=INTEGER},
+            </if>
+        </where>
+    </select>
+    <select id="selectByCaseNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from patient_info
+        where case_num = #{caseNum,jdbcType=VARCHAR} and status = 0;
+    </select>
+</mapper>

@@ -41,18 +41,19 @@ public class Swagger2Config {
     @Bean
     public Docket controllerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
+                // 用于定义api文档汇总信息
                 .apiInfo(new ApiInfoBuilder()
-                        .title("智能监护系统（体温版）")
-                        .description("体温检测系统")
-                        .contact(new Contact("CentreS", null, null))
-                        .version("1.2")
+                        .title("多体征只能监护系统")
+                        .description("多体征只能监护系统")
+                        .contact(new Contact("CentreS", null, "CentreSeek@126.com"))
+                        .version("1.0")
                         .build())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.yjjk.monitor.controller"))
                 .paths(PathSelectors.any())
                 .build()
-                .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts());
+                .securitySchemes(securitySchemes());
+//                .securityContexts(securityContexts());
     }
 
     private List<ApiKey> securitySchemes() {

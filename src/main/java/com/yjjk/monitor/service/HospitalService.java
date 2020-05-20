@@ -10,9 +10,9 @@
  */
 package com.yjjk.monitor.service;
 
-import com.yjjk.monitor.entity.ZsBedInfo;
-import com.yjjk.monitor.entity.ZsDepartmentInfo;
-import com.yjjk.monitor.entity.ZsRoomInfo;
+import com.yjjk.monitor.entity.pojo.HospitalBed;
+import com.yjjk.monitor.entity.pojo.HospitalDepartment;
+import com.yjjk.monitor.entity.pojo.HospitalRoom;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,7 @@ public interface HospitalService {
      * @param departmentId
      * @return
      */
-    List<ZsDepartmentInfo> selectDetail(Integer departmentId);
+    List<HospitalDepartment> selectDetail(Integer departmentId);
 
     /**
      * 定期并清理temperatureInfo表数据
@@ -49,18 +49,18 @@ public interface HospitalService {
      * 查询科室信息
      * @return
      */
-    List<ZsDepartmentInfo> selectDepartments();
+    List<HospitalDepartment> selectDepartments();
 
     /**
      * 查询房间信息
      * @return
      */
-    List<ZsRoomInfo> selectRooms(Integer departmentId);
+    List<HospitalRoom> selectRooms(Integer departmentId);
 
     /**
      * 查找空床
      * @param paramMap
      * @return
      */
-    List<ZsBedInfo> selectEmptyBeds(Map<String, Object> paramMap);
+    List<HospitalBed> selectEmptyBeds(Map<String, Object> paramMap);
 }

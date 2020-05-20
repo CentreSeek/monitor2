@@ -12,17 +12,17 @@ package com.yjjk.monitor.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.configer.CommonResult;
-import com.yjjk.monitor.constant.EcgConstant;
+import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.SearchMachineConstant;
 import com.yjjk.monitor.entity.VO.SearchMachineVO;
 import com.yjjk.monitor.entity.VO.SearchMachineVOBase;
-import com.yjjk.monitor.entity.ZsMachineInfo;
-import com.yjjk.monitor.entity.ZsMachineTypeInfo;
-import com.yjjk.monitor.entity.ZsTemperatureInfo;
-import com.yjjk.monitor.entity.config.MachineConfig;
 import com.yjjk.monitor.entity.export.MachineExport;
 import com.yjjk.monitor.entity.export.MachineExportVO;
+import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
+import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
+import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
 import com.yjjk.monitor.entity.transaction.BackgroundResult;
+import com.yjjk.monitor.entity.transaction.BackgroundSend;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.MachineService;
 import com.yjjk.monitor.utility.DateUtil;
@@ -30,6 +30,7 @@ import com.yjjk.monitor.utility.NetUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,51 @@ import java.util.Map;
  */
 @Service
 public class MachineServiceImpl extends BaseService implements MachineService {
+
+    @Override
+    public CommonResult startMachine(Integer machineId, String connectionType) throws Exception {
+        // 连接设备
+        BackgroundSend backgroundSend = new BackgroundSend();
+        backgroundSend.setDeviceId(String.valueOf(machineId));
+        backgroundSend.setData(connectionType);
+        String s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
+        logger.info("启用设备-硬件服务器返回值：     " + s);
+        BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
+        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
+        }
+        return ResultUtil.returnSuccess();
+    }
+
+    @Override
+    public CommonResult changeMachine(Integer oldMachineId, Integer newMachineId) throws Exception {
+        // 连接设备
+        BackgroundSend backgroundSend = new BackgroundSend();
+        ZsMachineInfo machineInfo = super.ZsMachineInfoMapper.selectByPrimaryKey(oldMachineId);
+        backgroundSend.setDeviceId(machineInfo.getMachineNum());
+        backgroundSend.setData(BackgroundSend.DATA_LOSE_CONNECTION);
+        String s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
+        logger.info("停用设备-硬件服务器返回值：     " + s);
+        BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
+        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
+        }
+
+        // 连接设备
+        ZsMachineInfo newMachineInfo = super.ZsMachineInfoMapper.selectByPrimaryKey(newMachineId);
+        backgroundSend.setDeviceId(newMachineInfo.getMachineNum());
+        backgroundSend.setData(BackgroundSend.DATA_CONNECTION);
+        s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
+        logger.info("启用设备-硬件服务器返回值：     " + s);
+        backgroundResult = JSON.parseObject(s, BackgroundResult.class);
+        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
+        }
+        return ResultUtil.returnSuccess();
+    }
 
     @Override
     public int insertSelective(ZsMachineInfo machineInfo) {
@@ -77,6 +123,15 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     public List<ZsMachineInfo> selectByUsageState(ZsMachineInfo machineInfo) {
         return super.ZsMachineInfoMapper.selectByUsageState(machineInfo);
     }
+
+    @Override
+    public List<ZsMachineInfo> selectUsageListByTypeId(Map<String, Object> paraMap) {
+        String name = (String) paraMap.get("name");
+        name = StringUtils.getLikeName(name);
+        paraMap.put("name", name);
+        return super.ZsMachineInfoMapper.selectUsageListByTypeId(paraMap);
+    }
+
 
     @Override
     public List<MachineExportVO> export(ZsMachineInfo machineInfo) {
@@ -119,8 +174,8 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     }
 
     @Override
-    public List<ZsMachineTypeInfo> getTemperatureMachineName() {
-        return this.zsMachineTypeInfoMapper.getTemperatureMachineName();
+    public List<MachineTypeInfo> getTemperatureMachineName() {
+        return this.machineTypeInfoMapper.getTemperatureMachineName();
     }
 
     @Override

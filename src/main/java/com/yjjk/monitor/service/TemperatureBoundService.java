@@ -10,7 +10,7 @@
  */
 package com.yjjk.monitor.service;
 
-import com.yjjk.monitor.entity.param.TemperatureBound;
+import com.yjjk.monitor.entity.param.TemperatureBoundParam;
 import com.yjjk.monitor.entity.VO.TemperatureBoundVO;
 import com.yjjk.monitor.entity.VO.UseMachineVO;
 
@@ -41,7 +41,7 @@ public interface TemperatureBoundService {
      * @param param
      * @return
      */
-    Integer setTemperatureBound(TemperatureBound param);
+    Integer setTemperatureBound(TemperatureBoundParam param);
 
     /**
      * 设置监控信息的体温规则

@@ -1,0 +1,11 @@
+
+@startuml
+(*)  --> "护士：启用设备"
+If "input is verbose" then
+--> [Yes] "turn on verbosity"
+--> "run command"
+else
+--> "run command"
+Endif
+-->(*)
+@enduml

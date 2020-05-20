@@ -2,27 +2,17 @@ package com.yjjk.monitor.mapper;
 
 
 import com.yjjk.monitor.entity.VO.SearchMachineVO;
-import com.yjjk.monitor.entity.ZsMachineInfo;
-import com.yjjk.monitor.entity.ZsMachineTypeInfo;
 import com.yjjk.monitor.entity.export.MachineExport;
+import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
+import com.yjjk.monitor.entity.pojo.ZsEcgInfo;
+import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
+import com.yjjk.monitor.my.mapper.MyMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Map;
 
-@Mapper
-public interface ZsMachineInfoMapper {
-    int deleteByPrimaryKey(Integer machineId);
-
-    int insert(ZsMachineInfo record);
-
-    int insertSelective(ZsMachineInfo record);
-
-    ZsMachineInfo selectByPrimaryKey(Integer machineId);
-
-    int updateByPrimaryKeySelective(ZsMachineInfo record);
-
-    int updateByPrimaryKey(ZsMachineInfo record);
+public interface ZsMachineInfoMapper extends MyMapper<ZsMachineInfo> {
 
     /**
      * insert---批量插入设备
@@ -44,6 +34,7 @@ public interface ZsMachineInfoMapper {
      * @return
      */
     List<ZsMachineInfo> selectByUsageState(ZsMachineInfo machineInfo);
+    List<ZsMachineInfo> selectUsageListByTypeId(Map paraMap);
 
     /**
      * 设备导出
@@ -91,7 +82,7 @@ public interface ZsMachineInfoMapper {
      * 获取体温设备名称
      * @return
      */
-    List<ZsMachineTypeInfo> getTemperatureMachineName();
+    List<MachineTypeInfo> getTemperatureMachineName();
 
     /**
      * insert---批量插入设备

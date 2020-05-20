@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yjjk.monitor.mapper.ZsMachinetoreperterInfoMapper">
+  <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.ZsMachinetoreperterInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="device_mac" jdbcType="VARCHAR" property="deviceMac" />
+    <result column="repeater_mac" jdbcType="VARCHAR" property="repeaterMac" />
+    <result column="reperter_ip" jdbcType="VARCHAR" property="reperterIp" />
+    <result column="dev_name" jdbcType="VARCHAR" property="devName" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+  </resultMap>
+</mapper>

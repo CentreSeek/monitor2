@@ -10,8 +10,8 @@
  */
 package com.yjjk.monitor.service.impl;
 
-import com.yjjk.monitor.entity.ZsMachineTypeInfo;
-import com.yjjk.monitor.entity.ZsRepeaterInfo;
+import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
+import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.RepeaterService;
 import org.springframework.stereotype.Service;
@@ -27,13 +27,13 @@ import java.util.List;
 public class RepeaterServiceImpl extends BaseService implements RepeaterService {
 
     @Override
-    public List<ZsMachineTypeInfo> selectMachineTypes() {
-        return super.zsMachineTypeInfoMapper.selectMachineTypes();
+    public List<MachineTypeInfo> selectMachineTypes() {
+        return super.machineTypeInfoMapper.selectMachineTypes();
     }
 
     @Override
-    public List<ZsMachineTypeInfo> selectMachineNums(Integer id) {
-        return super.zsMachineTypeInfoMapper.selectMachineNums(id);
+    public List<MachineTypeInfo> selectMachineNums(Integer id) {
+        return super.machineTypeInfoMapper.selectMachineNums(id);
     }
 
     @Override
@@ -43,12 +43,12 @@ public class RepeaterServiceImpl extends BaseService implements RepeaterService 
 
     @Override
     public int startRepeater(ZsRepeaterInfo repeaterInfo) {
-        return super.zsRepeaterInfoMapper.updateByPrimaryKeySelective(repeaterInfo.setLinkstatus(1).setRemark("").setFailCount(0));
+        return super.zsRepeaterInfoMapper.updateByPrimaryKeySelective(repeaterInfo.setLinkStatus(1).setRemark("").setFailCount(0));
     }
 
     @Override
     public int stopRepeater(Integer id,String remark) {
-        return super.zsRepeaterInfoMapper.updateByPrimaryKeySelective(new ZsRepeaterInfo().setLinkstatus(2).setId(id).setRemark(remark).setFailCount(0));
+        return super.zsRepeaterInfoMapper.updateByPrimaryKeySelective(new ZsRepeaterInfo().setLinkStatus(2).setId(id).setRemark(remark).setFailCount(0));
     }
 
     @Override

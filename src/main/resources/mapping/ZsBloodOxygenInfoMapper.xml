@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yjjk.monitor.mapper.ZsBloodOxygenInfoMapper">
+  <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.ZsBloodOxygenInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
+    <result column="machine_num" jdbcType="VARCHAR" property="machineNum" />
+    <result column="blood_oxygen" jdbcType="DECIMAL" property="bloodOxygen" />
+    <result column="pulse_rate" jdbcType="DECIMAL" property="pulseRate" />
+    <result column="battery" jdbcType="INTEGER" property="battery" />
+    <result column="blood_oxygen_status" jdbcType="VARCHAR" property="bloodOxygenStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="timestamp" jdbcType="BIGINT" property="timestamp" />
+    <result column="rssi" jdbcType="INTEGER" property="rssi" />
+    <result column="repeater_id" jdbcType="INTEGER" property="repeaterId" />
+  </resultMap>
+</mapper>
