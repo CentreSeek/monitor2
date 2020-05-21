@@ -1,14 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yjjk.monitor.mapper.ZsEcgInfoMapper">
-  <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.ZsEcgInfo">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <result column="temperature_id" jdbcType="INTEGER" property="temperatureId" />
-    <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="timestamp" jdbcType="BIGINT" property="timestamp" />
-    <result column="ecg" jdbcType="LONGVARCHAR" property="ecg" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.ZsEcgInfo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="temperature_id" jdbcType="INTEGER" property="temperatureId"/>
+        <result column="machine_id" jdbcType="VARCHAR" property="machineId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="timestamp" jdbcType="BIGINT" property="timestamp"/>
+        <result column="ecg" jdbcType="LONGVARCHAR" property="ecg"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        temperature_id, machine_id, create_time, `timestamp`
+    </sql>
+    <sql id="Blob_Column_List">
+        ecg
+    </sql>
+    <select id="getNewEcg" parameterType="java.util.Map" resultType="com.yjjk.monitor.entity.pojo.ZsEcgInfo">
+        SELECT zei.temperature_id,
+               zei.machine_id,
+               zei.create_time,
+               zei.`timestamp`,
+               zei.ecg,
+               TIMESTAMPDIFF(MINUTE,
+                             re.start_time, zei.create_time) as useTimeMinutes
+        FROM `zs_ecg_info` zei
+                 left join record_ecg re on zei.machine_id = re.machine_id
+        WHERE
+              re.status = 0 and re.record_status = 0
+              and zei.machine_id = #{machineId,jdbcType=INTEGER}
+          and zei.timestamp <![CDATA[>]]> #{timestamp,jdbcType=BIGINT}
+        ORDER BY zei.TIMESTAMP desc
+        limit 0,5;
+    </select>
+
+    <select id="getEcgHistoryAsJson" resultType="com.yjjk.monitor.entity.VO.history.EcgHistoryVO"
+            parameterType="java.lang.Long">
+        SELECT zei.ecg,
+               zei.`timestamp` AS dateTime
+        FROM `zs_ecg_info` zei
+                 LEFT JOIN record_ecg re on re.`machine_id` = zei.`machine_id`
+                 left join record_base rb on re.base_id = rb.id
+        WHERE re.status = 0
+          and rb.status = 0
+          and zei.`create_time` <![CDATA[>=]]> re.`start_time`
+          AND zei.`create_time` <![CDATA[<=]]> now()
+          AND rb.`id` = #{record_id, jdbcType=BIGINT}
+        ORDER BY zei.`temperature_id`;
+    </select>
+
+    <select id="getExportHealth" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT CONCAT('{', rb.`id`, ',', zei.`ecg`, ',', zei.create_time, '}', ',')
+        FROM zs_ecg_info zei
+                 LEFT JOIN record_ecg re on re.`machine_id` = zei.`machine_id`
+                 left join record_base rb on re.base_id = rb.id
+        WHERE zei.create_time <![CDATA[<]]> #{dateOfOneMonthAgo,jdbcType=VARCHAR};
+    </select>
+
+
+    <delete id="deleteByMachineId" parameterType="java.lang.Integer">
+        delete
+        from zs_ecg_info
+        where machine_id = #{machineId,jdbcType=INTEGER}
+    </delete>
 </mapper>

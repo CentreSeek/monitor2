@@ -52,12 +52,13 @@ public enum ErrorCodeEnum {
     ERROR_MACHINE_TYPE("361", "设备类型有误"),
     ERROR_USAGE_ECG("362","该床位无法使用心电设备"),
     ERROR_CONNECT_ECG("363","心电设备连接失败"),
+    ERROR_MACHINE_STOP("364", "停用失败，设备类型错误"),
+
     PATIENT_EXIST_ERROR("360", "该病例已存在"),
     ADD_PATIENT_ERROR("361", "添加用户失败"),
     ADD_RECORD_ERROR("362", "添加记录失败"),
     PATIENT_GET_RECORD_ERROR("364", "获取历史记录失败"),
     PATIENT_RECORD_NOT_FIND("365", "未找到该记录"),
-    PATIENT_STOP_ERROR("366", "停用失败"),
     TEMPERATURE_BOUND_DEPARTMENT_ERROR("367", "不能修改默认规则"),
     PATIENT_CHANGE_BED_ERROR("368", "目标床位已有病人，请确认床位信息输入正确"),
 

@@ -23,7 +23,8 @@
             resultType="com.yjjk.monitor.entity.pojo.ZsRepeaterInfo">
         SELECT
         zri.id AS id,zri.MAC AS mac,zri.IP AS ip,zri.linkstatus AS linkstatus,zri.remark AS remark,zmti.`name` AS
-        repeaterNum,zmti2.`name` AS repeaterName,zdi.`name` AS departmentName, zri2.`name` AS roomName
+        repeaterNum,zmti2.`name` AS repeaterName,zdi.`name` AS departmentName, zri2.`name` AS roomName,
+        zdi.department_id,zri2.room_id
         FROM zs_repeater_info zri
         LEFT JOIN machine_type_info zmti ON zri.`machine_type_id` = zmti.`id`
         LEFT JOIN machine_type_info zmti2 ON zmti.`parent_id` = zmti2.`id`

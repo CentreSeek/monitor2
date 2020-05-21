@@ -1,5 +1,7 @@
 package com.yjjk.monitor.mapper;
 
+import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
+import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorTemperatureVO;
 import com.yjjk.monitor.entity.history.TemperatureHistoryData;
 import com.yjjk.monitor.my.mapper.MyMapper;
@@ -23,4 +25,11 @@ public interface RecordTemperatureMapper extends MyMapper<RecordTemperature> {
      * @return
      */
     MonitorTemperatureVO getTemperature(Integer machineId, Integer recordId);
+
+    /**
+     * records-体温历史记录
+     * @param getRecordsBO
+     * @return
+     */
+    List<RecordsHistory> getHistoryRecords(GetRecordsBO getRecordsBO);
 }

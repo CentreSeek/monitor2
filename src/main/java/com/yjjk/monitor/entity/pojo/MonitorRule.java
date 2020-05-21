@@ -1,6 +1,7 @@
 package com.yjjk.monitor.entity.pojo;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
+@Accessors(chain = true)
 @Table(name = "monitor_rule")
 public class MonitorRule {
     /**

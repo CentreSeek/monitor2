@@ -10,9 +10,14 @@
  */
 package com.yjjk.monitor.configer;
 
+import com.alibaba.fastjson.JSONArray;
 import com.yjjk.monitor.controller.BaseController;
+import com.yjjk.monitor.entity.pojo.ZsEcgInfo;
+import com.yjjk.monitor.mapper.ZsEcgInfoMapper;
+import com.yjjk.monitor.service.EcgService;
 import com.yjjk.monitor.service.HospitalService;
 import com.yjjk.monitor.utility.DateUtil;
+import com.yjjk.monitor.websocket.WebSocketServer;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,6 +25,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component
 @Configuration      // 1.主要用于标记配置类，兼备Component的效果。
@@ -33,19 +44,50 @@ public class TimingPlan{
 
     protected static Logger logger = Logger.getLogger(BaseController.class);
     @Resource
-    private HospitalService hospitalService;
+    private ZsEcgInfoMapper zsEcgInfoMapper;
+    @Resource
+    private EcgService ecgService;
     /**
-     * 定时计划：1.清理过期预约
+     * 实时心电数据推送
      */
-    @Scheduled(cron = "0 0 0 1/15 * ?")
-    private void configureTasks() {
-        String date = DateUtil.getOneMonthAgo();
-        int i = hospitalService.temperatureInfoTask(date);
-        logger.info("执行体温定时计划     时间: " + date + "   执行条数:" + i);
+    @Scheduled(cron = "*/1 * * * * ?")
+    private void pushEcgInfo() {
+        CopyOnWriteArraySet<WebSocketServer> webSocketSet =
+                WebSocketServer.getWebSocketSet();
+//        int i = 0;
+        webSocketSet.forEach(c -> {
+            try {
+                Map<String, Object> paraMap = new HashMap<>();
+                paraMap.put("machineId", c.getMachineId());
+                paraMap.put("timestamp", c.getTimeStamp());
+                Long currentTime = System.currentTimeMillis();
+                List<ZsEcgInfo> newEcg = zsEcgInfoMapper.getNewEcg(paraMap);
+                Collections.reverse(newEcg);
+                for (int i = 0; i < newEcg.size(); i++) {
+                    if ((currentTime - newEcg.get(i).getTimestamp()) < 15 * 1000) {
+                        c.getQueue().offer(JSONArray.toJSONString(newEcg.get(i)));
+                        c.setTimeStamp(newEcg.get(i).getTimestamp());
+                    }
+                }
+                if (!c.getQueue().isEmpty()) {
+                    c.sendMessage(c.getQueue().poll());
+                } else {
+                    c.sendMessage("");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
-//    @Scheduled(cron = "0 0 0 * * ?")
-//    private void configureTimerCountTasks() {
-//        TimerCount.resetHistoryExportCount();
-//    }
 
+
+    /**
+     * 心电数据清除计划
+     */
+    @Scheduled(cron = "0 0 0 1/7 * ?")
+    private void cleanEcgExport() {
+        String date = DateUtil.getCurrentTime();
+        int j = ecgService.cleanEcgExport();
+        logger.info("执行心电数据清理计划     时间: " + date + "   执行条数:" + j);
+    }
 }

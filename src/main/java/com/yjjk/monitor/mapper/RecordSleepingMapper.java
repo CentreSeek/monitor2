@@ -1,5 +1,7 @@
 package com.yjjk.monitor.mapper;
 
+import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
+import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorHeartRateVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorRespiratoryRateVO;
@@ -48,4 +50,12 @@ public interface RecordSleepingMapper extends MyMapper<RecordSleeping> {
      * @return
      */
     Integer getBattery(Integer recordId);
+
+
+    /**
+     * records-体温历史记录
+     * @param getRecordsBO
+     * @return
+     */
+    List<RecordsHistory> getHistoryRecords(GetRecordsBO getRecordsBO);
 }

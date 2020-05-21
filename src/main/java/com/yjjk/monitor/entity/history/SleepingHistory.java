@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,4 +30,8 @@ public class SleepingHistory {
 
     @ApiModelProperty(value = "history")
     private List<List<SleepingHistoryData>> history;
+
+    public SleepingHistory(){
+        history = new ArrayList<>();
+    }
 }

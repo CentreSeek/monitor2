@@ -95,7 +95,8 @@ public interface MachineService {
      */
     List<ZsMachineInfo> selectByUsageState(ZsMachineInfo machineInfo);
 
-    List<ZsMachineInfo> selectUsageListByTypeId(Map<String, Object> paraMap);
+    List<ListVO> selectUsageListByTypeId(Map<String, Object> paraMap);
+    List<ListVO> selectUsageListByTypeIdMachineModel(Map<String, Object> paraMap);
 
     /**
      * 设备导出
@@ -167,6 +168,13 @@ public interface MachineService {
      * @return
      */
     List<MachineTypeInfo> getTemperatureMachineName();
+
+    /**
+     * 获取设备型号
+     * @param machineTypeId
+     * @return
+     */
+    List<MachineTypeInfo> getMachineModel(Integer machineTypeId);
 
     /**
      * 绑定ecg设备

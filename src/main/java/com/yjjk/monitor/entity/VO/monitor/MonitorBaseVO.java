@@ -1,9 +1,12 @@
 package com.yjjk.monitor.entity.VO.monitor;
 
+import com.yjjk.monitor.entity.ListVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * @program: monitor2
@@ -19,6 +22,8 @@ public class MonitorBaseVO {
     private MonitorRespiratoryRateVO monitorRespiratoryRateVO;
     private MonitorHeartRateVO monitorHeartRateVO;
     private MonitorTemperatureVO monitorTemperatureVO;
+
+    private List<MonitorMachineListVO> machineList;
 
     @ApiModelProperty(value = "base：病单号")
     private Integer baseId;

@@ -17,6 +17,7 @@ import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.PasswordUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
+import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,6 +62,7 @@ public class ManagerController extends BaseController {
         managerInfo.setPassword(PasswordUtils.generate(managerInfo.getPassword()));
         managerInfo.setRole(2);
         managerInfo.setStatus(0);
+        managerInfo.setToken(null);
         int i = super.managerService.insertManager(managerInfo);
         if (i == 0) {
             return ResultUtil.returnError(ErrorCodeEnum.MANAGER_INSERT_ERROR);
@@ -119,7 +121,7 @@ public class ManagerController extends BaseController {
      * @param Id
      */
     @RequestMapping(value = "/manager", method = RequestMethod.GET)
-    public CommonResult getManagerInfo(@RequestParam(value = "Id", required = false) Integer Id,
+    public CommonResult getManagerInfo(@ApiParam(value = "id不为空则按id查询") @RequestParam(value = "Id", required = false) Integer Id,
                                        @RequestParam(value = "role", required = false) Integer role,
                                        @RequestParam(value = "departmentId", required = false) Integer departmentId,
                                        @RequestParam(value = "currentPage", required = false) Integer currentPage,

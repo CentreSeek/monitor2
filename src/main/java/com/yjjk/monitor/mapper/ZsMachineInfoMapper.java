@@ -1,6 +1,7 @@
 package com.yjjk.monitor.mapper;
 
 
+import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.VO.SearchMachineVO;
 import com.yjjk.monitor.entity.export.MachineExport;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
@@ -26,7 +27,7 @@ public interface ZsMachineInfoMapper extends MyMapper<ZsMachineInfo> {
      * @param machineInfo
      * @return
      */
-    int selectCount(ZsMachineInfo machineInfo);
+    int selectMachineCount(ZsMachineInfo machineInfo);
 
     /**
      * select---分页查询设备信息(usageSate)
@@ -34,7 +35,8 @@ public interface ZsMachineInfoMapper extends MyMapper<ZsMachineInfo> {
      * @return
      */
     List<ZsMachineInfo> selectByUsageState(ZsMachineInfo machineInfo);
-    List<ZsMachineInfo> selectUsageListByTypeId(Map paraMap);
+    List<ListVO> selectUsageListByTypeId(Map paraMap);
+    List<ListVO> selectUsageListByTypeIdMachineModel(Map paraMap);
 
     /**
      * 设备导出
@@ -91,4 +93,5 @@ public interface ZsMachineInfoMapper extends MyMapper<ZsMachineInfo> {
      * @return
      */
     int insertByMachineNum(ZsMachineInfo machineInfo);
+    ZsMachineInfo getByMachineId(Integer machineId);
 }

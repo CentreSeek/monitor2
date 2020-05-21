@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,5 +31,7 @@ public class BloodHistory {
     @ApiModelProperty(value = "history")
     private List<List<BloodHistoryData>> history;
 
-
+    public BloodHistory(){
+        history = new ArrayList<>();
+    }
 }

@@ -12,8 +12,10 @@ package com.yjjk.monitor.service;
 
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
+import com.yjjk.monitor.entity.VO.monitor.MonitorMachineListVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
 import com.yjjk.monitor.entity.log.ManageLog;
+import com.yjjk.monitor.entity.pojo.RecordBase;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,19 +30,24 @@ public interface MonitorService {
 
     /**
      * 设置设备状态
+     *
      * @param monitorVO
      * @return
      */
     MonitorVO setMachineState(MonitorVO monitorVO);
+
     /**
      * 设置数值状态
+     *
      * @param monitorVO
      * @param departmentId
      * @return
      */
-    MonitorVO setMonitorRule(MonitorVO monitorVO,Integer departmentId);
+    MonitorVO setMonitorRule(MonitorVO monitorVO, Integer departmentId);
+
     /**
      * 实时监控信息
+     *
      * @param departmentId
      * @return
      */
@@ -55,6 +62,8 @@ public interface MonitorService {
     MonitorBaseVO getBloodOxygen(MonitorBaseVO monitorBaseVO, Integer recordId);
 
     List<MonitorBaseVO> getSleeping(List<MonitorBaseVO> list);
+
+    List<MonitorMachineListVO> getMachinesInfo(RecordBase recordBase);
 
 
     /**
@@ -129,11 +138,10 @@ public interface MonitorService {
      * 持久化监测数据
      *
      * @param type
-     * @param baseId
-     * @param log
+     * @param recordId
      * @return
      */
-    boolean cacheMonitorHistory(Integer type, Integer baseId, List log);
+    boolean cacheMonitorHistory(Integer type, Integer recordId);
 
     /**
      * 记录操作信息
@@ -152,6 +160,14 @@ public interface MonitorService {
      * @return
      */
     Integer changeMachineState(Integer machineId, Integer usageState);
+
+    /**
+     * 清理过期数据
+     *
+     * @param machineId
+     * @return
+     */
+    Integer deletePastData(Integer type, Integer machineId);
 
 
 }

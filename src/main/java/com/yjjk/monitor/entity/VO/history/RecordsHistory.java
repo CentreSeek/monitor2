@@ -8,8 +8,10 @@
  * <author>          <time>          <version>          <desc>
  * 作者姓名           修改时间           版本号              描述
  */
-package com.yjjk.monitor.entity.VO;
+package com.yjjk.monitor.entity.VO.history;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -20,27 +22,20 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class RecordHistory {
+@ApiModel("历史记录")
+public class RecordsHistory {
 
-    private Long recordId;
+    @ApiModelProperty(value = "id")
+    private Integer recordId;
     private String patientName;
-    private String caseNum;
+    private String patientCaseNum;
     private String departmentName;
-    private String roomName;
-    private String bedName;
+    private String roomAndBed;
+//    private String machineName;
     private String startTime;
     private String endTime;
-    private Integer usageState;
+    @ApiModelProperty(value = "使用状态 0-使用中 1-结束")
+    private Integer recordStatus;
 
-    /** mappingParam */
-    private Integer departmentId;
-    private String startDate;
-    private String endDate;
-    private Integer startLine;
-    private Integer pageSize;
-
-    /** requestParam */
-    private Integer currentPage;
-    private Integer timestamp;
 
 }

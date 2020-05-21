@@ -16,4 +16,7 @@ public interface MonitorRuleMapper extends MyMapper<MonitorRule> {
      * @return
      */
     List<MonitorRule> getRule(Integer departmentId, Integer type, Integer alertFlag);
+
+    int setRule(MonitorRule monitorRule);
+
 }

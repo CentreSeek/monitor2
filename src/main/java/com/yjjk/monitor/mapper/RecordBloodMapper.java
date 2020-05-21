@@ -1,5 +1,7 @@
 package com.yjjk.monitor.mapper;
 
+import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
+import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBloodVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorHeartRateVO;
 import com.yjjk.monitor.entity.history.BloodHistoryData;
@@ -33,4 +35,12 @@ public interface RecordBloodMapper extends MyMapper<RecordBlood> {
      * @return
      */
     MonitorHeartRateVO getHeartRate(Integer machineId, Integer recordId);
+
+
+    /**
+     * records-体温历史记录
+     * @param getRecordsBO
+     * @return
+     */
+    List<RecordsHistory> getHistoryRecords(GetRecordsBO getRecordsBO);
 }

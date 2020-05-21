@@ -34,7 +34,13 @@
         WHERE TYPE = 0
           AND LEVEL = 0;
     </select>
-
+    <select id="getMachineModel" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT id, NAME
+        FROM `machine_type_info`
+        WHERE parent_id = #{id,jdbcType=INTEGER}
+          and TYPE = 0
+          AND LEVEL = 1;
+    </select>
     <insert id="insert" parameterType="com.yjjk.monitor.entity.pojo.MachineTypeInfo">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()

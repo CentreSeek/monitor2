@@ -69,8 +69,9 @@ public class BaseController {
     @Resource
     protected RepeaterService repeaterService;
     @Resource
-    protected TemperatureBoundService temperatureBoundService;
-
+    protected MonitorRuleService monitorRuleService;
+    @Resource
+    protected HistoryService historyService;
 
 
 

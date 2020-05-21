@@ -24,14 +24,6 @@ public class MonitorBloodVO {
     private Integer recordState;
     @ApiModelProperty(value = "record:病单ID")
     private Integer recordId;
-    @ApiModelProperty(value = "record:设备ID")
-    private Integer machineId;
-    @ApiModelProperty(value = "record:设备编号")
-    private String machineNo;
-    @ApiModelProperty(value = "record:设备sn")
-    private String machineSn;
-//    @ApiModelProperty(value = "record:监护设备类型")
-//    private Integer machineType;
 
     /**
      * param

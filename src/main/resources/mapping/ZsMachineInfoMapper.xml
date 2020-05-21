@@ -21,16 +21,18 @@
         machine_id, `name`, machine_model, machine_num, machine_no, department_id, usage_state, remark,
     create_time, `status`, machine_type_id
     </sql>
-    <select id="selectCount" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo" resultType="java.lang.Integer">
+    <select id="selectMachineCount" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo" resultType="java.lang.Integer">
         select
         count(1)
         from zs_machine_info zmi
+        left join machine_type_info mti on mti.id = zmi.machine_type_id
+        left join machine_type_info mti2 on mti.parent_id = mti2.id
         <where>
             <if test="machineId != null">
-                and machine_id = #{machineId,jdbcType=INTEGER}
+                and zmi.machine_id = #{machineId,jdbcType=INTEGER}
             </if>
             <if test="departmentId != null">
-                and department_id = #{departmentId, jdbcType=INTEGER}
+                and zmi.department_id = #{departmentId, jdbcType=INTEGER}
             </if>
             <if test="unUsedStatus != null">
                 and zmi.usage_state = 0
@@ -41,7 +43,13 @@
             <if test="normalStatus != null">
                 and (zmi.usage_state = 0 or zmi.usage_state = 2)
             </if>
-            and status = 0
+            <if test="machineTypeId != null">
+                and mti2.id = #{machineTypeId, jdbcType=INTEGER}
+            </if>
+            <if test="machineNum != null">
+                and zmi.machine_num like #{machineNum, jdbcType=VARCHAR}
+            </if>
+            and zmi.status = 0
         </where>
     </select>
     <select id="selectByUsageState" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo"
@@ -70,6 +78,12 @@
             <if test="normalStatus != null">
                 and (zmi.usage_state = 0 or zmi.usage_state = 2)
             </if>
+            <if test="machineTypeId != null">
+                and mti2.id = #{machineTypeId, jdbcType=INTEGER}
+            </if>
+            <if test="machineNum != null">
+                and zmi.machine_num like #{machineNum, jdbcType=VARCHAR}
+            </if>
             and zmi.status = 0
         </where>
         <if test="startLine != null and pageSize != null">
@@ -77,9 +91,9 @@
         </if>
     </select>
     <select id="selectUsageListByTypeId" parameterType="java.util.Map"
-            resultMap="BaseResultMap">
+            resultType="com.yjjk.monitor.entity.ListVO">
         select
-        zmi.machine_id, concat(zmi.machine_no,'|',zmi.machine_num)
+        zmi.machine_id as id, concat(zmi.machine_no,'|',zmi.machine_num) as value
         from zs_machine_info zmi
         left join hospital_department zdi on zmi.department_id = zdi.department_id
         left join machine_type_info mti on zmi.machine_type_id = mti.id
@@ -94,6 +108,21 @@
             </if>
             <if test="name != null">
                 and zmi.machine_num like #{name, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectUsageListByTypeIdMachineModel" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.ListVO">
+        select
+        zmi.machine_id as id, zmi.machine_no as value
+        from zs_machine_info zmi
+        left join hospital_department zdi on zmi.department_id = zdi.department_id
+        left join machine_type_info mti on zmi.machine_type_id = mti.id
+        left join machine_type_info mti2 on mti.parent_id = mti2.id
+        <where>
+            zmi.status = 0
+            <if test="machineTypeId != null">
+                and mti2.id = #{machineTypeId, jdbcType=INTEGER}
             </if>
         </where>
     </select>
@@ -119,6 +148,9 @@
             </if>
             <if test="normalStatus != null">
                 and (zmi.usage_state = 0 or zmi.usage_state = 2)
+            </if>
+            <if test="machineTypeId != null">
+                and mti2.id = #{machineTypeId, jdbcType=INTEGER}
             </if>
             and zmi.status = 0
         </where>
@@ -178,7 +210,11 @@
         WHERE TYPE = 0
           AND LEVEL = 0;
     </select>
-
+    <select id="getByMachineId" resultMap="BaseResultMap">
+        SELECT *
+        FROM `zs_machine_info`
+        WHERE machine_id = #{machine_id, jdbcType=INTEGER}
+    </select>
     <insert id="insertByMachineNums" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo">
         insert into zs_machine_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -252,9 +288,6 @@
             <if test="machineId != null">
                 machine_id,
             </if>
-            <if test="name != null">
-                `name`,
-            </if>
             <if test="machineModel != null">
                 machine_model,
             </if>
@@ -286,9 +319,6 @@
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="machineId != null">
                 #{machineId,jdbcType=INTEGER},
-            </if>
-            <if test="name != null">
-                #{name,jdbcType=VARCHAR},
             </if>
             <if test="machineModel != null">
                 #{machineModel,jdbcType=VARCHAR},

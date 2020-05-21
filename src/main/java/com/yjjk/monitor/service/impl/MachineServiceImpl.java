@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.SearchMachineConstant;
+import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.VO.SearchMachineVO;
 import com.yjjk.monitor.entity.VO.SearchMachineVOBase;
 import com.yjjk.monitor.entity.export.MachineExport;
@@ -49,7 +50,8 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     public CommonResult startMachine(Integer machineId, String connectionType) throws Exception {
         // 连接设备
         BackgroundSend backgroundSend = new BackgroundSend();
-        backgroundSend.setDeviceId(String.valueOf(machineId));
+        ZsMachineInfo machineInfo = super.ZsMachineInfoMapper.getByMachineId(machineId);
+        backgroundSend.setDeviceId(machineInfo.getMachineNum());
         backgroundSend.setData(connectionType);
         String s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
         logger.info("启用设备-硬件服务器返回值：     " + s);
@@ -116,7 +118,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
     @Override
     public int selectCount(ZsMachineInfo machineInfo) {
-        return super.ZsMachineInfoMapper.selectCount(machineInfo);
+        return super.ZsMachineInfoMapper.selectMachineCount(machineInfo);
     }
 
     @Override
@@ -125,11 +127,18 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     }
 
     @Override
-    public List<ZsMachineInfo> selectUsageListByTypeId(Map<String, Object> paraMap) {
+    public List<ListVO> selectUsageListByTypeId(Map<String, Object> paraMap) {
         String name = (String) paraMap.get("name");
-        name = StringUtils.getLikeName(name);
-        paraMap.put("name", name);
+        if (!StringUtils.isNullorEmpty(name)) {
+            name = StringUtils.getLikeName(name);
+            paraMap.put("name", name);
+        }
         return super.ZsMachineInfoMapper.selectUsageListByTypeId(paraMap);
+    }
+
+    @Override
+    public List<ListVO> selectUsageListByTypeIdMachineModel(Map<String, Object> paraMap) {
+        return super.ZsMachineInfoMapper.selectUsageListByTypeIdMachineModel(paraMap);
     }
 
 
@@ -177,6 +186,12 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     public List<MachineTypeInfo> getTemperatureMachineName() {
         return this.machineTypeInfoMapper.getTemperatureMachineName();
     }
+
+    @Override
+    public List<MachineTypeInfo> getMachineModel(Integer machineTypeId) {
+        return super.machineTypeInfoMapper.getMachineModel(machineTypeId);
+    }
+
 
     @Override
     public CommonResult searchMachine(Map<String, Object> map) {

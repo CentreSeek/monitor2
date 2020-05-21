@@ -32,7 +32,7 @@
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorHeartRateVO">
         SELECT
         re.`id`,
-        re.`record_status`,
+        re.`record_status`  as recordState,
         zmi.`machine_id`,
         zmi.machine_no,
         zmi.machine_num,
@@ -73,6 +73,41 @@
         <where>
             <if test="recordId != null">
                 and re.`id` = #{recordId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <select id="getHistoryRecords" parameterType="com.yjjk.monitor.entity.BO.history.GetRecordsBO"
+            resultType="com.yjjk.monitor.entity.VO.history.RecordsHistory">
+        SELECT record.`id` as recordId,
+        pai.`name` as patientName ,pai.`case_num` as patientCaseNum,hd.`name` as
+        departmentName,CONCAT(hr.`name`,hb.`name`) as roomAndBed ,
+        record.`start_time` as startTime,record.`end_time` as endTime,record.record_status as recordStatus
+        FROM
+        record_ecg record
+        LEFT JOIN record_base rb
+        ON record.`base_id` = rb.`id`
+        LEFT JOIN patient_info pai
+        ON rb.`patient_id` = pai.`patient_id`
+        LEFT JOIN hospital_bed hb
+        ON rb.`bed_id` = hb.`bed_id`
+        LEFT JOIN hospital_room hr
+        ON hb.`room_id` = hr.`room_id`
+        LEFT JOIN hospital_department hd
+        ON hr.`department_id` = hd.`department_id`
+        LEFT JOIN zs_machine_info zmi ON record.`machine_id` = zmi.`machine_id`
+        <where>
+            record.status = 0
+            <if test="startDate != null">
+                and record.create_time <![CDATA[>=]]> CONCAT(#{startDate, jdbcType=VARCHAR},' 00:00:00')
+            </if>
+            <if test="endDate != null">
+                and record.create_time <![CDATA[<=]]> CONCAT(#{endDate, jdbcType=VARCHAR},' 24:00:00')
+            </if>
+            <if test="departmentId != null">
+                and hd.department_id = #{departmentId, jdbcType=INTEGER}
+            </if>
+            <if test="patientName != null">
+                and zpi.name = #{patientName, jdbcType=VARCHAR}
             </if>
         </where>
     </select>

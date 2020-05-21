@@ -29,4 +29,11 @@ public interface MachineTypeInfoMapper extends MyMapper<MachineTypeInfo> {
      * @return
      */
     List<MachineTypeInfo> getTemperatureMachineName();
+
+    /**
+     * 获取设备型号
+     * @param machineTypeId
+     * @return
+     */
+    List<MachineTypeInfo> getMachineModel(Integer machineTypeId);
 }

@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,5 +30,9 @@ public class TemperatureHistory {
 
     @ApiModelProperty(value = "history")
     private List<List<TemperatureHistoryData>> history;
+
+    public TemperatureHistory(){
+        history = new ArrayList<>();
+    }
 
 }

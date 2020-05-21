@@ -34,4 +34,44 @@
             </if>
         </where>
     </select>
+
+    <update id="setRule" parameterType="com.yjjk.monitor.entity.pojo.MonitorRule">
+        update
+        monitor_rule
+        <set>
+            <if test="paramOne != null">
+                param_one = #{paramOne,jdbcType=DECIMAL},
+            </if>
+            <if test="paramTwo != null">
+                param_two = #{paramTwo,jdbcType=DECIMAL},
+            </if>
+            <if test="paramThree != null">
+                param_three = #{paramThree,jdbcType=DECIMAL},
+            </if>
+            <if test="alertFlag != null">
+                alert_flag = #{alertFlag,jdbcType=INTEGER},
+            </if>
+            <if test="lowAlert != null">
+                low_alert = #{lowAlert,jdbcType=DECIMAL},
+            </if>
+            <if test="highAlert != null">
+                high_alert = #{highAlert,jdbcType=DECIMAL},
+            </if>
+            <if test="managerId != null">
+                manager_id = #{managerId,jdbcType=INTEGER},
+            </if>
+            <if test="changeTime != null">
+                change_time = #{changeTime,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <where>
+            <if test="departmentId != null">
+                and `department_id` = #{departmentId,jdbcType=INTEGER}
+            </if>
+            <if test="type != null">
+                and type = #{type,jdbcType=INTEGER}
+            </if>
+
+        </where>
+    </update>
 </mapper>

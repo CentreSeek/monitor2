@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,4 +31,7 @@ public class EcgHistory {
     @ApiModelProperty(value = "history")
     private List<List<EcgHistoryData>> history;
 
+    public EcgHistory(){
+        history = new ArrayList<>();
+    }
 }

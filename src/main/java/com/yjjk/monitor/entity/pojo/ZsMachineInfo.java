@@ -1,5 +1,7 @@
 package com.yjjk.monitor.entity.pojo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -10,6 +12,7 @@ import javax.persistence.Table;
 @Data
 @Accessors(chain = true)
 @Table(name = "zs_machine_info")
+@ApiModel("设备信息")
 public class ZsMachineInfo {
     /**
      * 设备id
@@ -21,6 +24,7 @@ public class ZsMachineInfo {
     /**
      * 设备MAC
      */
+    @ApiModelProperty(value = "mac")
     @Column(name = "machine_mac")
     private String machineMac;
 
@@ -28,12 +32,14 @@ public class ZsMachineInfo {
     /**
      * SN序列号
      */
+    @ApiModelProperty(value = "sn")
     @Column(name = "machine_num")
     private String machineNum;
 
     /**
      * 设备编号
      */
+    @ApiModelProperty(value = "编号")
     @Column(name = "machine_no")
     private String machineNo;
 
@@ -64,11 +70,6 @@ public class ZsMachineInfo {
      * 0：正常 1：删除
      */
     private Integer status;
-
-    /**
-     * 电量
-     */
-    private String pattery;
 
     /**
      * (machine_type)外键

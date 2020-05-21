@@ -11,9 +11,10 @@
 package com.yjjk.monitor.service;
 
 
+import com.github.pagehelper.PageInfo;
+import com.yjjk.monitor.entity.VO.PagedGridResult;
 import com.yjjk.monitor.entity.config.ConnectRepeater;
 import com.yjjk.monitor.entity.config.MachineConfig;
-import com.yjjk.monitor.entity.pojo.ZsBloodOxygenInfo;
 import com.yjjk.monitor.mapper.HospitalBedMapper;
 import com.yjjk.monitor.mapper.HospitalDepartmentMapper;
 import com.yjjk.monitor.mapper.HospitalRoomMapper;
@@ -27,7 +28,6 @@ import com.yjjk.monitor.mapper.RecordBloodMapper;
 import com.yjjk.monitor.mapper.RecordEcgMapper;
 import com.yjjk.monitor.mapper.RecordSleepingMapper;
 import com.yjjk.monitor.mapper.RecordTemperatureMapper;
-import com.yjjk.monitor.mapper.TemperatureBoundMapper;
 import com.yjjk.monitor.mapper.ZsBloodOxygenInfoMapper;
 import com.yjjk.monitor.mapper.ZsHealthInfoMapper;
 import com.yjjk.monitor.mapper.ZsMachineInfoMapper;
@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author CentreS
@@ -77,8 +77,6 @@ public class BaseService {
     @Autowired
     protected ZsRepeaterInfoMapper zsRepeaterInfoMapper;
     @Autowired
-    protected TemperatureBoundMapper temperatureBoundMapper;
-    @Autowired
     protected RecordBaseMapper recordBaseMapper;
     @Autowired
     protected RecordBloodMapper recordBloodMapper;
@@ -96,5 +94,20 @@ public class BaseService {
     @Autowired
     protected ConnectRepeater connectRepeater;
 
-
+    protected PagedGridResult setterPagedGrid(List<?> list, Integer page) {
+        return setterPagedGrid(list, page, null);
+    }
+    protected PagedGridResult setterPagedGrid(List<?> list, Integer page, Integer count) {
+        PageInfo<?> pageList = new PageInfo<>(list);
+        PagedGridResult grid = new PagedGridResult();
+        grid.setPage(page);
+        grid.setRows(list);
+        grid.setTotal(pageList.getPages());
+        if (count != null) {
+            grid.setRecords(count);
+        } else {
+            grid.setRecords(pageList.getTotal());
+        }
+        return grid;
+    }
 }
