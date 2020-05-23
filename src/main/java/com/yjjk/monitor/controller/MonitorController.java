@@ -16,6 +16,7 @@ import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.MachineEnum;
 import com.yjjk.monitor.entity.BO.monitor.MonitorRuleBO;
 import com.yjjk.monitor.entity.BO.monitor.StartBO;
+import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
 import com.yjjk.monitor.entity.history.TemperatureHistory;
@@ -72,7 +73,7 @@ public class MonitorController extends BaseController {
     @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "启用设备")
     @RequestMapping(value = "/start", method = RequestMethod.POST)
-    public synchronized CommonResult startTemperatureMachine(StartBO startBO, HttpServletRequest request) {
+    public synchronized CommonResult startTemperatureMachine(@Valid StartBO startBO, HttpServletRequest request) {
         try {
             // 获取患者id (检验、查询\新增)
             Integer patientId = super.patientService.checkPatient(startBO.getPatientName(), startBO.getCaseNum(), startBO.getBedId());
@@ -141,7 +142,8 @@ public class MonitorController extends BaseController {
         try {
             MonitorVO monitorVO = new MonitorVO();
             List<MonitorBaseVO> monitors = super.monitorService.getMonitors(departmentId);
-            monitorVO.setMonitorVOList(monitors).setMachineTypeList(MachineEnum.getListVO());
+            List<MachineTypeListVO> list = super.machineService.getMonitorTypeList();
+            monitorVO.setMonitorVOList(monitors).setMachineTypeList(list);
             monitorVO = super.monitorService.setMonitorRule(monitorVO, departmentId);
             monitorVO = super.monitorService.setMachineState(monitorVO);
             return ResultUtil.returnSuccess(monitorVO);

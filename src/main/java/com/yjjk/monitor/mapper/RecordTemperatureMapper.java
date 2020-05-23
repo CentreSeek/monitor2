@@ -3,6 +3,7 @@ package com.yjjk.monitor.mapper;
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorTemperatureVO;
+import com.yjjk.monitor.entity.export.history.HistoryExportTemperatureVO;
 import com.yjjk.monitor.entity.history.TemperatureHistoryData;
 import com.yjjk.monitor.my.mapper.MyMapper;
 import com.yjjk.monitor.entity.pojo.RecordTemperature;
@@ -32,4 +33,12 @@ public interface RecordTemperatureMapper extends MyMapper<RecordTemperature> {
      * @return
      */
     List<RecordsHistory> getHistoryRecords(GetRecordsBO getRecordsBO);
+
+    /**
+     * 获取体温导出records
+     * @param departmentId
+     * @param date
+     * @return
+     */
+    List<HistoryExportTemperatureVO> getExportList(Integer departmentId,String date);
 }

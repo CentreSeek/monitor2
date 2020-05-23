@@ -38,6 +38,7 @@ public class MachineTypeInfo {
     private String createTime;
 
     private Integer status;
-    private Integer rank;
+    @Column(name = "type_code")
+    private Integer typeCode;
 
 }

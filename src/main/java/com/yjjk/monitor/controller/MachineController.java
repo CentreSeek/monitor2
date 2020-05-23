@@ -15,7 +15,7 @@ import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.MachineConstant;
 import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.VO.SearchMachineVOBase;
-import com.yjjk.monitor.entity.export.MachineExportVO;
+import com.yjjk.monitor.entity.export.machine.MachineExportVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
 import com.yjjk.monitor.utility.ExcelUtils;

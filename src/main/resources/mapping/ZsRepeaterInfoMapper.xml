@@ -63,14 +63,14 @@
         SELECT zri.id
         FROM `zs_repeater_info` zri
                  LEFT JOIN hospital_bed zbi ON zbi.`room_id` = zri.`room_id`
-        WHERE zbi.`bed_id` = #{bedId,jdbcType=INTEGER}
+        WHERE zbi.`bed_id` = #{bedId,jdbcType=INTEGER} and linkStatus = 0
     </select>
 
     <select id="hasRepeaterCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
         SELECT count(*)
         FROM `zs_repeater_info` zri
                  LEFT JOIN hospital_bed zbi ON zbi.`room_id` = zri.`room_id`
-        WHERE zbi.`bed_id` = #{bedId,jdbcType=INTEGER}
+        WHERE zbi.`bed_id` = #{bedId,jdbcType=INTEGER} and linkStatus = 0
     </select>
 
     <select id="isExistRepeater" resultType="java.lang.Integer"

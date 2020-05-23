@@ -10,13 +10,27 @@
  */
 package com.yjjk.monitor.utility;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @author CentreS
  * @Description: 文件名生成工具
  * @create 2019/7/1
  */
 public class FileNameUtils {
-
+    /**
+     * 历史记录导出文件名
+     *
+     * @return
+     */
+    public static String getHistoryFileName() {
+        Date date = new Date();
+        SimpleDateFormat ft = new SimpleDateFormat("yyyyMMddHHmm");
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("th").append(ft.format(date));
+        return buffer.toString();
+    }
     /**
      * 获取文件后缀
      * @param fileName

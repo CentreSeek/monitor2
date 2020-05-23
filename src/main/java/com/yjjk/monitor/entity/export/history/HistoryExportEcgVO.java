@@ -8,7 +8,7 @@
  * <author>          <time>          <version>          <desc>
  * 作者姓名           修改时间           版本号              描述
  */
-package com.yjjk.monitor.entity.export;
+package com.yjjk.monitor.entity.export.history;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -20,14 +20,9 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class MachineExportVO {
-    private String machineNo;
-    private String name;
-    private String machineModel;
-    private String machineNum;
-    private String departmentName;
-    private String usageState;
-    private String createTime;
-    private String remark;
+public class HistoryExportEcgVO extends HistoryExportBaseVO{
+    private String heartRate;
+    private String respiratoryRate;
+
 }
 

@@ -1,26 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yjjk.monitor.mapper.HospitalBedMapper">
-  <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.HospitalBed">
-    <id column="bed_id" jdbcType="INTEGER" property="bedId" />
-    <result column="room_id" jdbcType="INTEGER" property="roomId" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.HospitalBed">
+        <id column="bed_id" jdbcType="INTEGER" property="bedId"/>
+        <result column="room_id" jdbcType="INTEGER" property="roomId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     bed_id, room_id, `name`, create_time, `status`
   </sql>
-  <select id="selectEmptyBeds" parameterType="java.util.Map" resultMap="BaseResultMap">
-        SELECT
-        zbi.bed_id, zbi.`name`
+    <select id="selectEmptyBeds" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT zbi.bed_id,
+               zbi.`name`
+        FROM hospital_bed zbi
+                 LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
+                 LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
+        WHERE zdi.department_id = #{departmentId,jdbcType=INTEGER}
+          and zbi.`bed_id` NOT IN (SELECT bed_id
+                                   FROM record_base
+                                   WHERE `usage_status` = 0
+                                     AND `status` = 0);
+    </select>
+    <select id="selectMonitorEmptyBeds" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.pojo.HospitalBed">
+        SELECT zbi.bed_id,
+        zbi.`name`
         FROM hospital_bed zbi
         LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
         LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
-        WHERE
-        zdi.department_id = #{departmentId,jdbcType=INTEGER} and
-        zbi.`bed_id` NOT IN (SELECT bed_id
+        WHERE zdi.department_id = #{departmentId,jdbcType=INTEGER}
+        and zbi.`bed_id` NOT IN (SELECT bed_id
         FROM record_base
-        WHERE `usage_status` = 0 AND `status` = 0);
+        WHERE `usage_status` = 0
+        AND `status` = 0
+        <if test="type == 0">
+            and record_temperature_id <![CDATA[<>]]> -1
+        </if>
+        <if test="type == 1">
+            and record_ecg_id <![CDATA[<>]]> -1
+        </if>
+        <if test="type == 2">
+            and record_blood_id <![CDATA[<>]]> -1
+        </if>
+        <if test="type == 3">
+            and record_sleeping_id <![CDATA[<>]]> -1
+        </if>)
     </select>
 </mapper>

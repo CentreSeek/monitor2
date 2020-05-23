@@ -19,9 +19,9 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel("历史记录")
-public class TemperatureHistoryVO {
+public class ViewTemperatureHistoryVO {
 
-    @ApiModelProperty(value = "monitor：监控信息列表")
-    private List<MonitorBaseVO> monitorVOList;
+    @ApiModelProperty(value = "")
+    private List monitorVOList;
 }
 

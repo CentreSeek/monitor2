@@ -23,10 +23,8 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @ApiModel(description = "体温历史数据")
-public class TemperatureHistoryData {
+public class TemperatureHistoryData  extends BaseData {
 
-    @ApiModelProperty(value = "时间戳")
-    private Long timestamp;
     @ApiModelProperty(value = "体温")
     private Double temperature;
 

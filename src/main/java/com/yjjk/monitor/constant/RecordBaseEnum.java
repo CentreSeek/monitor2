@@ -17,7 +17,9 @@ public enum RecordBaseEnum {
     USAGE_STATE_USE(0, "使用中"),
     USAGE_STATE_UN_USE(1, "未使用"),
     MACHINE_UN_USE(-1, "未使用"),
-    ;
+
+    MACHINE_STATE_UN_USED(0, "未使用"),
+    MACHINE_STATE_USED(1, "使用中");
 
     private Integer type;
 

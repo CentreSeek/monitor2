@@ -31,7 +31,7 @@ public class EcgHistory {
     @ApiModelProperty(value = "history")
     private List<List<EcgHistoryData>> history;
 
-    public EcgHistory(){
+    public EcgHistory() {
         history = new ArrayList<>();
     }
 }

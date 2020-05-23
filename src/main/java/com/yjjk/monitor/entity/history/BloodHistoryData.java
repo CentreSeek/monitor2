@@ -15,21 +15,47 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
- * @Description: 血氧历史数据
  * @author CentreS
+ * @Description: 血氧历史数据
  * @create 2019/7/19
  */
 @Data
 @Accessors(chain = true)
 @ApiModel(description = "血氧历史数据")
-public class BloodHistoryData {
+public class BloodHistoryData extends BaseData {
 
-    @ApiModelProperty(value = "时间戳")
-    private Long timestamp;
     @ApiModelProperty(value = "血氧")
     private Double bloodOxygen;
+    @ApiModelProperty(value = "pi")
+    private Integer pi;
     @ApiModelProperty(value = "心率")
     private Double heartRate;
+    @ApiModelProperty(value = "呼吸率(deprecated)")
+    private Double respiratoryRate;
+
+
+    public static void main(String[] args) {
+        List<BloodHistoryData> list = new ArrayList<>();
+        BloodHistoryData a = new BloodHistoryData();
+        BloodHistoryData b = new BloodHistoryData();
+        BloodHistoryData c = new BloodHistoryData();
+        c.setTimestamp(2L);
+        a.setTimestamp(0L);
+        b.setTimestamp(1L);
+        list.add(a);
+        list.add(b);
+        list.add(c);
+        Collections.sort(list);
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i).getTimestamp());
+
+        }
+    }
+
 
 }

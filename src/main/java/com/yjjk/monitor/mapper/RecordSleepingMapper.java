@@ -5,6 +5,8 @@ import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorHeartRateVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorRespiratoryRateVO;
+import com.yjjk.monitor.entity.export.history.HistoryExportSleepingVO;
+import com.yjjk.monitor.entity.export.history.HistoryExportTemperatureVO;
 import com.yjjk.monitor.entity.history.BloodHistoryData;
 import com.yjjk.monitor.entity.history.SleepingHistoryData;
 import com.yjjk.monitor.my.mapper.MyMapper;
@@ -14,6 +16,14 @@ import java.util.List;
 
 public interface RecordSleepingMapper extends MyMapper<RecordSleeping> {
 
+
+    /**
+     * 获取导出records
+     * @param departmentId
+     * @param date
+     * @return
+     */
+    List<HistoryExportSleepingVO> getExportList(Integer departmentId, String date);
     /**
      * 获取某设备的数据
      * @param machineId

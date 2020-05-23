@@ -63,4 +63,12 @@ public interface HospitalService {
      * @return
      */
     List<HospitalBed> selectEmptyBeds(Map<String, Object> paramMap);
+
+    /**
+     * 获取未启用相同设备record
+     * @param departmentId
+     * @param type
+     * @return
+     */
+    List<HospitalBed> selectMonitorEmptyBeds(Integer departmentId,Integer type);
 }

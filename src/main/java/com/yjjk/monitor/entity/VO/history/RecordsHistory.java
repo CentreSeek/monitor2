@@ -31,7 +31,7 @@ public class RecordsHistory {
     private String patientCaseNum;
     private String departmentName;
     private String roomAndBed;
-//    private String machineName;
+    private String machineName;
     private String startTime;
     private String endTime;
     @ApiModelProperty(value = "使用状态 0-使用中 1-结束")

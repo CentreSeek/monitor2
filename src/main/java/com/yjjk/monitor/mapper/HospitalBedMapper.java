@@ -21,5 +21,18 @@ public interface HospitalBedMapper extends MyMapper<HospitalBed> {
 //
 //    int updateByPrimaryKey(HospitalBedMapper record);
 
+    /**
+     * 获取无recordBase床位
+     * @param paramMap
+     * @return
+     */
     List<HospitalBed> selectEmptyBeds(Map<String, Object> paramMap);
+
+    /**
+     * 获取未启用相同设备record
+     * @param departmentId
+     * @param type
+     * @return
+     */
+    List<HospitalBed> selectMonitorEmptyBeds(Integer departmentId,Integer type);
 }

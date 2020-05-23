@@ -65,7 +65,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import tk.mybatis.mapper.entity.Example;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,7 +124,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 }
             }
             if (monitorVOList.get(i).getRecordSleepingId() != -1) {
-                Integer battery = super.recordSleepingMapper.getBattery(monitorVOList.get(i).getBaseId());
+                Integer battery = super.recordSleepingMapper.getBattery(monitorVOList.get(i).getRecordSleepingId());
                 if (battery <= 10) {
                     MachinesInfoVO temp = new MachinesInfoVO();
                     temp.setMachineType(MachineEnum.SLEEPING.getType())
@@ -149,6 +148,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         MonitorRule hRule = null;
         MonitorRule rRule = null;
         MonitorRule bRule = null;
+        int errorStatus = 1;
         for (int i = 0; i < rule.size(); i++) {
             if (rule.get(i).getType().equals(MonitorEnum.TEMPERATURE.getType())) {
                 tRule = rule.get(i);
@@ -174,8 +174,10 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 Double temperature = Double.parseDouble(monitorVOList.get(i).getMonitorTemperatureVO().getTemperature());
                 if (temperature < tRule.getParamTwo() || (temperature > tRule.getParamOne() && temperature < tRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
+                    errorStatus = 2;
                 } else if (temperature > tRule.getParamThree()) {
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_RED.getType());
+                    errorStatus = 3;
                 } else {
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_WHITE.getType());
                 }
@@ -184,8 +186,10 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 Double heart = Double.parseDouble(monitorVOList.get(i).getMonitorHeartRateVO().getHeart());
                 if (heart < hRule.getParamTwo() || (heart > hRule.getParamOne() && heart < hRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
+                    errorStatus = 2;
                 } else if (heart > hRule.getParamThree()) {
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_RED.getType());
+                    errorStatus = 3;
                 } else {
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_WHITE.getType());
                 }
@@ -194,8 +198,10 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 Double respiratoryRate = Double.parseDouble(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory());
                 if (respiratoryRate < rRule.getParamTwo() || (respiratoryRate > rRule.getParamOne() && respiratoryRate < rRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
+                    errorStatus = 2;
                 } else if (respiratoryRate > rRule.getParamThree()) {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_RED.getType());
+                    errorStatus = 3;
                 } else {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_WHITE.getType());
                 }
@@ -204,12 +210,15 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 Double temperature = Double.parseDouble(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen());
                 if (temperature < bRule.getParamTwo() || (temperature > bRule.getParamOne() && temperature < bRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
+                    errorStatus = 2;
                 } else if (temperature > bRule.getParamThree()) {
                     monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_RED.getType());
+                    errorStatus = 3;
                 } else {
                     monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_WHITE.getType());
                 }
             }
+            monitorVOList.get(i).setErrorStatus(errorStatus);
         }
         monitorVO.setMonitorVOList(monitorVOList);
         return monitorVO;
@@ -259,17 +268,17 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     public MonitorBaseVO getHeartRate(MonitorBaseVO monitorBaseVO, Integer ecgRecordId, Integer bloodRecordId, Integer sleepingRecordId) {
         MonitorHeartRateVO data = new MonitorHeartRateVO();
         data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
+        if (sleepingRecordId != null && sleepingRecordId != -1) {
+            RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(sleepingRecordId);
+            data = super.recordSleepingMapper.getHeartRate(recordSleeping.getMachineId(), sleepingRecordId);
+        }
+        if (bloodRecordId != null && bloodRecordId != -1) {
+            RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(bloodRecordId);
+            data = super.recordBloodMapper.getHeartRate(recordBlood.getMachineId(), bloodRecordId);
+        }
         if (ecgRecordId != null && ecgRecordId != -1) {
             RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(ecgRecordId);
             data = super.recordEcgMapper.getHeartRate(recordEcg.getMachineId(), ecgRecordId);
-        }
-        if (bloodRecordId != null && bloodRecordId != -1) {
-            RecordBlood recordEcg = super.recordBloodMapper.selectByPrimaryKey(bloodRecordId);
-            data = super.recordBloodMapper.getHeartRate(recordEcg.getMachineId(), ecgRecordId);
-        }
-        if (sleepingRecordId != null && sleepingRecordId != -1) {
-            RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(sleepingRecordId);
-            data = super.recordSleepingMapper.getHeartRate(recordSleeping.getMachineId(), ecgRecordId);
         }
         monitorBaseVO.setMonitorHeartRateVO(data);
         return monitorBaseVO;
@@ -280,13 +289,13 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     public MonitorBaseVO getRespiratory(MonitorBaseVO monitorBaseVO, Integer ecgRecordId, Integer sleepingRecordId) {
         MonitorRespiratoryRateVO data = new MonitorRespiratoryRateVO();
         data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
+        if (sleepingRecordId != null && sleepingRecordId != -1) {
+            RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(sleepingRecordId);
+            data = super.recordSleepingMapper.getRespiratoryRate(recordSleeping.getMachineId(), sleepingRecordId);
+        }
         if (ecgRecordId != null && ecgRecordId != -1) {
             RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(ecgRecordId);
             data = super.recordEcgMapper.getRespiratoryRate(recordEcg.getMachineId(), ecgRecordId);
-        }
-        if (sleepingRecordId != null && sleepingRecordId != -1) {
-            RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(sleepingRecordId);
-            data = super.recordSleepingMapper.getRespiratoryRate(recordSleeping.getMachineId(), ecgRecordId);
         }
         monitorBaseVO.setMonitorRespiratoryRateVO(data);
         return monitorBaseVO;
@@ -310,9 +319,13 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             if (list.get(i).getRecordSleepingId() != -1) {
                 // 启用离床感应
                 MonitorBaseVO sleeping = super.recordSleepingMapper.getSleeping(list.get(i).getRecordSleepingId());
-                list.get(i).setSleepingUsage(0)
-                        .setSleepingUsage(MonitorUtils.getSleepingState(sleeping.getSleepingState()))
-                        .setSleepingLeaveTimes(sleeping.getSleepingLeaveTimes());
+                if (sleeping == null) {
+                    list.get(i).setSleepingUsage(null);
+                } else {
+                    list.get(i).setSleepingUsage(0)
+                            .setSleepingUsage(MonitorUtils.getSleepingState(sleeping.getSleepingState()))
+                            .setSleepingLeaveTimes(sleeping.getSleepingLeaveTimes());
+                }
             } else {
                 list.get(i).setSleepingUsage(1);
             }
@@ -333,6 +346,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineId(recordBase.getRecordTemperatureId())
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum());
+            if (recordTemperature.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
+                pojo1.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
+            } else {
+                pojo1.setUsageState(MonitorMachineListVO.USAGE_USED);
+            }
         } else {
             pojo1.setType(MachineEnum.TEMPERATURE.getType())
                     .setMachineId(recordBase.getRecordTemperatureId());
@@ -347,6 +365,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineId(recordBase.getRecordEcgId())
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum());
+            if (recordEcg.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
+                pojo2.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
+            } else {
+                pojo2.setUsageState(MonitorMachineListVO.USAGE_USED);
+            }
         } else {
             pojo2.setType(MachineEnum.ECG.getType())
                     .setMachineId(recordBase.getRecordEcgId());
@@ -361,6 +384,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineId(recordBase.getRecordBloodId())
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum());
+            if (recordBlood.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
+                pojo3.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
+            } else {
+                pojo3.setUsageState(MonitorMachineListVO.USAGE_USED);
+            }
         } else {
             pojo3.setType(MachineEnum.BLOOD.getType())
                     .setMachineId(recordBase.getRecordBloodId());
@@ -375,6 +403,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineId(recordBase.getRecordSleepingId())
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum());
+            if (recordSleeping.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
+                pojo4.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
+            } else {
+                pojo4.setUsageState(MonitorMachineListVO.USAGE_USED);
+            }
         } else {
             pojo4.setType(MachineEnum.SLEEPING.getType())
                     .setMachineId(recordBase.getRecordSleepingId());
@@ -391,14 +424,32 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         ManageLog log = new ManageLog(managerInfo.getId(), "stopMachine-" + MachineEnum.getName(type), DateUtil.getCurrentTime());
         cacheManageLog(recordBase.getId(), log);
         // 更新RecordBase信息
-        if (recordBase.getRecordTemperatureId() == -1
-                && recordBase.getRecordEcgId() == -1
-                && recordBase.getRecordSleepingId() == -1
-                && recordBase.getRecordBloodId() == -1) {
-            RecordBase param = new RecordBase();
-            param.setId(baseId).setUsageStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
-            super.recordBaseMapper.updateByPrimaryKeySelective(param);
+        RecordBase param = new RecordBase();
+        param.setId(baseId);
+        // recordBase停用设备
+        switch (type) {
+            case MachineConstant.TEMPERATURE:
+                param.setMachineTemperatureState(RecordBaseEnum.MACHINE_STATE_UN_USED.getType());
+                break;
+            case MachineConstant.ECG:
+                param.setMachineEcgState(RecordBaseEnum.MACHINE_STATE_UN_USED.getType());
+                break;
+            case MachineConstant.BLOOD:
+                param.setMachineBloodState(RecordBaseEnum.MACHINE_STATE_UN_USED.getType());
+                break;
+            case MachineConstant.SLEEPING:
+                param.setMachineSleepingState(RecordBaseEnum.MACHINE_STATE_UN_USED.getType());
+                break;
+            default:
         }
+        // 停用recordBase
+        if (recordBase.getMachineTemperatureState().equals(RecordBaseEnum.MACHINE_STATE_UN_USED.getType())
+                && recordBase.getMachineBloodState().equals(RecordBaseEnum.MACHINE_STATE_UN_USED.getType())
+                && recordBase.getMachineEcgState().equals(RecordBaseEnum.MACHINE_STATE_UN_USED.getType())
+                && recordBase.getMachineSleepingState().equals(RecordBaseEnum.MACHINE_STATE_UN_USED.getType())) {
+            param.setUsageStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
+        }
+        super.recordBaseMapper.updateByPrimaryKeySelective(param);
 
         switch (type) {
             case MachineConstant.TEMPERATURE:
@@ -424,6 +475,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         recordTemperature.setRecordStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType()).setEndTime(DateUtil.getCurrentTime()).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordTemperatureMapper.updateByPrimaryKeySelective(recordTemperature);
         deletePastData(MachineEnum.TEMPERATURE.getType(), recordTemperature.getMachineId());
+        changeMachineState(recordTemperature.getMachineId(), MachineConstant.USAGE_STATE_NORMAL);
         return machineService.startMachine(recordTemperature.getMachineId(), BackgroundSend.DATA_LOSE_CONNECTION);
     }
 
@@ -449,6 +501,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         recordEcg.setRecordStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType()).setEndTime(DateUtil.getCurrentTime()).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordEcgMapper.updateByPrimaryKeySelective(recordEcg);
         deletePastData(MachineEnum.ECG.getType(), recordEcg.getMachineId());
+        changeMachineState(recordEcg.getMachineId(), MachineConstant.USAGE_STATE_NORMAL);
         return machineService.startMachine(recordEcg.getMachineId(), BackgroundSend.DATA_LOSE_CONNECTION);
     }
 
@@ -462,6 +515,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         recordBlood.setRecordStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType()).setEndTime(DateUtil.getCurrentTime()).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordBloodMapper.updateByPrimaryKeySelective(recordBlood);
         deletePastData(MachineEnum.BLOOD.getType(), recordBlood.getMachineId());
+        changeMachineState(recordBlood.getMachineId(), MachineConstant.USAGE_STATE_NORMAL);
         return machineService.startMachine(recordBlood.getMachineId(), BackgroundSend.DATA_LOSE_CONNECTION);
     }
 
@@ -475,6 +529,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         recordSleeping.setRecordStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType()).setEndTime(DateUtil.getCurrentTime()).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordSleepingMapper.updateByPrimaryKeySelective(recordSleeping);
         deletePastData(MachineEnum.SLEEPING.getType(), recordSleeping.getMachineId());
+        changeMachineState(recordSleeping.getMachineId(), MachineConstant.USAGE_STATE_NORMAL);
         return machineService.startMachine(recordSleeping.getMachineId(), BackgroundSend.DATA_LOSE_CONNECTION);
     }
 
@@ -599,6 +654,28 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             cacheManageLog(recordBase.getId(), log);
 
         }
+        // 更新RecordBase信息
+        RecordBase param = new RecordBase();
+        param.setId(recordBase.getId());
+        // recordBase启用设备
+        switch (type) {
+            case MachineConstant.TEMPERATURE:
+                param.setMachineTemperatureState(RecordBaseEnum.MACHINE_STATE_USED.getType());
+                break;
+            case MachineConstant.ECG:
+                param.setMachineEcgState(RecordBaseEnum.MACHINE_STATE_USED.getType());
+                break;
+            case MachineConstant.BLOOD:
+                param.setMachineBloodState(RecordBaseEnum.MACHINE_STATE_USED.getType());
+                break;
+            case MachineConstant.SLEEPING:
+                param.setMachineSleepingState(RecordBaseEnum.MACHINE_STATE_USED.getType());
+                break;
+            default:
+        }
+        super.recordBaseMapper.updateByPrimaryKeySelective(param);
+
+
         // 管理日志
         ManagerInfo managerInfo = super.loginStateMapper.selectByToken(token);
         ManageLog log = new ManageLog(managerInfo.getId(), "startMachine-" + MachineEnum.getName(type) + ": id = " + machineId, DateUtil.getCurrentTime());
@@ -638,7 +715,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         return machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
     }
 
-    @Resource
+    @Autowired
     EcgService ecgService;
 
     @Override
@@ -742,6 +819,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 json = JSON.toJSONString(ecgHistory);
                 recordEcg.setHistory(json).setUpdatedTime(DateUtil.getCurrentTime());
                 super.recordEcgMapper.updateByPrimaryKeySelective(recordEcg);
+                deletePastData(MachineEnum.ECG.getType(), recordEcg.getMachineId());
                 return true;
             case MachineConstant.BLOOD:
                 RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(recordId);
@@ -751,6 +829,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 String s = JSON.toJSONString(bloodHistory);
                 recordBlood.setHistory(s).setUpdatedTime(DateUtil.getCurrentTime());
                 super.recordBloodMapper.updateByPrimaryKeySelective(recordBlood);
+                deletePastData(MachineEnum.BLOOD.getType(), recordBlood.getMachineId());
                 return true;
             case MachineConstant.SLEEPING:
                 RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(recordId);
@@ -760,6 +839,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 json = JSON.toJSONString(sleepingHistory);
                 recordSleeping.setHistory(json).setUpdatedTime(DateUtil.getCurrentTime());
                 super.recordSleepingMapper.updateByPrimaryKeySelective(recordSleeping);
+                deletePastData(MachineEnum.SLEEPING.getType(), recordSleeping.getMachineId());
                 return true;
             default:
                 return false;

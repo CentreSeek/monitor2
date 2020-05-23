@@ -14,6 +14,10 @@
         <result column="record_ecg_id" property="recordEcgId" jdbcType="INTEGER"/>
         <result column="record_blood_id" property="recordBloodId" jdbcType="INTEGER"/>
         <result column="record_sleeping_id" property="recordSleepingId" jdbcType="INTEGER"/>
+        <result column="machine_temperature_state" property="machineTemperatureState" jdbcType="INTEGER" />
+        <result column="machine_ecg_state" property="machineEcgState" jdbcType="INTEGER" />
+        <result column="machine_blood_state" property="machineBloodState" jdbcType="INTEGER" />
+        <result column="machine_sleeping_state" property="machineSleepingState" jdbcType="INTEGER" />
         <result column="usage_status" property="usageStatus" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
         <result column="created_time" property="createdTime" jdbcType="VARCHAR"/>

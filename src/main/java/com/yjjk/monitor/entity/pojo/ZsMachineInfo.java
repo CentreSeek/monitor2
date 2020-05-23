@@ -91,6 +91,7 @@ public class ZsMachineInfo {
 
     private Integer machineNameId;
     private String machineModel;
+    private String machineName;
     /**
      * 获取设备id
      *

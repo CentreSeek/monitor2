@@ -15,6 +15,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author CentreS
  * @Description: 启用设备
@@ -24,15 +26,19 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ApiModel("启用设备")
 public class StartBO {
-
+    @NotNull
     @ApiModelProperty(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应", required = true)
     private Integer type;
+    @NotNull
     @ApiModelProperty(value = "设备id", required = true)
     private Integer machineId;
+    @NotNull
     @ApiModelProperty(value = "床位id", required = true)
     private Integer bedId;
+    @NotNull
     @ApiModelProperty(value = "患者姓名", required = true)
     private String patientName;
+    @NotNull
     @ApiModelProperty(value = "病历号", required = true)
     private String caseNum;
 }

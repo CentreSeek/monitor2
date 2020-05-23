@@ -9,7 +9,7 @@
         <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
         <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
-        <result column="rank" jdbcType="INTEGER" property="rank"/>
+        <result column="type_code" jdbcType="INTEGER" property="typeCode"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, `name`, `level`, `type`, parent_id, create_time, `status`
@@ -29,7 +29,7 @@
           AND LEVEL = 1;
     </select>
     <select id="getTemperatureMachineName" resultMap="BaseResultMap">
-        SELECT id, NAME
+        SELECT id, NAME,type_code
         FROM `machine_type_info`
         WHERE TYPE = 0
           AND LEVEL = 0;

@@ -16,8 +16,8 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * @Description: 监控病人体温
  * @author CentreS
+ * @Description: 监控病人体温
  * @create 2019/7/22
  */
 @Data
@@ -33,5 +33,10 @@ public class MonitorMachineListVO {
     private String machineNo;
     @ApiModelProperty(value = "record:设备sn")
     private String machineSn;
+    @ApiModelProperty(value = "record:0-未使用 1-使用中")
+    private Integer usageState;
+
+    public static final int USAGE_UN_USED = 0;
+    public static final int USAGE_USED = 1;
 
 }

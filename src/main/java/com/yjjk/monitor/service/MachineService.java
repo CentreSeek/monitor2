@@ -12,7 +12,8 @@ package com.yjjk.monitor.service;
 
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.entity.ListVO;
-import com.yjjk.monitor.entity.export.MachineExportVO;
+import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
+import com.yjjk.monitor.entity.export.machine.MachineExportVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
 
@@ -168,6 +169,8 @@ public interface MachineService {
      * @return
      */
     List<MachineTypeInfo> getTemperatureMachineName();
+
+    List<MachineTypeListVO> getMonitorTypeList();
 
     /**
      * 获取设备型号

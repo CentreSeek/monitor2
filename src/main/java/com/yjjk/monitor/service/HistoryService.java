@@ -17,9 +17,12 @@ import com.yjjk.monitor.entity.VO.PagedGridResult;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
+import com.yjjk.monitor.entity.history.BaseData;
 import com.yjjk.monitor.entity.log.ManageLog;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -30,6 +33,7 @@ import java.util.List;
 @Service
 public interface HistoryService {
 
+    void export(HttpServletResponse response,Integer type, List dataList) throws IOException;
     /**
      * records-获取历史记录
      * @param pageBO
@@ -37,5 +41,32 @@ public interface HistoryService {
      * @return
      */
     PagedGridResult getHistory(PageBO pageBO, GetRecordsBO bo);
+
+    /**
+     * 获取持久化监测数据
+     *
+     * @param type
+     * @param recordId
+     * @return
+     */
+    Object getHistoryData(Integer type, Integer recordId);
+
+    /**
+     * 获取实时历史数据
+     * @param type
+     * @param baseId
+     * @return
+     */
+    List<BaseData> getMonitorData(Integer type, Integer baseId);
+
+    /**
+     * 获取导出数据
+     * @param type
+     * @param departmentId
+     * @param date
+     * @param timeList
+     * @return
+     */
+    List getExportHistoryList(Integer type, Integer departmentId,String date,List<String> timeList);
 
 }

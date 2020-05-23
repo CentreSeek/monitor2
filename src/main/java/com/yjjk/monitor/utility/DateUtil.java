@@ -11,6 +11,8 @@
 package com.yjjk.monitor.utility;
 
 
+import springfox.documentation.spring.web.SpringfoxWebMvcConfiguration;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -54,21 +56,16 @@ public class DateUtil {
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ft.format(date);
     }
+
     public static Long getCurrentTimeLong() {
         Date date = new Date();
         return date.getTime();
     }
 
-    /**
-     * 历史记录导出文件名
-     * @return
-     */
-    public static String getHistoryFileName() {
-        Date date = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat("yyyyMMddHHmm");
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("th").append(ft.format(date));
-        return buffer.toString();
+    public static String getDateTime(Long timestamp) {
+        Date date = new Date(timestamp);
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ft.format(date);
     }
 
 
@@ -175,6 +172,17 @@ public class DateUtil {
             long between = end.getTime() - start.getTime();
             long min = between / (60 * 1000);
             return min;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0L;
+    }
+
+    public static Long getDateTimeLong(String startTime) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date start = format.parse(startTime);
+            return start.getTime();
         } catch (ParseException e) {
             e.printStackTrace();
         }

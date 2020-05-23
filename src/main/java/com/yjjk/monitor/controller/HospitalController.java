@@ -16,14 +16,12 @@ import com.yjjk.monitor.entity.pojo.HospitalDepartment;
 import com.yjjk.monitor.entity.pojo.HospitalRoom;
 import com.yjjk.monitor.utility.ResultUtil;
 import io.swagger.annotations.ApiOperation;
-import javafx.geometry.HorizontalDirection;
+import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +38,7 @@ public class HospitalController extends BaseController {
 
     /**
      * 查询科室信息
+     *
      * @param departmentId
      */
     @RequestMapping(value = "/department", method = RequestMethod.GET)
@@ -61,6 +60,7 @@ public class HospitalController extends BaseController {
 
     /**
      * 查询房间信息
+     *
      * @param departmentId
      */
     @RequestMapping(value = "/rooms", method = RequestMethod.GET)
@@ -70,12 +70,20 @@ public class HospitalController extends BaseController {
         return ResultUtil.returnSuccess(list);
     }
 
-    @ApiOperation("获取空床位")
+    @ApiOperation("获取未启用recordBase空床位")
     @RequestMapping(value = {"/emptyBeds"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
-    public CommonResult<List<HospitalBed>> getTemperatureEmptyBeds(@RequestParam("departmentId") Integer departmentId) {
+    public CommonResult<List<HospitalBed>> getEmptyBeds(@RequestParam("departmentId") Integer departmentId) {
         Map<String, Object> paraMap = new HashMap();
         paraMap.put("departmentId", departmentId);
         List<HospitalBed> HospitalBeds = this.hospitalService.selectEmptyBeds(paraMap);
+        return ResultUtil.returnSuccess(HospitalBeds);
+    }
+
+    @ApiOperation("获取未启用某设备的空床位")
+    @RequestMapping(value = {"/monitorEmptyBeds"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    public CommonResult<List<HospitalBed>> getMonitorEmptyBeds(@RequestParam("departmentId") Integer departmentId,
+                                                               @ApiParam(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam("type") Integer type) {
+        List<HospitalBed> HospitalBeds = this.hospitalService.selectMonitorEmptyBeds(departmentId, type);
         return ResultUtil.returnSuccess(HospitalBeds);
     }
 }

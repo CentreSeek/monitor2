@@ -23,10 +23,8 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @ApiModel(description = "睡眠床带历史数据")
-public class SleepingHistoryData {
+public class SleepingHistoryData  extends BaseData {
 
-    @ApiModelProperty(value = "时间戳")
-    private Long timestamp;
     @ApiModelProperty(value = "心率")
     private Double heartRate;
     @ApiModelProperty(value = "呼吸率")

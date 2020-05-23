@@ -13,12 +13,15 @@ package com.yjjk.monitor.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
+import com.yjjk.monitor.constant.MachineConstant;
+import com.yjjk.monitor.constant.MachineEnum;
 import com.yjjk.monitor.constant.SearchMachineConstant;
 import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.VO.SearchMachineVO;
 import com.yjjk.monitor.entity.VO.SearchMachineVOBase;
-import com.yjjk.monitor.entity.export.MachineExport;
-import com.yjjk.monitor.entity.export.MachineExportVO;
+import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
+import com.yjjk.monitor.entity.export.machine.MachineExport;
+import com.yjjk.monitor.entity.export.machine.MachineExportVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
 import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
@@ -26,6 +29,7 @@ import com.yjjk.monitor.entity.transaction.BackgroundResult;
 import com.yjjk.monitor.entity.transaction.BackgroundSend;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.MachineService;
+import com.yjjk.monitor.service.MonitorService;
 import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.NetUtils;
 import com.yjjk.monitor.utility.ResultUtil;
@@ -33,6 +37,7 @@ import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +68,9 @@ public class MachineServiceImpl extends BaseService implements MachineService {
         return ResultUtil.returnSuccess();
     }
 
+    @Resource
+    MonitorService monitorService;
+
     @Override
     public CommonResult changeMachine(Integer oldMachineId, Integer newMachineId) throws Exception {
         // 连接设备
@@ -77,6 +85,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
         }
+        monitorService.changeMachineState(oldMachineId, MachineConstant.USAGE_STATE_NORMAL);
 
         // 连接设备
         ZsMachineInfo newMachineInfo = super.ZsMachineInfoMapper.selectByPrimaryKey(newMachineId);
@@ -89,6 +98,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
         }
+        monitorService.changeMachineState(newMachineId, MachineConstant.USAGE_STATE_USED);
         return ResultUtil.returnSuccess();
     }
 
@@ -159,7 +169,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
     @Override
     public ZsMachineInfo selectByPrimaryKey(Integer machineId) {
-        return super.ZsMachineInfoMapper.selectByPrimaryKey(machineId);
+        return super.ZsMachineInfoMapper.getByMachineId(machineId);
     }
 
     @Override
@@ -185,6 +195,20 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     @Override
     public List<MachineTypeInfo> getTemperatureMachineName() {
         return this.machineTypeInfoMapper.getTemperatureMachineName();
+    }
+
+    @Override
+    public List<MachineTypeListVO> getMonitorTypeList() {
+        List<MachineTypeInfo> temperatureMachineName = super.machineTypeInfoMapper.getTemperatureMachineName();
+        List<MachineTypeListVO> result = new ArrayList<>();
+        for (int i = 0; i < temperatureMachineName.size(); i++) {
+            MachineTypeListVO temp = new MachineTypeListVO();
+            temp.setMachineTypeId(temperatureMachineName.get(i).getId())
+                    .setValue(MachineEnum.getName(temperatureMachineName.get(i).getTypeCode()))
+                    .setId(temperatureMachineName.get(i).getTypeCode());
+            result.add(temp);
+        }
+        return result;
     }
 
     @Override

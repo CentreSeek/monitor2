@@ -21,7 +21,8 @@
         machine_id, `name`, machine_model, machine_num, machine_no, department_id, usage_state, remark,
     create_time, `status`, machine_type_id
     </sql>
-    <select id="selectMachineCount" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo" resultType="java.lang.Integer">
+    <select id="selectMachineCount" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo"
+            resultType="java.lang.Integer">
         select
         count(1)
         from zs_machine_info zmi
@@ -53,9 +54,10 @@
         </where>
     </select>
     <select id="selectByUsageState" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo"
-            resultMap="BaseResultMap">
+            resultType="com.yjjk.monitor.entity.pojo.ZsMachineInfo">
         select
-        zmi.machine_id, mti2.`name`, mti.name as machineModel, zmi.machine_num, zmi.machine_no, zmi.department_id,
+        zmi.machine_id, mti2.`name` as machineName, mti.name as machineModel, zmi.machine_num, zmi.machine_no,
+        zmi.department_id,
         zmi.usage_state, zmi.remark,
         zmi.create_time, zmi.`status`, zdi.name as department_name
         from zs_machine_info zmi
@@ -127,7 +129,7 @@
         </where>
     </select>
     <select id="export" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo"
-            resultType="com.yjjk.monitor.entity.export.MachineExport">
+            resultType="com.yjjk.monitor.entity.export.machine.MachineExport">
         select
         zmi.machine_no, mti2.`name`, mti.name as machineModel, zmi.machine_num, zdi.name as department_name,
         zmi.usage_state,

@@ -10,17 +10,47 @@
  */
 package com.yjjk.monitor.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.yjjk.monitor.constant.ExportExcelConstant;
 import com.yjjk.monitor.constant.MachineConstant;
+import com.yjjk.monitor.constant.MonitorConstant;
 import com.yjjk.monitor.entity.BO.PageBO;
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
 import com.yjjk.monitor.entity.VO.PagedGridResult;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
+import com.yjjk.monitor.entity.export.history.HistoryExportBloodVO;
+import com.yjjk.monitor.entity.export.history.HistoryExportEcgVO;
+import com.yjjk.monitor.entity.export.history.HistoryExportSleepingVO;
+import com.yjjk.monitor.entity.export.history.HistoryExportTemperatureVO;
+import com.yjjk.monitor.entity.history.BaseData;
+import com.yjjk.monitor.entity.history.BloodHistory;
+import com.yjjk.monitor.entity.history.BloodHistoryData;
+import com.yjjk.monitor.entity.history.EcgHistory;
+import com.yjjk.monitor.entity.history.EcgHistoryData;
+import com.yjjk.monitor.entity.history.SleepingHistory;
+import com.yjjk.monitor.entity.history.SleepingHistoryData;
+import com.yjjk.monitor.entity.history.TemperatureHistory;
+import com.yjjk.monitor.entity.history.TemperatureHistoryData;
+import com.yjjk.monitor.entity.pojo.RecordBase;
+import com.yjjk.monitor.entity.pojo.RecordBlood;
+import com.yjjk.monitor.entity.pojo.RecordEcg;
+import com.yjjk.monitor.entity.pojo.RecordSleeping;
+import com.yjjk.monitor.entity.pojo.RecordTemperature;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.HistoryService;
+import com.yjjk.monitor.utility.DataUtils;
+import com.yjjk.monitor.utility.DateUtil;
+import com.yjjk.monitor.utility.ExcelUtils;
+import com.yjjk.monitor.utility.FileNameUtils;
+import com.yjjk.monitor.utility.MonitorUtils;
+import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -30,6 +60,22 @@ import java.util.List;
  */
 @Service
 public class HistoryServiceImpl extends BaseService implements HistoryService {
+
+    @Override
+    public void export(HttpServletResponse response, Integer type, List dataList) throws IOException {
+        if (type == MachineConstant.TEMPERATURE) {
+            ExcelUtils.exportExcel(response, dataList, FileNameUtils.getHistoryFileName(), ExportExcelConstant.TEMPERATURE_TITLE);
+        }
+        if (type == MachineConstant.ECG) {
+            ExcelUtils.exportExcel(response, dataList, FileNameUtils.getHistoryFileName(), ExportExcelConstant.ECG_TITLE);
+        }
+        if (type == MachineConstant.BLOOD) {
+            ExcelUtils.exportExcel(response, dataList, FileNameUtils.getHistoryFileName(), ExportExcelConstant.BLOOD_TITLE);
+        }
+        if (type == MachineConstant.SLEEPING) {
+            ExcelUtils.exportExcel(response, dataList, FileNameUtils.getHistoryFileName(), ExportExcelConstant.SLEEPING_TITLE);
+        }
+    }
 
     @Override
     public PagedGridResult getHistory(PageBO pageBO, GetRecordsBO bo) {
@@ -50,5 +96,206 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
             default:
                 return setterPagedGrid(new ArrayList<>(), pageBO.getPage());
         }
+    }
+
+
+    @Override
+    public Object getHistoryData(Integer type, Integer recordId) {
+        switch (type) {
+            case MachineConstant.TEMPERATURE:
+                RecordTemperature recordTemperature = super.recordTemperatureMapper.selectByPrimaryKey(recordId);
+                List<TemperatureHistoryData> histories1 = super.recordTemperatureMapper.getHistories(recordTemperature.getMachineId());
+                TemperatureHistory temperatureHistory = JSON.parseObject(recordTemperature.getHistory(), TemperatureHistory.class);
+                temperatureHistory.getHistory().add(histories1);
+                // 清理空数组
+                Iterator<List<TemperatureHistoryData>> iterator = temperatureHistory.getHistory().iterator();
+                while (iterator.hasNext()) {
+                    List<TemperatureHistoryData> temp = iterator.next();
+                    if (StringUtils.isNullorEmpty(temp)) {
+                        iterator.remove();
+                    }
+                }
+                return temperatureHistory;
+            case MachineConstant.ECG:
+                RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(recordId);
+                List<EcgHistoryData> histories2 = super.recordEcgMapper.getHistories(recordEcg.getMachineId());
+                EcgHistory ecgHistory = JSON.parseObject(recordEcg.getHistory(), EcgHistory.class);
+                ecgHistory.getHistory().add(histories2);
+                // 清理空数组
+                Iterator<List<EcgHistoryData>> iterator2 = ecgHistory.getHistory().iterator();
+                while (iterator2.hasNext()) {
+                    List<EcgHistoryData> temp = iterator2.next();
+                    if (StringUtils.isNullorEmpty(temp)) {
+                        iterator2.remove();
+                    }
+                }
+                return ecgHistory;
+            case MachineConstant.BLOOD:
+                RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(recordId);
+                List<BloodHistoryData> histories3 = super.recordBloodMapper.getHistories(recordBlood.getMachineId());
+                BloodHistory bloodHistory = JSON.parseObject(recordBlood.getHistory(), BloodHistory.class);
+                bloodHistory.getHistory().add(histories3);
+                // 清理空数组
+                Iterator<List<BloodHistoryData>> iterator3 = bloodHistory.getHistory().iterator();
+                while (iterator3.hasNext()) {
+                    List<BloodHistoryData> temp = iterator3.next();
+                    if (StringUtils.isNullorEmpty(temp)) {
+                        iterator3.remove();
+                    }
+                }
+                return bloodHistory;
+            case MachineConstant.SLEEPING:
+                RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(recordId);
+                List<SleepingHistoryData> histories = super.recordSleepingMapper.getHistories(recordSleeping.getMachineId());
+                SleepingHistory sleepingHistory = JSON.parseObject(recordSleeping.getHistory(), SleepingHistory.class);
+                sleepingHistory.getHistory().add(histories);
+                // 清理空数组
+                Iterator<List<SleepingHistoryData>> iterator4 = sleepingHistory.getHistory().iterator();
+                while (iterator4.hasNext()) {
+                    List<SleepingHistoryData> temp = iterator4.next();
+                    if (StringUtils.isNullorEmpty(temp)) {
+                        iterator4.remove();
+                    }
+                }
+                return sleepingHistory;
+            default:
+                return new TemperatureHistoryData();
+        }
+    }
+
+    @Override
+    public List<BaseData> getMonitorData(Integer type, Integer baseId) {
+        RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
+        if (type == MonitorConstant.TEMPERATURE) {
+            TemperatureHistory temData = (TemperatureHistory) getHistoryData(MachineConstant.TEMPERATURE, recordBase.getRecordTemperatureId());
+            List<BaseData> param1 = new ArrayList<>();
+            for (int i = 0; i < temData.getHistory().size(); i++) {
+                param1.addAll(temData.getHistory().get(i));
+            }
+            return param1;
+        }
+        if (type == MonitorConstant.BLOOD_PI) {
+            BloodHistory bloodData = (BloodHistory) getHistoryData(MachineConstant.BLOOD, recordBase.getRecordBloodId());
+            List<BaseData> param2 = new ArrayList<>();
+            for (int i = 0; i < bloodData.getHistory().size(); i++) {
+                param2.addAll(bloodData.getHistory().get(i));
+            }
+            for (int i = 0; i < param2.size(); i++) {
+                BloodHistoryData temp = (BloodHistoryData) param2.get(i);
+                temp.setHeartRate(null).setRespiratoryRate(null);
+            }
+            return param2;
+        }
+        if (type == MonitorConstant.HEART_RESPIRATORY_RATE) {
+            List<EcgHistory> list1 = new ArrayList<>();
+            List<BloodHistoryData> list2 = new ArrayList<>();
+            List<SleepingHistoryData> list3 = new ArrayList<>();
+            if (recordBase.getRecordEcgId() != -1) {
+                EcgHistory ecgData = (EcgHistory) getHistoryData(MachineConstant.ECG, recordBase.getRecordEcgId());
+                list1 = DataUtils.concatList(ecgData.getHistory());
+            }
+            if (recordBase.getRecordBloodId() != -1) {
+                BloodHistory bloodData = (BloodHistory) getHistoryData(MachineConstant.BLOOD, recordBase.getRecordBloodId());
+                list2 = DataUtils.concatList(bloodData.getHistory());
+                for (int i = 0; i < list2.size(); i++) {
+                    list2.get(i).setBloodOxygen(null).setPi(null);
+                }
+            }
+            if (recordBase.getRecordSleepingId() != -1) {
+                SleepingHistory sleepingData = (SleepingHistory) getHistoryData(MachineConstant.SLEEPING, recordBase.getRecordSleepingId());
+                list3 = DataUtils.concatList(sleepingData.getHistory());
+                for (int i = 0; i < list3.size(); i++) {
+                    list3.get(i).setSleepState(null);
+                }
+            }
+            List<BaseData> baseData = DataUtils.baseConcatData(list2, list3);
+            baseData = DataUtils.baseConcatData(list1, baseData);
+            return baseData;
+        }
+
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List getExportHistoryList(Integer type, Integer departmentId, String date, List<String> timeList) {
+        List result = new ArrayList<>();
+        if (type == MachineConstant.TEMPERATURE) {
+            List<HistoryExportTemperatureVO> exportList = super.recordTemperatureMapper.getExportList(departmentId, date);
+            for (int i = 0; i < exportList.size(); i++) {
+                TemperatureHistory temperatureHistory = JSON.parseObject(exportList.get(i).getHistory(), TemperatureHistory.class);
+                List<TemperatureHistoryData> timesData = DataUtils.getTimesData(temperatureHistory.getHistory(), timeList, date);
+                for (int j = 0; j < timesData.size(); j++) {
+                    HistoryExportTemperatureVO pojo = new HistoryExportTemperatureVO();
+                    pojo.setTemperature(String.valueOf(timesData.get(j).getTemperature()))
+                            .setBed(exportList.get(i).getBed())
+                            .setCaseNum(exportList.get(i).getCaseNum())
+                            .setDepartmentName(exportList.get(i).getDepartmentName())
+                            .setPatientName(exportList.get(i).getPatientName())
+                            .setRoom(exportList.get(i).getRoom())
+                            .setTime(DateUtil.getDateTime(timesData.get(j).getTimestamp()));
+                    result.add(pojo);
+                }
+            }
+        }
+        if (type == MachineConstant.ECG) {
+            List<HistoryExportEcgVO> exportList = super.recordEcgMapper.getExportList(departmentId, date);
+            for (int i = 0; i < exportList.size(); i++) {
+                EcgHistory ecgHistory = JSON.parseObject(exportList.get(i).getHistory(), EcgHistory.class);
+                List<EcgHistoryData> timesData = DataUtils.getTimesData(ecgHistory.getHistory(), timeList, date);
+                for (int j = 0; j < timesData.size(); j++) {
+                    HistoryExportEcgVO pojo = new HistoryExportEcgVO();
+                    pojo.setHeartRate(String.valueOf(timesData.get(j).getHeartRate()))
+                            .setRespiratoryRate(String.valueOf(timesData.get(j).getRespiratoryRate()))
+                            .setBed(exportList.get(i).getBed())
+                            .setCaseNum(exportList.get(i).getCaseNum())
+                            .setDepartmentName(exportList.get(i).getDepartmentName())
+                            .setPatientName(exportList.get(i).getPatientName())
+                            .setRoom(exportList.get(i).getRoom())
+                            .setTime(DateUtil.getDateTime(timesData.get(i).getTimestamp()));
+                    result.add(pojo);
+                }
+            }
+        }
+        if (type == MachineConstant.BLOOD) {
+            List<HistoryExportBloodVO> exportList = super.recordBloodMapper.getExportList(departmentId, date);
+            for (int i = 0; i < exportList.size(); i++) {
+                BloodHistory bloodHistory = JSON.parseObject(exportList.get(i).getHistory(), BloodHistory.class);
+                List<BloodHistoryData> timesData = DataUtils.getTimesData(bloodHistory.getHistory(), timeList, date);
+                for (int j = 0; j < timesData.size(); j++) {
+                    HistoryExportBloodVO pojo = new HistoryExportBloodVO();
+                    pojo.setBlood(String.valueOf(timesData.get(j).getBloodOxygen()))
+                            .setPi(String.valueOf(timesData.get(j).getPi()))
+                            .setHeartRate(String.valueOf(timesData.get(j).getHeartRate()))
+                            .setBed(exportList.get(i).getBed())
+                            .setCaseNum(exportList.get(i).getCaseNum())
+                            .setDepartmentName(exportList.get(i).getDepartmentName())
+                            .setPatientName(exportList.get(i).getPatientName())
+                            .setRoom(exportList.get(i).getRoom())
+                            .setTime(DateUtil.getDateTime(timesData.get(j).getTimestamp()));
+                    result.add(pojo);
+                }
+            }
+        }
+        if (type == MachineConstant.SLEEPING) {
+            List<HistoryExportSleepingVO> exportList = super.recordSleepingMapper.getExportList(departmentId, date);
+            for (int i = 0; i < exportList.size(); i++) {
+                SleepingHistory sleepingHistory = JSON.parseObject(exportList.get(i).getHistory(), SleepingHistory.class);
+                List<SleepingHistoryData> timesData = DataUtils.getTimesData(sleepingHistory.getHistory(), timeList, date);
+                for (int j = 0; j < timesData.size(); j++) {
+                    HistoryExportSleepingVO pojo = new HistoryExportSleepingVO();
+                    pojo.setSleepingState(String.valueOf(MonitorUtils.getSleepingState(timesData.get(j).getSleepState())))
+                            .setHeartRate(String.valueOf(timesData.get(j).getHeartRate()))
+                            .setRespiratoryRate(String.valueOf(timesData.get(j).getRespiratoryRate()))
+                            .setBed(exportList.get(i).getBed())
+                            .setCaseNum(exportList.get(i).getCaseNum())
+                            .setDepartmentName(exportList.get(i).getDepartmentName())
+                            .setPatientName(exportList.get(i).getPatientName())
+                            .setRoom(exportList.get(i).getRoom())
+                            .setTime(DateUtil.getDateTime(timesData.get(j).getTimestamp()));
+                    result.add(pojo);
+                }
+            }
+        }
+        return result;
     }
 }

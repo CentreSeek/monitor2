@@ -76,6 +76,30 @@ public class RecordBase {
     private Integer usageStatus;
 
     /**
+     * 设备使用状态 0-未使用 1-使用中
+     */
+    @Column(name = "machine_temperature_state")
+    private Integer machineTemperatureState;
+
+    /**
+     * 设备使用状态 0-未使用 1-使用中
+     */
+    @Column(name = "machine_ecg_state")
+    private Integer machineEcgState;
+
+    /**
+     * 设备使用状态 0-未使用 1-使用中
+     */
+    @Column(name = "machine_blood_state")
+    private Integer machineBloodState;
+
+    /**
+     * 设备使用状态 0-未使用 1-使用中
+     */
+    @Column(name = "machine_sleeping_state")
+    private Integer machineSleepingState;
+
+    /**
      * 状态 0：正常 1：删除
      */
     private Integer status;
