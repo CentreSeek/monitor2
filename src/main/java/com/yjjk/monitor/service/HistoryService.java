@@ -18,6 +18,7 @@ import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
 import com.yjjk.monitor.entity.history.BaseData;
+import com.yjjk.monitor.entity.history.TemperatureHistory;
 import com.yjjk.monitor.entity.log.ManageLog;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,20 @@ import java.util.List;
 @Service
 public interface HistoryService {
 
+    /**
+     * 单人导出过滤体温数据
+     * @param dataList
+     * @param temperature
+     * @return
+     */
+    TemperatureHistory filterTemperatureData(TemperatureHistory dataList,Double temperature) ;
+    /**
+     * 批量导出
+     * @param response
+     * @param type
+     * @param dataList
+     * @throws IOException
+     */
     void export(HttpServletResponse response,Integer type, List dataList) throws IOException;
     /**
      * records-获取历史记录

@@ -58,6 +58,13 @@ public class HospitalController extends BaseController {
         return ResultUtil.returnSuccess(list);
     }
 
+    @RequestMapping(value = "/bedCount", method = RequestMethod.GET)
+    public CommonResult getDepartments(@RequestParam(value = "departmentId") Integer departmentId) {
+        /********************** 参数初始化 **********************/
+        int count = super.hospitalService.getBedCount(departmentId);
+        return ResultUtil.returnSuccess(count);
+    }
+
     /**
      * 查询房间信息
      *

@@ -12,11 +12,16 @@ package com.yjjk.monitor.controller;
 
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
+import com.yjjk.monitor.constant.MachineConstant;
 import com.yjjk.monitor.entity.BO.PageBO;
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
 import com.yjjk.monitor.entity.VO.PagedGridResult;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.history.BaseData;
+import com.yjjk.monitor.entity.history.BloodHistory;
+import com.yjjk.monitor.entity.history.EcgHistory;
+import com.yjjk.monitor.entity.history.SleepingHistory;
+import com.yjjk.monitor.entity.history.TemperatureHistory;
 import com.yjjk.monitor.utility.ResultUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -30,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,7 +90,8 @@ public class HistoryController extends BaseController {
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
     }
-    @ApiOperation("page历史记录：时间点导出")
+
+    @ApiOperation("page历史记录：时间点拍批量导出")
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public void export(@ApiParam(value = "时间点：格式  00:00:00", required = true) @RequestParam(value = "timeList") List<String> timeList,
                        @ApiParam(value = "导出日期：格式  0000-00-00", required = true) @RequestParam(value = "date") String date,
@@ -101,11 +108,34 @@ public class HistoryController extends BaseController {
         }
     }
 
+    @ApiOperation("page历史记录：单人导出")
     @RequestMapping(value = "/privateExport", method = RequestMethod.GET)
     public void privateExport(@ApiParam(value = "筛选规则，筛选大于该摄氏度的体温") @RequestParam(value = "temperature", required = false) Double temperature,
-                              @ApiParam(value = "语言 0：中文 1：英文", required = true) @RequestParam(value = "language") Integer language,
                               @ApiParam(value = "recordId", required = true) @RequestParam(value = "recordId") Integer recordId,
+                              @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type,
+//                              @ApiParam(value = "语言 0：中文 1：英文", required = true) @RequestParam(value = "language") Integer language,
                               HttpServletResponse response) throws IOException {
+        Object historyData = super.historyService.getHistoryData(type, recordId);
+        List list = new ArrayList();
+        if (type == MachineConstant.TEMPERATURE) {
+            TemperatureHistory temperatureHistory = (TemperatureHistory) super.historyService.filterTemperatureData((TemperatureHistory) historyData, temperature);
+            list = temperatureHistory.getHistory();
+
+        }
+        if (type == MachineConstant.ECG) {
+            EcgHistory ecgHistory = (EcgHistory) historyData;
+            list = ecgHistory.getHistory();
+        }
+        if (type == MachineConstant.BLOOD) {
+            BloodHistory bloodHistory = (BloodHistory) historyData;
+            list = bloodHistory.getHistory();
+        }
+        if (type == MachineConstant.SLEEPING) {
+            SleepingHistory sleepingHistory = (SleepingHistory) historyData;
+            list = sleepingHistory.getHistory();
+        }
+        super.historyService.export(response, type, list);
+
     }
 
 }

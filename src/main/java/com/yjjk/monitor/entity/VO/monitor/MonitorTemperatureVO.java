@@ -31,11 +31,13 @@ public class MonitorTemperatureVO {
     private String temperature;
     @ApiModelProperty(value = "param：预警 0：正常 1：橙色 2：红色")
     private Integer temperatureAlert;
-    @ApiModelProperty(value = "param：使用时间")
+    @ApiModelProperty(value = "param：使用时间(min)")
     private String useTimes;
 
     @ApiModelProperty(value = "param：设备电量")
     private Integer battery;
     @ApiModelProperty(value = "box：体温贴盒子信息 LOW：低电量 NORMAL：正常")
     private String boxBatteryStatus;
+    @ApiModelProperty(value = "异常预警：0-正常 1-异常预警")
+    private Integer alert;
 }

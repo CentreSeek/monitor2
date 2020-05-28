@@ -35,4 +35,11 @@ public interface HospitalBedMapper extends MyMapper<HospitalBed> {
      * @return
      */
     List<HospitalBed> selectMonitorEmptyBeds(Integer departmentId,Integer type);
+
+    /**
+     * 获取床位数量数据
+     * @param departmentId
+     * @return
+     */
+    int getBedCount(Integer departmentId);
 }

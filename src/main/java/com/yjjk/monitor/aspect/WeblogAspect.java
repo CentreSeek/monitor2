@@ -68,6 +68,9 @@ public class WeblogAspect {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
         String token = request.getHeader("token");
+        if (token == null) {
+            token = request.getParameter("token");
+        }
         Signature signature = joinPoint.getSignature();
         if (!signature.getName().equals("managerLogin") && !signature.getName().equals("managerLoginOut")) {
             if (token == null) {

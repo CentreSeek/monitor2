@@ -36,16 +36,23 @@
         WHERE `usage_status` = 0
         AND `status` = 0
         <if test="type == 0">
-            and record_temperature_id <![CDATA[<>]]> -1
+            and machine_temperature_state <![CDATA[<>]]> 0
         </if>
         <if test="type == 1">
-            and record_ecg_id <![CDATA[<>]]> -1
+            and machine_ecg_state <![CDATA[<>]]> 0
         </if>
         <if test="type == 2">
-            and record_blood_id <![CDATA[<>]]> -1
+            and machine_blood_state <![CDATA[<>]]> 0
         </if>
         <if test="type == 3">
-            and record_sleeping_id <![CDATA[<>]]> -1
+            and machine_sleeping_state <![CDATA[<>]]> 0
         </if>)
+    </select>
+    <select id="getBedCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM hospital_bed zbi
+                 LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
+                 LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
+        WHERE zdi.department_id = #{departmentId,jdbcType=INTEGER}
     </select>
 </mapper>

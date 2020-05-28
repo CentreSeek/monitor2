@@ -75,7 +75,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     public CommonResult changeMachine(Integer oldMachineId, Integer newMachineId) throws Exception {
         // 连接设备
         BackgroundSend backgroundSend = new BackgroundSend();
-        ZsMachineInfo machineInfo = super.ZsMachineInfoMapper.selectByPrimaryKey(oldMachineId);
+        ZsMachineInfo machineInfo = super.ZsMachineInfoMapper.getByMachineId(oldMachineId);
         backgroundSend.setDeviceId(machineInfo.getMachineNum());
         backgroundSend.setData(BackgroundSend.DATA_LOSE_CONNECTION);
         String s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
@@ -88,7 +88,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
         monitorService.changeMachineState(oldMachineId, MachineConstant.USAGE_STATE_NORMAL);
 
         // 连接设备
-        ZsMachineInfo newMachineInfo = super.ZsMachineInfoMapper.selectByPrimaryKey(newMachineId);
+        ZsMachineInfo newMachineInfo = super.ZsMachineInfoMapper.getByMachineId(newMachineId);
         backgroundSend.setDeviceId(newMachineInfo.getMachineNum());
         backgroundSend.setData(BackgroundSend.DATA_CONNECTION);
         s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
@@ -123,7 +123,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
     @Override
     public int insertByMachineNum(ZsMachineInfo machineInfo) {
-        return this.ZsMachineInfoMapper.insertByMachineNum(machineInfo);
+        return this.ZsMachineInfoMapper.insertSelective(machineInfo);
     }
 
     @Override

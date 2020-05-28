@@ -10,7 +10,11 @@
  */
 package com.yjjk.monitor.utility;
 
-import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -93,17 +97,16 @@ public class ExcelUtils {
         sheet.setDefaultColumnWidth(columnWidth);
 
         int rowIndex = 0;
-        T object = excelData.get(0);
-        Field[] fields = object.getClass().getDeclaredFields();
         // 创建标题行
         HSSFRow row = sheet.createRow(rowIndex++);
-        if (cellsName != null) {
-            for (int i = 0; i < cellsName.length; i++) {
-                HSSFCell cell = row.createCell(i);
-                HSSFRichTextString text = new HSSFRichTextString(cellsName[i]);
-                cell.setCellValue(text);
-            }
-        } else {
+        for (int i = 0; i < cellsName.length; i++) {
+            HSSFCell cell = row.createCell(i);
+            HSSFRichTextString text = new HSSFRichTextString(cellsName[i]);
+            cell.setCellValue(text);
+        }
+        if (cellsName == null) {
+            T object = excelData.get(0);
+            Field[] fields = object.getClass().getDeclaredFields();
             for (int i = 0; i < fields.length; i++) {
                 HSSFCell cell = row.createCell(i);
                 fields[i].setAccessible(true);
@@ -138,8 +141,14 @@ public class ExcelUtils {
         //准备将Excel的输出流通过response输出到页面下载
         //八进制输出流
         response.setContentType("application/octet-stream;charset=utf-8");
+//        response.setContentType("application/download;charset=utf-8");
         //设置导出Excel的名称
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+
+//        FileOutputStream out = new FileOutputStream("C:\\" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()).toString() + ".xls");
+//        workbook.write(out);
+//        out.close();
+
         //刷新缓冲
         response.flushBuffer();
         //workbook将Excel写入到response的输出流中，供页面下载该Excel文件
@@ -147,6 +156,7 @@ public class ExcelUtils {
         //关闭workbook
         workbook.close();
     }
+
 
     /**
      * 将数据写入文本文件
@@ -165,7 +175,7 @@ public class ExcelUtils {
         StringBuffer write;
         try {
             Date date = new Date();
-            outSTr = new FileOutputStream(new File(path+"/"+date.getTime()+".txt"));
+            outSTr = new FileOutputStream(new File(path + "/" + date.getTime() + ".txt"));
             Buff = new BufferedOutputStream(outSTr);
             for (int i = 0; i < list.size(); i++) {
                 write = new StringBuffer();
@@ -189,7 +199,7 @@ public class ExcelUtils {
 
     public static void main(String[] args) {
         long a = 1590139205348L;
-        long b = a/60000*60000;
+        long b = a / 60000 * 60000;
         Date date = new Date(a);
         Date dateB = new Date(b);
         System.out.println(a);

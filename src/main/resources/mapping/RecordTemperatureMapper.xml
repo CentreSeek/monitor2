@@ -31,14 +31,13 @@
     <select id="getTemperature" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorTemperatureVO">
         SELECT
-        rt.`id`,
-        rt.`record_status` as recordState,
-        zmi.`machine_id`,
-        zmi.machine_no,
-        zmi.machine_num,
+        rt.`id` as recordId,
+        # zmi.`machine_id`,
         zmi.battery,
         zmi.`box_battery`,
-        zti.temperature
+        zti.temperature,
+        CONCAT(TIMESTAMPDIFF(MINUTE, rt.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'小时',TIMESTAMPDIFF(MINUTE,
+        rt.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'分') as useTimes
         FROM
         record_temperature rt
         LEFT JOIN zs_machine_info zmi
@@ -87,7 +86,7 @@
                 and hd.department_id = #{departmentId, jdbcType=INTEGER}
             </if>
             <if test="patientName != null">
-                and zpi.name = #{patientName, jdbcType=VARCHAR}
+                and pai.name = #{patientName, jdbcType=VARCHAR}
             </if>
         </where>
     </select>
@@ -112,8 +111,8 @@
         LEFT JOIN `hospital_department` hd
         ON hr.`department_id` = hd.`department_id`
         WHERE rt.status = 0 and rb.status = 0
-        AND rt.`start_time`<![CDATA[<=]]> concat(#{date, jdbcType=VARCHAR} ,' 24:00:00')
-        AND (rt.`end_time` is not NULL OR rt.`end_time` <![CDATA[>=]]> concat(#{date, jdbcType=VARCHAR} ,' 00:00:00'))
+        AND rt.`start_time`<![CDATA[>=]]> concat(#{date, jdbcType=VARCHAR} ,' 00:00:00')
+        AND rt.`start_time` <![CDATA[<=]]> concat(#{date, jdbcType=VARCHAR} ,' 24:00:00')
         <if test="departmentId != null">
             and hd.department_id = #{departmentId,jdbcType=INTEGER}
         </if>

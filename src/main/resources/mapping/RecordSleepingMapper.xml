@@ -32,14 +32,15 @@
     <select id="getHeartRate" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorHeartRateVO">
         SELECT
-        rs.`id`,
-        rs.`record_status`  as recordState,
-        zmi.`machine_id`,
-        zmi.machine_no,
-        zmi.machine_num,
+        rs.`id` as recordId,
+        # zmi.`machine_id`,
+        # zmi.machine_no,
+        # zmi.machine_num,
         zmi.battery,
         zmi.`box_battery`,
-        current.heart_rate
+        current.heart_rate as heart,
+        CONCAT(TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'小时',TIMESTAMPDIFF(MINUTE,
+        rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'分') as useTimes
         FROM
         record_sleeping rs
         LEFT JOIN zs_machine_info zmi
@@ -58,14 +59,15 @@
     <select id="getRespiratoryRate" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorRespiratoryRateVO">
         SELECT
-        rs.`id`,
-        rs.`record_status`,
-        zmi.`machine_id`,
-        zmi.machine_no,
-        zmi.machine_num,
+        rs.`id` as recordId,
+        # zmi.`machine_id`,
+        # zmi.machine_no,
+        # zmi.machine_num,
         zmi.battery,
         zmi.`box_battery`,
-        current.respiratory_rate
+        current.respiratory_rate as respiratory,
+        CONCAT(TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'小时',TIMESTAMPDIFF(MINUTE,
+        rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'分') as useTimes
         FROM
         record_sleeping rs
         LEFT JOIN zs_machine_info zmi
@@ -86,8 +88,9 @@
         SELECT current.sleep_state, current.sleepingLeaveTimes
         from record_sleeping rs
         left join
-        (SELECT sleep_state, TIMESTAMPDIFF(MINUTE,
-        create_time, CONCAT(CURDATE(),' ',CURTIME())) as sleepingLeaveTimes,machine_id
+        (SELECT sleep_state, CONCAT(TIMESTAMPDIFF(MINUTE, create_time, CONCAT(CURDATE(),' ',CURTIME())) DIV
+        60,'小时',TIMESTAMPDIFF(MINUTE, create_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'分') as
+        sleepingLeaveTimes,machine_id
         FROM zs_sleeping_belt_info
         WHERE machine_id = 535 AND TIMESTAMPDIFF(MINUTE,
         create_time, CONCAT(CURDATE(),' ',CURTIME()))
@@ -148,7 +151,7 @@
                 and hd.department_id = #{departmentId, jdbcType=INTEGER}
             </if>
             <if test="patientName != null">
-                and zpi.name = #{patientName, jdbcType=VARCHAR}
+                and pai.name = #{patientName, jdbcType=VARCHAR}
             </if>
         </where>
     </select>
@@ -173,8 +176,8 @@
         LEFT JOIN `hospital_department` hd
         ON hr.`department_id` = hd.`department_id`
         WHERE record.status = 0 and rb.status = 0
-        AND record.`start_time`<![CDATA[<=]]> concat(#{date, jdbcType=VARCHAR} ,' 24:00:00')
-        AND (record.`end_time` is not NULL OR record.`end_time` <![CDATA[>=]]> concat(#{date, jdbcType=VARCHAR} ,' 00:00:00'))
+        AND record.`start_time`<![CDATA[>=]]> concat(#{date, jdbcType=VARCHAR} ,' 00:00:00')
+        AND record.`start_time` <![CDATA[<=]]> concat(#{date, jdbcType=VARCHAR} ,' 24:00:00')
         <if test="departmentId != null">
             and hd.department_id = #{departmentId,jdbcType=INTEGER}
         </if>

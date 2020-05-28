@@ -19,6 +19,14 @@ public enum MonitorEnum {
     HEART_RATE(1, "心率"),
     RESPIRATORY_RATE(2, "呼吸率"),
     BLOOD_OXYGEN(3, "血氧"),
+
+    ID_UN_USED(-1, "未使用"),
+
+    SLEEPING_USAGE_UN_USED(0, "未使用"),
+    SLEEPING_USAGE_USED(1, "使用"),
+
+    ALERT_NORMAL(0, "正常"),
+    ALERT_ERROR(1, "预警")
     ;
 
     private Integer type;
@@ -34,6 +42,12 @@ public enum MonitorEnum {
         return this.type;
     }
 
+    public static void main(String[] args) {
+        long a = 184L;
+        long b = 184L;
+        System.out.println(a== b);
+
+    }
     public static String getName(Integer type) {
         for (MonitorEnum r : MonitorEnum.values()) {
             if (type.equals(r.getType())) {

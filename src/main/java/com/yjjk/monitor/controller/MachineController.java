@@ -60,7 +60,6 @@ public class MachineController extends BaseController {
         if (count > 0 || count2 > 0) {
             return ResultUtil.returnError(ErrorCodeEnum.MACHINE_EXIST_ERROR);
         }
-//        machineInfo.setMachineTypeId(super.machineService.selectByMachineModel(machineInfo.getMachineModel()));
         int i = super.machineService.insertByMachineNum(machineInfo);
         if (i == 0) {
             return ResultUtil.returnError(ErrorCodeEnum.MACHINE_INSERT_ERROR);
@@ -166,10 +165,11 @@ public class MachineController extends BaseController {
         List<ListVO> list = super.machineService.selectUsageListByTypeId(map);
         return ResultUtil.returnSuccess(list);
     }
+
     @ApiOperation(value = "page设备模块-list：获取设备信息")
     @RequestMapping(value = "/machineListNo", method = RequestMethod.GET)
     public CommonResult getMachineListMachineModel(
-                                       @ApiParam(value = "设备类型：名称", required = true) @RequestParam(value = "machineTypeId") Integer machineTypeId) {
+            @ApiParam(value = "设备类型：名称", required = true) @RequestParam(value = "machineTypeId") Integer machineTypeId) {
         /********************** 参数初始化 **********************/
         Map<String, Object> map = new HashMap<>();
         map.put("machineTypeId", machineTypeId);
@@ -257,7 +257,7 @@ public class MachineController extends BaseController {
      */
     @ApiOperation(value = "page设备管理-list：获取设备名称")
     @RequestMapping(value = "/machineName", method = RequestMethod.GET)
-    public CommonResult getTemperatureMachineName() {
+    public CommonResult<List<MachineTypeInfo>> getTemperatureMachineName() {
         try {
             /********************** 参数初始化 **********************/
             List<MachineTypeInfo> list = super.machineService.getTemperatureMachineName();

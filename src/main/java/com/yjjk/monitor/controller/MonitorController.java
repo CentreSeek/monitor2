@@ -13,38 +13,38 @@ package com.yjjk.monitor.controller;
 import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
-import com.yjjk.monitor.constant.MachineEnum;
 import com.yjjk.monitor.entity.BO.monitor.MonitorRuleBO;
+import com.yjjk.monitor.entity.BO.monitor.MonitorRuleBOData;
+import com.yjjk.monitor.entity.BO.monitor.MonitorRuleBODatabase;
 import com.yjjk.monitor.entity.BO.monitor.StartBO;
 import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
-import com.yjjk.monitor.entity.history.TemperatureHistory;
-import com.yjjk.monitor.entity.history.TemperatureHistoryData;
-import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.MonitorRule;
 import com.yjjk.monitor.entity.pojo.PatientInfo;
-import com.yjjk.monitor.entity.pojo.RecordTemperature;
 import com.yjjk.monitor.utility.ResultUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.logging.impl.LogKitLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author CentreS
@@ -94,7 +94,7 @@ public class MonitorController extends BaseController {
     @RequestMapping(value = "/changeMachine", method = RequestMethod.PUT)
     public CommonResult changeTemperatureMachine(@RequestParam(value = "baseId") Integer baseId,
                                                  @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") Integer type,
-                                                 @RequestParam(value = "machineId") Integer machineId, HttpServletRequest request) {
+                                                 @ApiParam(value = "新设备id") @RequestParam(value = "machineId") Integer machineId, HttpServletRequest request) {
         try {
             return super.monitorService.changeMachine(baseId, type, machineId, request.getHeader("token"));
         } catch (Exception e) {
@@ -153,12 +153,13 @@ public class MonitorController extends BaseController {
         }
     }
 
-
     @ApiOperation("设置监测规则")
     @RequestMapping(value = "/setRule", method = RequestMethod.POST)
-    public CommonResult setMonitorRule(@Valid @ModelAttribute List<MonitorRuleBO> list, HttpServletRequest request) {
+//    @PostMapping("/setRule")
+//    @ResponseBody
+    public CommonResult setMonitorRule(@RequestBody MonitorRuleBOData data, HttpServletRequest request) {
         try {
-            super.monitorRuleService.setMonitorRule(list, request.getHeader("token"));
+            super.monitorRuleService.setMonitorRule(data.getList(), request.getHeader("token"));
             return ResultUtil.returnSuccess("");
         } catch (Exception e) {
             LOGGER.error("业务异常信息：[{}]", e.getMessage(), e);
@@ -188,15 +189,5 @@ public class MonitorController extends BaseController {
 //        return ResultUtil.returnSuccess(list);
 //    }
 
-    public static void main(String[] args) {
-        TemperatureHistory temperatureHistory = new TemperatureHistory();
-        List<List<TemperatureHistoryData>> temp = new ArrayList<List<TemperatureHistoryData>>();
-        temperatureHistory.setHistory(temp);
-        String s = JSON.toJSONString(temperatureHistory);
-        System.out.println(s);
-        TemperatureHistory temperatureHistory1 = JSON.parseObject(s, TemperatureHistory.class);
-        System.out.println(temperatureHistory1.getHistory().add(null));
-
-    }
 
 }

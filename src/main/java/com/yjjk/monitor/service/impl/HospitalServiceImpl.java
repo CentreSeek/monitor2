@@ -68,4 +68,9 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
     public List<HospitalBed> selectMonitorEmptyBeds(Integer departmentId, Integer type) {
         return super.HospitalBedMapper.selectMonitorEmptyBeds(departmentId,type);
     }
+
+    @Override
+    public int getBedCount(Integer departmentId) {
+        return super.HospitalBedMapper.getBedCount(departmentId);
+    }
 }

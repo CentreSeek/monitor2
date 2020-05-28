@@ -23,6 +23,7 @@ import com.yjjk.monitor.entity.export.history.HistoryExportBloodVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportEcgVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportSleepingVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportTemperatureVO;
+import com.yjjk.monitor.entity.export.history.export.HistoryExportTemperatureVOO;
 import com.yjjk.monitor.entity.history.BaseData;
 import com.yjjk.monitor.entity.history.BloodHistory;
 import com.yjjk.monitor.entity.history.BloodHistoryData;
@@ -60,6 +61,25 @@ import java.util.List;
  */
 @Service
 public class HistoryServiceImpl extends BaseService implements HistoryService {
+
+    @Override
+    public TemperatureHistory filterTemperatureData(TemperatureHistory dataList, Double temperature) {
+        List<List<TemperatureHistoryData>> history = dataList.getHistory();
+        for (int i = 0; i < history.size(); i++) {
+            if (history.get(i) == null) {
+                break;
+            }
+            Iterator<TemperatureHistoryData> iterator = history.get(i).iterator();
+            while (iterator.hasNext()) {
+                TemperatureHistoryData next = iterator.next();
+                if (next.getTemperature() < temperature) {
+                    iterator.remove();
+                }
+            }
+        }
+        dataList.setHistory(history);
+        return dataList;
+    }
 
     @Override
     public void export(HttpServletResponse response, Integer type, List dataList) throws IOException {
@@ -104,9 +124,11 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
         switch (type) {
             case MachineConstant.TEMPERATURE:
                 RecordTemperature recordTemperature = super.recordTemperatureMapper.selectByPrimaryKey(recordId);
-                List<TemperatureHistoryData> histories1 = super.recordTemperatureMapper.getHistories(recordTemperature.getMachineId());
                 TemperatureHistory temperatureHistory = JSON.parseObject(recordTemperature.getHistory(), TemperatureHistory.class);
-                temperatureHistory.getHistory().add(histories1);
+                if (recordTemperature.getMachineId() != -1) {
+                    List<TemperatureHistoryData> histories1 = super.recordTemperatureMapper.getHistories(recordTemperature.getMachineId());
+                    temperatureHistory.getHistory().add(histories1);
+                }
                 // 清理空数组
                 Iterator<List<TemperatureHistoryData>> iterator = temperatureHistory.getHistory().iterator();
                 while (iterator.hasNext()) {
@@ -132,9 +154,11 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                 return ecgHistory;
             case MachineConstant.BLOOD:
                 RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(recordId);
-                List<BloodHistoryData> histories3 = super.recordBloodMapper.getHistories(recordBlood.getMachineId());
                 BloodHistory bloodHistory = JSON.parseObject(recordBlood.getHistory(), BloodHistory.class);
-                bloodHistory.getHistory().add(histories3);
+                if (recordBlood.getMachineId() != -1) {
+                    List<BloodHistoryData> histories3 = super.recordBloodMapper.getHistories(recordBlood.getMachineId());
+                    bloodHistory.getHistory().add(histories3);
+                }
                 // 清理空数组
                 Iterator<List<BloodHistoryData>> iterator3 = bloodHistory.getHistory().iterator();
                 while (iterator3.hasNext()) {
@@ -146,9 +170,11 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                 return bloodHistory;
             case MachineConstant.SLEEPING:
                 RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(recordId);
-                List<SleepingHistoryData> histories = super.recordSleepingMapper.getHistories(recordSleeping.getMachineId());
                 SleepingHistory sleepingHistory = JSON.parseObject(recordSleeping.getHistory(), SleepingHistory.class);
-                sleepingHistory.getHistory().add(histories);
+                if (recordSleeping.getMachineId() != -1) {
+                    List<SleepingHistoryData> histories = super.recordSleepingMapper.getHistories(recordSleeping.getMachineId());
+                    sleepingHistory.getHistory().add(histories);
+                }
                 // 清理空数组
                 Iterator<List<SleepingHistoryData>> iterator4 = sleepingHistory.getHistory().iterator();
                 while (iterator4.hasNext()) {
@@ -225,7 +251,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                 TemperatureHistory temperatureHistory = JSON.parseObject(exportList.get(i).getHistory(), TemperatureHistory.class);
                 List<TemperatureHistoryData> timesData = DataUtils.getTimesData(temperatureHistory.getHistory(), timeList, date);
                 for (int j = 0; j < timesData.size(); j++) {
-                    HistoryExportTemperatureVO pojo = new HistoryExportTemperatureVO();
+                    HistoryExportTemperatureVOO pojo = new HistoryExportTemperatureVOO();
                     pojo.setTemperature(String.valueOf(timesData.get(j).getTemperature()))
                             .setBed(exportList.get(i).getBed())
                             .setCaseNum(exportList.get(i).getCaseNum())
