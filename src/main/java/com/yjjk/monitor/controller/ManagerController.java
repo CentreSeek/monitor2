@@ -17,6 +17,7 @@ import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.PasswordUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,6 +38,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/manage")
+@Api(tags = {"管理员模块"})
 public class ManagerController extends BaseController {
 
     /**

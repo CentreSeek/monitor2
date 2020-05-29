@@ -192,7 +192,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
     @Override
     public List<BaseData> getMonitorData(Integer type, Integer baseId) {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
-        if (type == MonitorConstant.TEMPERATURE) {
+        if (type == MonitorConstant.TEMPERATURE && recordBase.getRecordTemperatureId() != -1) {
             TemperatureHistory temData = (TemperatureHistory) getHistoryData(MachineConstant.TEMPERATURE, recordBase.getRecordTemperatureId());
             List<BaseData> param1 = new ArrayList<>();
             for (int i = 0; i < temData.getHistory().size(); i++) {
@@ -200,7 +200,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
             }
             return param1;
         }
-        if (type == MonitorConstant.BLOOD_PI) {
+        if (type == MonitorConstant.BLOOD_PI&& recordBase.getRecordBloodId() != -1) {
             BloodHistory bloodData = (BloodHistory) getHistoryData(MachineConstant.BLOOD, recordBase.getRecordBloodId());
             List<BaseData> param2 = new ArrayList<>();
             for (int i = 0; i < bloodData.getHistory().size(); i++) {

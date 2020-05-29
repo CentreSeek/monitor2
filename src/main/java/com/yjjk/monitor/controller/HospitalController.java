@@ -11,10 +11,12 @@
 package com.yjjk.monitor.controller;
 
 import com.yjjk.monitor.configer.CommonResult;
+import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.pojo.HospitalBed;
 import com.yjjk.monitor.entity.pojo.HospitalDepartment;
 import com.yjjk.monitor.entity.pojo.HospitalRoom;
 import com.yjjk.monitor.utility.ResultUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/hospital")
+@Api(tags = {"医院模块"})
 public class HospitalController extends BaseController {
 
 
@@ -91,6 +94,13 @@ public class HospitalController extends BaseController {
     public CommonResult<List<HospitalBed>> getMonitorEmptyBeds(@RequestParam("departmentId") Integer departmentId,
                                                                @ApiParam(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam("type") Integer type) {
         List<HospitalBed> HospitalBeds = this.hospitalService.selectMonitorEmptyBeds(departmentId, type);
+        return ResultUtil.returnSuccess(HospitalBeds);
+    }
+    @ApiOperation("page监控模块：获取过滤床位list")
+    @RequestMapping(value = {"/filterBeds"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    public CommonResult<List<ListVO>> getMonitorFilterBeds(@RequestParam("departmentId") Integer departmentId,
+                                                           @ApiParam(value = "筛选之后的床位") @RequestParam("bedId") Integer bedId) {
+        List<ListVO> HospitalBeds = this.hospitalService.getMonitorBedList(departmentId, bedId);
         return ResultUtil.returnSuccess(HospitalBeds);
     }
 }

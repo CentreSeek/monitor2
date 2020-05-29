@@ -23,6 +23,7 @@ import com.yjjk.monitor.entity.history.EcgHistory;
 import com.yjjk.monitor.entity.history.SleepingHistory;
 import com.yjjk.monitor.entity.history.TemperatureHistory;
 import com.yjjk.monitor.utility.ResultUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("history")
+@Api(tags = {"历史记录模块"})
 public class HistoryController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HistoryController.class);
@@ -68,7 +70,10 @@ public class HistoryController extends BaseController {
                                        @RequestParam(value = "recordId") Integer recordId) {
         /********************** 参数初始化 **********************/
         try {
-            Object monitorHistory = super.historyService.getHistoryData(type, recordId);
+            Object monitorHistory = null;
+            if (recordId == -1) {
+                monitorHistory = super.historyService.getHistoryData(type, recordId);
+            }
             return ResultUtil.returnSuccess(monitorHistory);
         } catch (Exception e) {
             e.printStackTrace();

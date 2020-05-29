@@ -213,8 +213,10 @@
           AND LEVEL = 0;
     </select>
     <select id="getByMachineId" resultMap="BaseResultMap">
-        SELECT *
-        FROM `zs_machine_info`
+        SELECT zmi.machine_id,zmi.machine_num,zmi.machine_no,mti2.id as machine_type_id
+        FROM `zs_machine_info` zmi
+                 left join machine_type_info mti on zmi.machine_type_id = mti.id
+                 left join machine_type_info mti2 on mti.parent_id = mti2.id
         WHERE machine_id = #{machine_id, jdbcType=INTEGER}
     </select>
     <insert id="insertByMachineNums" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo">

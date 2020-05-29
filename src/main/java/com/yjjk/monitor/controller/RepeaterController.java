@@ -18,6 +18,7 @@ import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
 import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,6 +38,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("repeater")
+@Api(tags = {"路由管理模块"})
 public class RepeaterController extends BaseController {
 
 

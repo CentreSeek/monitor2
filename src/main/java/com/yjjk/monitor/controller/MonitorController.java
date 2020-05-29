@@ -20,6 +20,7 @@ import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
 import com.yjjk.monitor.entity.pojo.MonitorRule;
 import com.yjjk.monitor.entity.pojo.PatientInfo;
 import com.yjjk.monitor.utility.ResultUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -44,6 +45,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("monitor")
+@Api(tags = {"监控模块"})
 public class MonitorController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MonitorController.class);
@@ -135,7 +137,7 @@ public class MonitorController extends BaseController {
         try {
             MonitorVO monitorVO = new MonitorVO();
             List<MonitorBaseVO> monitors = super.monitorService.getMonitors(departmentId);
-            List<MachineTypeListVO> list = super.machineService.getMonitorTypeList();
+            List<MachineTypeListVO> list = super.machineService.getMonitorTypeList(departmentId);
             monitorVO.setMonitorVOList(monitors).setMachineTypeList(list);
             monitorVO = super.monitorService.setMonitorRule(monitorVO, departmentId);
             monitorVO = super.monitorService.setMachineState(monitorVO);

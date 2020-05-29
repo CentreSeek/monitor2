@@ -1,5 +1,6 @@
 package com.yjjk.monitor.mapper;
 
+import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.my.mapper.MyMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -36,4 +37,10 @@ public interface MachineTypeInfoMapper extends MyMapper<MachineTypeInfo> {
      * @return
      */
     List<MachineTypeInfo> getMachineModel(Integer machineTypeId);
+
+    /**
+     * 获取监控页设备概况
+     * @return
+     */
+    List<MachineTypeListVO> getMonitorMachineTypes(Integer departmentId);
 }

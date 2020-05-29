@@ -11,6 +11,7 @@
 package com.yjjk.monitor.service.impl;
 
 import com.yjjk.monitor.constant.ExportConstant;
+import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.pojo.HospitalBed;
 import com.yjjk.monitor.entity.pojo.HospitalDepartment;
 import com.yjjk.monitor.entity.pojo.HospitalRoom;
@@ -66,11 +67,16 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
 
     @Override
     public List<HospitalBed> selectMonitorEmptyBeds(Integer departmentId, Integer type) {
-        return super.HospitalBedMapper.selectMonitorEmptyBeds(departmentId,type);
+        return super.HospitalBedMapper.selectMonitorEmptyBeds(departmentId, type);
     }
 
     @Override
     public int getBedCount(Integer departmentId) {
         return super.HospitalBedMapper.getBedCount(departmentId);
+    }
+
+    @Override
+    public List<ListVO> getMonitorBedList(Integer departmentId, Integer bedId) {
+        return super.HospitalBedMapper.getMonitorBedList(departmentId, bedId);
     }
 }

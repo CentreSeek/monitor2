@@ -413,7 +413,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineId(byMachineId.getMachineId())
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum())
-                    .setTypeName(MachineEnum.TEMPERATURE.getValue());
+                    .setTypeName(MachineEnum.TEMPERATURE.getValue())
+                    .setMachineTypeId(byMachineId.getMachineTypeId());
             if (recordTemperature.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
                 pojo1.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
             } else {

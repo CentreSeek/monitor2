@@ -170,7 +170,12 @@ public interface MachineService {
      */
     List<MachineTypeInfo> getTemperatureMachineName();
 
-    List<MachineTypeListVO> getMonitorTypeList();
+    /**
+     * 监控页面-获取设备概况
+     * @param departmentId
+     * @return
+     */
+    List<MachineTypeListVO> getMonitorTypeList(Integer departmentId);
 
     /**
      * 获取设备型号

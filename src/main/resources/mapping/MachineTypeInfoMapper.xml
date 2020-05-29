@@ -29,7 +29,7 @@
           AND LEVEL = 1;
     </select>
     <select id="getTemperatureMachineName" resultMap="BaseResultMap">
-        SELECT id, NAME,type_code
+        SELECT id, NAME, type_code
         FROM `machine_type_info`
         WHERE TYPE = 0
           AND LEVEL = 0;
@@ -52,4 +52,17 @@
         #{type,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{createTime,jdbcType=VARCHAR},
         #{status,jdbcType=INTEGER})
     </insert>
+
+    <select id="getMonitorMachineTypes" resultType="com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO" parameterType="java.util.Map">
+        SELECT mti.id machineTypeId, mti.NAME as typeName, mti.type_code as id , IFNULL(machineCount, 0) as machineCount
+        FROM `machine_type_info` mti
+                 LEFT JOIN (SELECT mti2.`id`, COUNT(1) AS machineCount
+                            FROM zs_machine_info zmi
+                                     LEFT JOIN machine_type_info mti ON zmi.`machine_type_id` = mti.`id`
+                                     LEFT JOIN machine_type_info mti2 ON mti.`parent_id` = mti2.`id`
+                     where zmi.department_id = #{departmentId,jdbcType=INTEGER}) a
+                           ON a.id = mti.`id`
+        WHERE TYPE = 0
+          AND LEVEL = 0;
+    </select>
 </mapper>

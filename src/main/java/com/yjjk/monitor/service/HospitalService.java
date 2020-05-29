@@ -10,6 +10,7 @@
  */
 package com.yjjk.monitor.service;
 
+import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.pojo.HospitalBed;
 import com.yjjk.monitor.entity.pojo.HospitalDepartment;
 import com.yjjk.monitor.entity.pojo.HospitalRoom;
@@ -78,4 +79,12 @@ public interface HospitalService {
      * @return
      */
     int getBedCount(Integer departmentId);
+
+    /**
+     * 监控页面-筛选床位
+     * @param departmentId
+     * @param bedId
+     * @return
+     */
+    List<ListVO> getMonitorBedList(Integer departmentId, Integer bedId);
 }
