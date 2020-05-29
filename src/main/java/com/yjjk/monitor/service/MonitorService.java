@@ -29,6 +29,14 @@ import java.util.List;
 public interface MonitorService {
 
     /**
+     * 过滤床位信息
+     * @param monitorVO
+     * @param start
+     * @param end
+     * @return
+     */
+    MonitorVO bedFilter(MonitorVO monitorVO,Integer start, Integer end);
+    /**
      * 设置设备状态
      *
      * @param monitorVO

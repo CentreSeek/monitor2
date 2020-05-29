@@ -26,7 +26,10 @@ public enum MonitorEnum {
     SLEEPING_USAGE_USED(1, "使用"),
 
     ALERT_NORMAL(0, "正常"),
-    ALERT_ERROR(1, "预警")
+    ALERT_ERROR(1, "预警"),
+
+    CHILDREN_RECORD_USED(0, "记录中"),
+    CHILDREN_RECORD_UN_USED(1, "结束")
     ;
 
     private Integer type;

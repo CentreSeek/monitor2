@@ -10,12 +10,9 @@
  */
 package com.yjjk.monitor.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
-import com.yjjk.monitor.entity.BO.monitor.MonitorRuleBO;
 import com.yjjk.monitor.entity.BO.monitor.MonitorRuleBOData;
-import com.yjjk.monitor.entity.BO.monitor.MonitorRuleBODatabase;
 import com.yjjk.monitor.entity.BO.monitor.StartBO;
 import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
@@ -25,26 +22,20 @@ import com.yjjk.monitor.entity.pojo.PatientInfo;
 import com.yjjk.monitor.utility.ResultUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.logging.impl.LogKitLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author CentreS
@@ -138,7 +129,9 @@ public class MonitorController extends BaseController {
      */
     @ApiOperation("获取监控信息")
     @RequestMapping(value = "/monitor", method = RequestMethod.GET)
-    public CommonResult<MonitorVO> getMonitors(@ApiParam(value = "科室id", required = true) @NotNull @RequestParam(value = "departmentId") Integer departmentId) {
+    public CommonResult<MonitorVO> getMonitors(@ApiParam(value = "科室id", required = true) @NotNull @RequestParam(value = "departmentId") Integer departmentId,
+                                               @ApiParam(value = "起始床位id") @RequestParam(value = "start", required = false) Integer start,
+                                               @ApiParam(value = "结束床位id") @RequestParam(value = "end", required = false) Integer end) {
         try {
             MonitorVO monitorVO = new MonitorVO();
             List<MonitorBaseVO> monitors = super.monitorService.getMonitors(departmentId);
@@ -146,6 +139,9 @@ public class MonitorController extends BaseController {
             monitorVO.setMonitorVOList(monitors).setMachineTypeList(list);
             monitorVO = super.monitorService.setMonitorRule(monitorVO, departmentId);
             monitorVO = super.monitorService.setMachineState(monitorVO);
+            if (start != null || end != null) {
+                monitorVO = super.monitorService.bedFilter(monitorVO, start, end);
+            }
             return ResultUtil.returnSuccess(monitorVO);
         } catch (Exception e) {
             e.printStackTrace();
