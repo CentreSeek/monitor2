@@ -435,7 +435,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineId(byMachineId.getMachineId())
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum())
-                    .setTypeName(MachineEnum.ECG.getValue());
+                    .setTypeName(MachineEnum.ECG.getValue())
+                    .setMachineTypeId(byMachineId.getMachineTypeId());;
             if (recordEcg.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
                 pojo2.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
             } else {
@@ -456,7 +457,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineId(byMachineId.getMachineId())
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum())
-                    .setTypeName(MachineEnum.BLOOD.getValue());
+                    .setTypeName(MachineEnum.BLOOD.getValue())
+                    .setMachineTypeId(byMachineId.getMachineTypeId());;
             if (recordBlood.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
                 pojo3.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
             } else {
@@ -477,8 +479,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineId(byMachineId.getMachineId())
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum())
-                    .setTypeName(MachineEnum.SLEEPING.getValue());
-            ;
+                    .setTypeName(MachineEnum.SLEEPING.getValue())
+                    .setMachineTypeId(byMachineId.getMachineTypeId());
             if (recordSleeping.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
                 pojo4.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
             } else {
