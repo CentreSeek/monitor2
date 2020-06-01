@@ -316,6 +316,7 @@ public class EcgServiceImpl extends BaseService implements EcgService {
         // 连接心电设备
         BackgroundSend backgroundSend = new BackgroundSend();
         Integer repeaterId = super.zsRepeaterInfoMapper.selectByBedId(bedId);
+        repeaterId = 1;
         backgroundSend.setActionId(String.valueOf(repeaterId));
         if (StringUtils.isNullorEmpty(repeaterId)) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

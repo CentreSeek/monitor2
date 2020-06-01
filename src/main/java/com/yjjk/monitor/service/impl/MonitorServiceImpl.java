@@ -805,6 +805,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         // 心电设备能否启用
         boolean b = ecgService.hasRepeater(recordBase.getBedId());
+//        boolean b = true;
         if (!b) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError(ErrorCodeEnum.ERROR_USAGE_ECG);

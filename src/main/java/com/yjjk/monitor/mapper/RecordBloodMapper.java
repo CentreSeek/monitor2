@@ -19,7 +19,7 @@ public interface RecordBloodMapper extends MyMapper<RecordBlood> {
      * @param date
      * @return
      */
-    List<HistoryExportBloodVO> getExportList(Integer departmentId, String date);
+    List<HistoryExportBloodVO> getExportList(Integer departmentId, String date,Integer recordId);
     /**
      * 获取某设备的数据
      *

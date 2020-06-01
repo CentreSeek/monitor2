@@ -22,6 +22,7 @@ import com.yjjk.monitor.entity.history.BloodHistory;
 import com.yjjk.monitor.entity.history.EcgHistory;
 import com.yjjk.monitor.entity.history.SleepingHistory;
 import com.yjjk.monitor.entity.history.TemperatureHistory;
+import com.yjjk.monitor.utility.DataUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -121,25 +122,12 @@ public class HistoryController extends BaseController {
 //                              @ApiParam(value = "语言 0：中文 1：英文", required = true) @RequestParam(value = "language") Integer language,
                               HttpServletResponse response) throws IOException {
         Object historyData = super.historyService.getHistoryData(type, recordId);
-        List list = new ArrayList();
         if (type == MachineConstant.TEMPERATURE) {
-            TemperatureHistory temperatureHistory = (TemperatureHistory) super.historyService.filterTemperatureData((TemperatureHistory) historyData, temperature);
-            list = temperatureHistory.getHistory();
+            historyData = super.historyService.filterTemperatureData((TemperatureHistory) historyData, temperature);
 
         }
-        if (type == MachineConstant.ECG) {
-            EcgHistory ecgHistory = (EcgHistory) historyData;
-            list = ecgHistory.getHistory();
-        }
-        if (type == MachineConstant.BLOOD) {
-            BloodHistory bloodHistory = (BloodHistory) historyData;
-            list = bloodHistory.getHistory();
-        }
-        if (type == MachineConstant.SLEEPING) {
-            SleepingHistory sleepingHistory = (SleepingHistory) historyData;
-            list = sleepingHistory.getHistory();
-        }
-        super.historyService.export(response, type, list);
+        List privateExportHistoryList = super.historyService.getPrivateExportHistoryList(type, recordId, historyData);
+        super.historyService.export(response, type, privateExportHistoryList);
 
     }
 

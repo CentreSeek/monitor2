@@ -142,10 +142,15 @@
         LEFT JOIN `hospital_department` hd
         ON hr.`department_id` = hd.`department_id`
         WHERE record.status = 0 and rb.status = 0
-        AND record.`start_time`<![CDATA[>=]]> concat(#{date, jdbcType=VARCHAR} ,' 00:00:00')
-        AND record.`start_time` <![CDATA[<=]]> concat(#{date, jdbcType=VARCHAR} ,' 24:00:00')
+        <if test="date != null">
+            AND record.`start_time`<![CDATA[>=]]> concat(#{date, jdbcType=VARCHAR} ,' 00:00:00')
+            AND record.`start_time` <![CDATA[<=]]> concat(#{date, jdbcType=VARCHAR} ,' 24:00:00')
+        </if>
         <if test="departmentId != null">
             and hd.department_id = #{departmentId,jdbcType=INTEGER}
+        </if>
+        <if test="recordId != null">
+            and record.`id` = #{recordId,jdbcType=INTEGER}
         </if>
     </select>
 </mapper>

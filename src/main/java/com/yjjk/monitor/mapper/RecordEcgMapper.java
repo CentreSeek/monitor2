@@ -20,7 +20,7 @@ public interface RecordEcgMapper extends MyMapper<RecordEcg> {
      * @param date
      * @return
      */
-    List<HistoryExportEcgVO> getExportList(Integer departmentId, String date);
+    List<HistoryExportEcgVO> getExportList(Integer departmentId, String date,Integer recordId);
     /**
      * 获取某设备的数据
      * @param machineId

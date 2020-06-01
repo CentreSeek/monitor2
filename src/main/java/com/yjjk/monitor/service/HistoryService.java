@@ -84,4 +84,6 @@ public interface HistoryService {
      */
     List getExportHistoryList(Integer type, Integer departmentId,String date,List<String> timeList);
 
+    List getPrivateExportHistoryList(Integer type,Integer recordId,Object data);
+
 }

@@ -23,7 +23,7 @@ public interface RecordSleepingMapper extends MyMapper<RecordSleeping> {
      * @param date
      * @return
      */
-    List<HistoryExportSleepingVO> getExportList(Integer departmentId, String date);
+    List<HistoryExportSleepingVO> getExportList(Integer departmentId, String date,Integer recordId);
     /**
      * 获取某设备的数据
      * @param machineId

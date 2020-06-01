@@ -38,7 +38,8 @@ public interface RecordTemperatureMapper extends MyMapper<RecordTemperature> {
      * 获取体温导出records
      * @param departmentId
      * @param date
+     * @param recordId
      * @return
      */
-    List<HistoryExportTemperatureVO> getExportList(Integer departmentId,String date);
+    List<HistoryExportTemperatureVO> getExportList(Integer departmentId,String date,Integer recordId);
 }
