@@ -58,11 +58,13 @@ public class TimingPlan{
         webSocketSet.forEach(c -> {
             try {
                 Map<String, Object> paraMap = new HashMap<>();
+                Long currentTime = System.currentTimeMillis();
+                if(c.getTimeStamp() == 0){
+                    c.setTimeStamp(currentTime);
+                }
                 paraMap.put("machineId", c.getMachineId());
                 paraMap.put("timestamp", c.getTimeStamp());
-                Long currentTime = System.currentTimeMillis();
                 List<ZsEcgInfo> newEcg = zsEcgInfoMapper.getNewEcg(paraMap);
-                Collections.reverse(newEcg);
                 for (int i = 0; i < newEcg.size(); i++) {
                     if ((currentTime - newEcg.get(i).getTimestamp()) < 15 * 1000) {
                         c.getQueue().offer(JSONArray.toJSONString(newEcg.get(i)));
