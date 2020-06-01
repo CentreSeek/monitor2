@@ -122,7 +122,7 @@ public class HistoryController extends BaseController {
 //                              @ApiParam(value = "语言 0：中文 1：英文", required = true) @RequestParam(value = "language") Integer language,
                               HttpServletResponse response) throws IOException {
         Object historyData = super.historyService.getHistoryData(type, recordId);
-        if (type == MachineConstant.TEMPERATURE) {
+        if (type == MachineConstant.TEMPERATURE && temperature != null) {
             historyData = super.historyService.filterTemperatureData((TemperatureHistory) historyData, temperature);
 
         }
