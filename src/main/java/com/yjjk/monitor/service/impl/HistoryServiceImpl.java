@@ -252,6 +252,8 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
             List<HistoryExportTemperatureVO> exportList = super.recordTemperatureMapper.getExportList(departmentId, date, null);
             for (int i = 0; i < exportList.size(); i++) {
                 TemperatureHistory temperatureHistory = JSON.parseObject(exportList.get(i).getHistory(), TemperatureHistory.class);
+                List<TemperatureHistoryData> histories1 = super.recordTemperatureMapper.getHistories(exportList.get(i).getMachineId());
+                temperatureHistory.getHistory().add(histories1);
                 List<TemperatureHistoryData> timesData = DataUtils.getTimesData(temperatureHistory.getHistory(), timeList, date);
                 for (int j = 0; j < timesData.size(); j++) {
                     HistoryExportTemperatureVOO pojo = new HistoryExportTemperatureVOO();
@@ -270,6 +272,8 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
             List<HistoryExportEcgVO> exportList = super.recordEcgMapper.getExportList(departmentId, date, null);
             for (int i = 0; i < exportList.size(); i++) {
                 EcgHistory ecgHistory = JSON.parseObject(exportList.get(i).getHistory(), EcgHistory.class);
+                List<EcgHistoryData> histories1 = super.recordEcgMapper.getHistories(exportList.get(i).getMachineId());
+                ecgHistory.getHistory().add(histories1);
                 List<EcgHistoryData> timesData = DataUtils.getTimesData(ecgHistory.getHistory(), timeList, date);
                 for (int j = 0; j < timesData.size(); j++) {
                     HistoryExportEcgVOO pojo = new HistoryExportEcgVOO();
@@ -289,6 +293,8 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
             List<HistoryExportBloodVO> exportList = super.recordBloodMapper.getExportList(departmentId, date, null);
             for (int i = 0; i < exportList.size(); i++) {
                 BloodHistory bloodHistory = JSON.parseObject(exportList.get(i).getHistory(), BloodHistory.class);
+                List<BloodHistoryData> histories1 = super.recordBloodMapper.getHistories(exportList.get(i).getMachineId());
+                bloodHistory.getHistory().add(histories1);
                 List<BloodHistoryData> timesData = DataUtils.getTimesData(bloodHistory.getHistory(), timeList, date);
                 for (int j = 0; j < timesData.size(); j++) {
                     HistoryExportBloodVOO pojo = new HistoryExportBloodVOO();
@@ -309,6 +315,8 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
             List<HistoryExportSleepingVO> exportList = super.recordSleepingMapper.getExportList(departmentId, date, null);
             for (int i = 0; i < exportList.size(); i++) {
                 SleepingHistory sleepingHistory = JSON.parseObject(exportList.get(i).getHistory(), SleepingHistory.class);
+                List<SleepingHistoryData> histories1 = super.recordSleepingMapper.getHistories(exportList.get(i).getMachineId());
+                sleepingHistory.getHistory().add(histories1);
                 List<SleepingHistoryData> timesData = DataUtils.getTimesData(sleepingHistory.getHistory(), timeList, date);
                 for (int j = 0; j < timesData.size(); j++) {
                     HistoryExportSleepingVOO pojo = new HistoryExportSleepingVOO();

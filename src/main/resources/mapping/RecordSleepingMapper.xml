@@ -164,7 +164,8 @@
         hd.`name` AS departmentName,
         hr.`name` AS room,
         hb.`name` AS bed,
-        record.history
+        record.history,
+        record.machine_id
         FROM
         record_sleeping record
         left join record_base rb on record.base_id = rb.id

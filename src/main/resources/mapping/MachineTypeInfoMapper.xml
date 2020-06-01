@@ -53,16 +53,21 @@
         #{status,jdbcType=INTEGER})
     </insert>
 
-    <select id="getMonitorMachineTypes" resultType="com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO" parameterType="java.util.Map">
-        SELECT mti.id machineTypeId, mti.NAME as typeName, mti.type_code as id , IFNULL(machineCount, 0) as machineCount
+    <select id="getMonitorMachineTypes" resultType="com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO"
+            parameterType="java.util.Map">
+        SELECT mti.id machineTypeId, mti.NAME as typeName, mti.type_code as id
         FROM `machine_type_info` mti
-                 LEFT JOIN (SELECT mti2.`id`, COUNT(1) AS machineCount
-                            FROM zs_machine_info zmi
-                                     LEFT JOIN machine_type_info mti ON zmi.`machine_type_id` = mti.`id`
-                                     LEFT JOIN machine_type_info mti2 ON mti.`parent_id` = mti2.`id`
-                     where zmi.department_id = #{departmentId,jdbcType=INTEGER}) a
-                           ON a.id = mti.`id`
         WHERE TYPE = 0
           AND LEVEL = 0;
+    </select>
+    <select id="getMonitorMachineTypesCount" resultType="java.lang.Integer"
+            parameterType="java.util.Map">
+        SELECT IFNULL(count(*), 0) AS machineCount
+        FROM zs_machine_info zmi
+                 LEFT JOIN machine_type_info mti ON zmi.`machine_type_id` = mti.`id`
+                 LEFT JOIN machine_type_info mti2 ON mti.`parent_id` = mti2.`id`
+        where zmi.department_id = #{departmentId,jdbcType=INTEGER}
+          and mti2.id = #{machineTypeId,jdbcType=INTEGER}
+          and zmi.status = 0
     </select>
 </mapper>

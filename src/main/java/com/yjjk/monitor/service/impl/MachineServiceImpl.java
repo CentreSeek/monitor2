@@ -201,6 +201,10 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     public List<MachineTypeListVO> getMonitorTypeList(Integer departmentId) {
         List<MachineTypeListVO> temperatureMachineName = super.machineTypeInfoMapper.getMonitorMachineTypes(departmentId);
         for (int i = 0; i < temperatureMachineName.size(); i++) {
+            Integer count = super.machineTypeInfoMapper.getMonitorMachineTypesCount(departmentId, temperatureMachineName.get(i).getMachineTypeId());
+            temperatureMachineName.get(i).setMachineCount(count);
+        }
+        for (int i = 0; i < temperatureMachineName.size(); i++) {
             MachineTypeListVO temp = temperatureMachineName.get(i);
             temp.setValue(MachineEnum.getName(temperatureMachineName.get(i).getId()));
         }

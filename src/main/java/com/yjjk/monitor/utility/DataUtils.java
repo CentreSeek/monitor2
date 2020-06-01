@@ -33,7 +33,9 @@ public class DataUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(DateUtil.getDateTime(1590148695099L));;
+        System.out.println(DateUtil.getDateTime(1590979242360L));
+        System.out.println(DateUtil.getDateTimeLong("2020-06-01 10:40:42"));
+        System.out.println(1590979242360L);
     }
 
     /**

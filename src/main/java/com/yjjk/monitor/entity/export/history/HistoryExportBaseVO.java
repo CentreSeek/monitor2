@@ -28,6 +28,8 @@ public class HistoryExportBaseVO {
     protected String bed;
     protected String time;
     protected String history;
+    protected Integer machineId;
+
 
 
 }

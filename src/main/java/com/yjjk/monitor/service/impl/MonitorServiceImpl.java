@@ -152,8 +152,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     machinesInfoVOList.add(temp);
                 }
             }
-
         }
+        monitorVO.setMachinesInfoVOList(machinesInfoVOList);
         return monitorVO;
     }
 

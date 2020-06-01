@@ -99,7 +99,8 @@
         hd.`name` AS departmentName,
         hr.`name` AS room,
         hb.`name` AS bed,
-        rt.history
+        rt.history,
+        rt.machine_id
         FROM
         record_temperature rt
         left join record_base rb on rt.base_id = rb.id

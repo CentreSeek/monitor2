@@ -43,4 +43,12 @@ public interface MachineTypeInfoMapper extends MyMapper<MachineTypeInfo> {
      * @return
      */
     List<MachineTypeListVO> getMonitorMachineTypes(Integer departmentId);
+
+    /**
+     * 获取监控页设备概况-设备数量
+     * @param departmentId
+     * @param machineTypeId
+     * @return
+     */
+    Integer getMonitorMachineTypesCount(Integer departmentId,Integer machineTypeId);
 }
