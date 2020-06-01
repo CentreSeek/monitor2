@@ -71,7 +71,7 @@ public class HistoryController extends BaseController {
         /********************** 参数初始化 **********************/
         try {
             Object monitorHistory = null;
-            if (recordId == -1) {
+            if (recordId != -1) {
                 monitorHistory = super.historyService.getHistoryData(type, recordId);
             }
             return ResultUtil.returnSuccess(monitorHistory);

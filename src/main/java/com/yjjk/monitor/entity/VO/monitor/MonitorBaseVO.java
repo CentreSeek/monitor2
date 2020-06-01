@@ -42,7 +42,7 @@ public class MonitorBaseVO {
     private Integer bedId;
     @ApiModelProperty(value = "病房信息:病床名")
     private String bedName;
-    @ApiModelProperty(value = "病房信息：是否存在异常数据 0-未启用 1-正常 2-异常1 3-异常2")
+    @ApiModelProperty(value = "病房信息：是否存在异常数据 0-未启用 1-正常 2-异常1(orange) 3-异常2(red)")
     private Integer errorStatus;
     @ApiModelProperty(value = "离床感应：使用情况 0-未使用 1-使用")
     private Integer sleepingUsage;
