@@ -31,7 +31,7 @@
               re.status = 0 and re.record_status = 0
               and zei.machine_id = #{machineId,jdbcType=INTEGER}
           and zei.timestamp <![CDATA[>]]> #{timestamp,jdbcType=BIGINT}
-        ORDER BY zei.TIMESTAMP desc
+        ORDER BY zei.TIMESTAMP
         limit 0,5;
     </select>
 

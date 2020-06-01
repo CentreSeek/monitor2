@@ -241,7 +241,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             }
             if (monitorVOList.get(i).getMonitorBloodVO() != null && monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen() != null) {
                 Double blood = Double.parseDouble(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen());
-                if (blood < bRule.getParamTwo() || (blood > bRule.getParamOne() && blood < bRule.getParamThree())) {
+                if (blood < bRule.getParamTwo() || (blood > bRule.getParamOne())) {
                     monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
                     errorStatus = 2;
                 } else if (blood > bRule.getParamThree()) {

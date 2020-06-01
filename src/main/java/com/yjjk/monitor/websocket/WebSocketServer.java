@@ -36,7 +36,7 @@ public class WebSocketServer {
 
 
     private Long timeStamp = 0L;
-    private Queue<String> queue = new ArrayDeque<>(10);
+    private Queue<String> queue = new ArrayDeque<>(15);
 
     public Long getTimeStamp() {
         return timeStamp;
