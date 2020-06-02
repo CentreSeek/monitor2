@@ -78,7 +78,7 @@ public interface HospitalService {
      * @param departmentId
      * @return
      */
-    int getBedCount(Integer departmentId);
+    int getBedCount(Integer departmentId,Integer start,Integer end);
 
     /**
      * 监控页面-筛选床位

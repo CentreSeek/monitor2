@@ -71,8 +71,8 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
     }
 
     @Override
-    public int getBedCount(Integer departmentId) {
-        return super.HospitalBedMapper.getBedCount(departmentId);
+    public int getBedCount(Integer departmentId, Integer start, Integer end) {
+        return super.HospitalBedMapper.getBedCount(departmentId, start, end);
     }
 
     @Override

@@ -284,7 +284,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                             .setDepartmentName(exportList.get(i).getDepartmentName())
                             .setPatientName(exportList.get(i).getPatientName())
                             .setRoom(exportList.get(i).getRoom())
-                            .setTime(DateUtil.getDateTime(timesData.get(i).getTimestamp()));
+                            .setTime(DateUtil.getDateTime(timesData.get(j).getTimestamp()));
                     result.add(pojo);
                 }
             }

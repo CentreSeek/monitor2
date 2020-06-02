@@ -14,10 +14,10 @@
         <result column="record_ecg_id" property="recordEcgId" jdbcType="INTEGER"/>
         <result column="record_blood_id" property="recordBloodId" jdbcType="INTEGER"/>
         <result column="record_sleeping_id" property="recordSleepingId" jdbcType="INTEGER"/>
-        <result column="machine_temperature_state" property="machineTemperatureState" jdbcType="INTEGER" />
-        <result column="machine_ecg_state" property="machineEcgState" jdbcType="INTEGER" />
-        <result column="machine_blood_state" property="machineBloodState" jdbcType="INTEGER" />
-        <result column="machine_sleeping_state" property="machineSleepingState" jdbcType="INTEGER" />
+        <result column="machine_temperature_state" property="machineTemperatureState" jdbcType="INTEGER"/>
+        <result column="machine_ecg_state" property="machineEcgState" jdbcType="INTEGER"/>
+        <result column="machine_blood_state" property="machineBloodState" jdbcType="INTEGER"/>
+        <result column="machine_sleeping_state" property="machineSleepingState" jdbcType="INTEGER"/>
         <result column="usage_status" property="usageStatus" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
         <result column="created_time" property="createdTime" jdbcType="VARCHAR"/>
@@ -26,26 +26,32 @@
     </resultMap>
     <select id="getAllBaseRecords" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO">
-        SELECT rb.`id`    AS baseId,
-               pin.`name` AS patientName,
-               pin.`case_num`,
-               hb.`bed_id`,
-               hb.`name`  AS bedName
+        SELECT rb.`id` AS baseId,
+        pin.`name` AS patientName,
+        pin.`case_num`,
+        hb.`bed_id`,
+        hb.`name` AS bedName
         FROM record_base rb
-                 LEFT JOIN hospital_bed hb
-                           ON rb.`bed_id` = hb.`bed_id`
-                 LEFT JOIN hospital_room hr
-                           ON hb.`room_id` = hr.`room_id`
-                 LEFT JOIN hospital_department hd
-                           ON hr.`department_id` = hd.`department_id`
-                 LEFT JOIN
-             patient_info pin ON rb.`patient_id` = pin.`patient_id`
+        LEFT JOIN hospital_bed hb
+        ON rb.`bed_id` = hb.`bed_id`
+        LEFT JOIN hospital_room hr
+        ON hb.`room_id` = hr.`room_id`
+        LEFT JOIN hospital_department hd
+        ON hr.`department_id` = hd.`department_id`
+        LEFT JOIN
+        patient_info pin ON rb.`patient_id` = pin.`patient_id`
         WHERE rb.status = 0
-          and hb.status = 0
-          and hr.status = 0
-          and hd.status = 0
-          and pin.status = 0
-          and rb.usage_status = 0
-          and hd.department_id = #{departmentId,jdbcType=INTEGER}
+        and hb.status = 0
+        and hr.status = 0
+        and hd.status = 0
+        and pin.status = 0
+        and rb.usage_status = 0
+        and hd.department_id = #{departmentId,jdbcType=INTEGER}
+        <if test="start != null">
+            and hb.bed_id <![CDATA[>=]]> #{start,jdbcType=INTEGER}
+        </if>
+        <if test="end != null">
+            and hb.bed_id <![CDATA[<=]]> #{end,jdbcType=INTEGER}
+        </if>
     </select>
 </mapper>

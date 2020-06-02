@@ -61,12 +61,12 @@ public class HospitalController extends BaseController {
         return ResultUtil.returnSuccess(list);
     }
 
-    @RequestMapping(value = "/bedCount", method = RequestMethod.GET)
-    public CommonResult getDepartments(@RequestParam(value = "departmentId") Integer departmentId) {
-        /********************** 参数初始化 **********************/
-        int count = super.hospitalService.getBedCount(departmentId);
-        return ResultUtil.returnSuccess(count);
-    }
+//    @RequestMapping(value = "/bedCount", method = RequestMethod.GET)
+//    public CommonResult getDepartments(@RequestParam(value = "departmentId") Integer departmentId) {
+//        /********************** 参数初始化 **********************/
+//        int count = super.hospitalService.getBedCount(departmentId);
+//        return ResultUtil.returnSuccess(count);
+//    }
 
     /**
      * 查询房间信息
@@ -96,10 +96,11 @@ public class HospitalController extends BaseController {
         List<HospitalBed> HospitalBeds = this.hospitalService.selectMonitorEmptyBeds(departmentId, type);
         return ResultUtil.returnSuccess(HospitalBeds);
     }
+
     @ApiOperation("page监控模块：获取过滤床位list")
     @RequestMapping(value = {"/filterBeds"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     public CommonResult<List<ListVO>> getMonitorFilterBeds(@RequestParam("departmentId") Integer departmentId,
-                                                           @ApiParam(value = "筛选之后的床位") @RequestParam("bedId") Integer bedId) {
+                                                           @ApiParam(value = "筛选之后的床位") @RequestParam(value = "bedId", required = false) Integer bedId) {
         List<ListVO> HospitalBeds = this.hospitalService.getMonitorBedList(departmentId, bedId);
         return ResultUtil.returnSuccess(HospitalBeds);
     }

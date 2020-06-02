@@ -51,16 +51,24 @@
     <select id="getBedCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         SELECT count(*)
         FROM hospital_bed zbi
-                 LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
-                 LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
+        LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
+        LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
         WHERE zdi.department_id = #{departmentId,jdbcType=INTEGER}
+        <if test="start != null">
+            and zbi.bed_id <![CDATA[>=]]> #{start,jdbcType=INTEGER}
+        </if>
+        <if test="end != null">
+            and zbi.bed_id <![CDATA[<=]]> #{end,jdbcType=INTEGER}
+        </if>
     </select>
     <select id="getMonitorBedList" parameterType="java.util.Map" resultType="com.yjjk.monitor.entity.ListVO">
-        SELECT zbi.bed_id as id, CONCAT(zri.`name`,zbi.`name`) as value
+        SELECT zbi.bed_id as id, CONCAT(zri.`name`, zbi.`name`) as value
         FROM hospital_bed zbi
-                 LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
-                 LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
+        LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
+        LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
         WHERE zdi.department_id = #{departmentId,jdbcType=INTEGER}
-          and  zbi.bed_id <![CDATA[>]]> #{bedId,jdbcType=INTEGER}
+        <if test="bedId != null">
+            and zbi.bed_id <![CDATA[>]]> #{bedId,jdbcType=INTEGER}
+        </if>
     </select>
 </mapper>

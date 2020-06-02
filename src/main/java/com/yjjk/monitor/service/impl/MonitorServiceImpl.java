@@ -81,23 +81,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     MachineService machineService;
 
     @Override
-    public MonitorVO bedFilter(MonitorVO monitorVO, Integer start, Integer end) {
-        List<MonitorBaseVO> list = monitorVO.getMonitorVOList();
-        if (StringUtils.isNullorEmpty(list)) {
-            return monitorVO;
-        }
-        Iterator<MonitorBaseVO> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            MonitorBaseVO next = iterator.next();
-            if (next.getBedId() < start || next.getBedId() > end) {
-                iterator.remove();
-            }
-        }
-        monitorVO.setMonitorVOList(list);
-        return monitorVO;
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public MonitorVO setMachineState(MonitorVO monitorVO) {
         List<MonitorBaseVO> monitorVOList = monitorVO.getMonitorVOList();
@@ -264,8 +247,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public List<MonitorBaseVO> getMonitors(Integer departmentId) {
-        List<MonitorBaseVO> allBaseRecords = super.recordBaseMapper.getAllBaseRecords(departmentId);
+    public List<MonitorBaseVO> getMonitors(Integer departmentId,Integer start,Integer end) {
+        List<MonitorBaseVO> allBaseRecords = super.recordBaseMapper.getAllBaseRecords(departmentId,start,end);
         for (int i = 0; i < allBaseRecords.size(); i++) {
             Integer baseId = allBaseRecords.get(i).getBaseId();
             RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);

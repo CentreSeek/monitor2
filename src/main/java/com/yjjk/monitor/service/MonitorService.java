@@ -29,14 +29,6 @@ import java.util.List;
 public interface MonitorService {
 
     /**
-     * 过滤床位信息
-     * @param monitorVO
-     * @param start
-     * @param end
-     * @return
-     */
-    MonitorVO bedFilter(MonitorVO monitorVO,Integer start, Integer end);
-    /**
      * 设置设备状态
      *
      * @param monitorVO
@@ -59,7 +51,7 @@ public interface MonitorService {
      * @param departmentId
      * @return
      */
-    List<MonitorBaseVO> getMonitors(Integer departmentId);
+    List<MonitorBaseVO> getMonitors(Integer departmentId,Integer start,Integer end);
 
     MonitorBaseVO getTemperature(MonitorBaseVO monitorBaseVO, Integer recordId);
 

@@ -8,5 +8,12 @@ import java.util.List;
 
 public interface RecordBaseMapper extends MyMapper<RecordBase> {
 
-    List<MonitorBaseVO> getAllBaseRecords(Integer departmentId);
+    /**
+     * 获取所有
+     * @param departmentId
+     * @param start
+     * @param end
+     * @return
+     */
+    List<MonitorBaseVO> getAllBaseRecords(Integer departmentId,Integer start,Integer end);
 }

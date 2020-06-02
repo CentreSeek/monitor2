@@ -43,9 +43,11 @@ public interface HospitalBedMapper extends MyMapper<HospitalBed> {
      * 获取床位数量数据
      *
      * @param departmentId
+     * @param start
+     * @param end
      * @return
      */
-    int getBedCount(Integer departmentId);
+    int getBedCount(Integer departmentId,Integer start,Integer end);
 
     /**
      * 监控页面-筛选床位

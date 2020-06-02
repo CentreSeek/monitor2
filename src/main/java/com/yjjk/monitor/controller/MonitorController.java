@@ -19,6 +19,7 @@ import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
 import com.yjjk.monitor.entity.pojo.MonitorRule;
 import com.yjjk.monitor.entity.pojo.PatientInfo;
+import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -124,6 +125,17 @@ public class MonitorController extends BaseController {
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
     }
+    @ApiOperation("获取服务器时间")
+    @RequestMapping(value = "/time", method = RequestMethod.GET)
+    public CommonResult getTime() {
+        /********************** 参数初始化 **********************/
+        try {
+            return ResultUtil.returnSuccess(DateUtil.getCurrentTimeLong());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
+        }
+    }
 
 
     /**
@@ -136,14 +148,12 @@ public class MonitorController extends BaseController {
                                                @ApiParam(value = "结束床位id") @RequestParam(value = "end", required = false) Integer end) {
         try {
             MonitorVO monitorVO = new MonitorVO();
-            List<MonitorBaseVO> monitors = super.monitorService.getMonitors(departmentId);
+            List<MonitorBaseVO> monitors = super.monitorService.getMonitors(departmentId, start, end);
             List<MachineTypeListVO> list = super.machineService.getMonitorTypeList(departmentId);
             monitorVO.setMonitorVOList(monitors).setMachineTypeList(list);
             monitorVO = super.monitorService.setMonitorRule(monitorVO, departmentId);
             monitorVO = super.monitorService.setMachineState(monitorVO);
-            if (start != null || end != null) {
-                monitorVO = super.monitorService.bedFilter(monitorVO, start, end);
-            }
+            monitorVO.setBedCount(super.hospitalService.getBedCount(departmentId, start, end));
             return ResultUtil.returnSuccess(monitorVO);
         } catch (Exception e) {
             e.printStackTrace();

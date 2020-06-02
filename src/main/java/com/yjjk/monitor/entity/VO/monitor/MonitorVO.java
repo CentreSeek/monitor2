@@ -27,6 +27,7 @@ public class MonitorVO {
     private List<MachineTypeListVO> machineTypeList;
     @ApiModelProperty(value = "设备概况：设备电量异常")
     private List<MachinesInfoVO> machinesInfoVOList;
-
+    @ApiModelProperty(value = "床位总数")
+    private Integer bedCount;
 }
 
