@@ -35,9 +35,12 @@ import com.yjjk.monitor.utility.NetUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,11 +62,13 @@ public class MachineServiceImpl extends BaseService implements MachineService {
         backgroundSend.setDeviceId(machineInfo.getMachineNum());
         backgroundSend.setData(connectionType);
         String s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
+        if (s == "500") {
+            throw new ConnectException();
+        }
         logger.info("启用设备-硬件服务器返回值：     " + s);
         BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
         if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
+            throw new ConnectException();
         }
         return ResultUtil.returnSuccess();
     }
@@ -83,7 +88,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
         BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
         if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         }
         monitorService.changeMachineState(oldMachineId, MachineConstant.USAGE_STATE_NORMAL);
 
@@ -96,7 +101,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
         backgroundResult = JSON.parseObject(s, BackgroundResult.class);
         if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         }
         monitorService.changeMachineState(newMachineId, MachineConstant.USAGE_STATE_USED);
         return ResultUtil.returnSuccess();

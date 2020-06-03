@@ -11,36 +11,20 @@
 package com.yjjk.monitor.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.yjjk.monitor.entity.VO.UseMachineVO;
-import com.yjjk.monitor.entity.config.ConnectRepeater;
-import com.yjjk.monitor.entity.pojo.ZsHealthInfo;
-import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
 import com.yjjk.monitor.entity.transaction.BackgroundResult;
 import com.yjjk.monitor.entity.transaction.BackgroundSend;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.EcgService;
-import com.yjjk.monitor.service.PatientRecordService;
 import com.yjjk.monitor.utility.DateUtil;
-import com.yjjk.monitor.utility.ExcelUtils;
 import com.yjjk.monitor.utility.FileNameUtils;
 import com.yjjk.monitor.utility.FileUtils;
 import com.yjjk.monitor.utility.NetUtils;
-import com.yjjk.monitor.utility.ReflectUtils;
 import com.yjjk.monitor.utility.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.io.File;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.ConnectException;
 
 /**
  * @author CentreS
@@ -319,13 +303,13 @@ public class EcgServiceImpl extends BaseService implements EcgService {
         repeaterId = 1;
         backgroundSend.setActionId(String.valueOf(repeaterId));
         if (StringUtils.isNullorEmpty(repeaterId)) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            throw new ConnectException();
         }
         backgroundSend.setDeviceId(String.valueOf(machineId));
         backgroundSend.setData(connectionType);
         String s = NetUtils.doPost(connectRepeater.getUrl(), backgroundSend);
         logger.info("硬件服务器返回值：     " + s);
-        if (s == null) {
+        if (s == null || s == "500") {
             return null;
         }
         return JSON.parseObject(s, BackgroundResult.class);

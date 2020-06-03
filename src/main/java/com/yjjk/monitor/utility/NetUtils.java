@@ -51,24 +51,25 @@ public final class NetUtils {
 
     /**
      * get请求获取String类型数据
+     *
      * @param url 请求链接
      * @return
      */
-    public static String get(String url){
+    public static String get(String url) {
         StringBuffer sb = new StringBuffer();
         HttpGet httpGet = new HttpGet(url);
         try {
             HttpResponse response = httpClient.execute(httpGet);
 
             HttpEntity entity = response.getEntity();
-            InputStreamReader reader = new InputStreamReader(entity.getContent(),"utf-8");
-            char [] charbufer;
-            while (0<reader.read(charbufer=new char[10])){
+            InputStreamReader reader = new InputStreamReader(entity.getContent(), "utf-8");
+            char[] charbufer;
+            while (0 < reader.read(charbufer = new char[10])) {
                 sb.append(charbufer);
             }
-        }catch (IOException e){//1
+        } catch (IOException e) {//1
             e.printStackTrace();
-        }finally {
+        } finally {
             httpGet.releaseConnection();
         }
         return sb.toString();
@@ -76,16 +77,17 @@ public final class NetUtils {
 
     /**
      * post方式请求数据
-     * @param url 请求链接
+     *
+     * @param url  请求链接
      * @param data post数据体
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static String post(String url, Map<String,String> data){
+    public static String post(String url, Map<String, String> data) {
         StringBuffer sb = new StringBuffer();
         HttpPost httpPost = new HttpPost(url);
         List<NameValuePair> valuePairs = new ArrayList<NameValuePair>();
-        if(null != data) {
+        if (null != data) {
             for (String key : data.keySet()) {
                 valuePairs.addAll((Collection<? extends NameValuePair>) new BasicNameValuePair(key, data.get(key)));
             }
@@ -95,19 +97,20 @@ public final class NetUtils {
             HttpResponse response = httpClient.execute(httpPost);
             HttpEntity httpEntity = response.getEntity();
             BufferedInputStream bis = new BufferedInputStream(httpEntity.getContent());
-            byte [] buffer;
-            while (0<bis.read(buffer=new byte[128])){
-                sb.append(new String(buffer,"utf-8"));
+            byte[] buffer;
+            while (0 < bis.read(buffer = new byte[128])) {
+                sb.append(new String(buffer, "utf-8"));
             }
-        }catch (UnsupportedEncodingException e){//数据格式有误
+        } catch (UnsupportedEncodingException e) {//数据格式有误
             e.printStackTrace();
-        }catch (IOException e){//请求出错
+        } catch (IOException e) {//请求出错
             e.printStackTrace();
-        }finally {
+        } finally {
             httpPost.releaseConnection();
         }
         return sb.toString();
     }
+
     /**
      * post请求（用于请求json格式的参数）
      *
@@ -127,7 +130,6 @@ public final class NetUtils {
         CloseableHttpResponse response = null;
 
         try {
-
             response = httpclient.execute(httpPost);
             StatusLine status = response.getStatusLine();
             int state = status.getStatusCode();
@@ -135,8 +137,10 @@ public final class NetUtils {
                 HttpEntity responseEntity = response.getEntity();
                 String jsonString = EntityUtils.toString(responseEntity);
                 return jsonString;
-            } else {
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "500";
         } finally {
             if (response != null) {
                 try {

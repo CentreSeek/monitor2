@@ -52,7 +52,6 @@ public class PatientServiceImpl extends BaseService implements PatientService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Integer checkPatient(String name, String caseNum, Integer bedId) {
         PatientInfo zsPatientInfo = super.PatientInfoMapper.selectByCaseNum(caseNum);
         if (zsPatientInfo == null) {

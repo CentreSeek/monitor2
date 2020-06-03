@@ -66,7 +66,6 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -247,8 +246,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public List<MonitorBaseVO> getMonitors(Integer departmentId,Integer start,Integer end) {
-        List<MonitorBaseVO> allBaseRecords = super.recordBaseMapper.getAllBaseRecords(departmentId,start,end);
+    public List<MonitorBaseVO> getMonitors(Integer departmentId, Integer start, Integer end) {
+        List<MonitorBaseVO> allBaseRecords = super.recordBaseMapper.getAllBaseRecords(departmentId, start, end);
         for (int i = 0; i < allBaseRecords.size(); i++) {
             Integer baseId = allBaseRecords.get(i).getBaseId();
             RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
@@ -419,7 +418,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum())
                     .setTypeName(MachineEnum.ECG.getValue())
-                    .setMachineTypeId(byMachineId.getMachineTypeId());;
+                    .setMachineTypeId(byMachineId.getMachineTypeId());
+            ;
             if (recordEcg.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
                 pojo2.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
             } else {
@@ -441,7 +441,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum())
                     .setTypeName(MachineEnum.BLOOD.getValue())
-                    .setMachineTypeId(byMachineId.getMachineTypeId());;
+                    .setMachineTypeId(byMachineId.getMachineTypeId());
+            ;
             if (recordBlood.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
                 pojo3.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
             } else {
@@ -561,7 +562,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         }
         if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         }
         cacheMonitorHistory(MachineEnum.ECG.getType(), recordId);
         recordEcg.setRecordStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType()).setEndTime(DateUtil.getCurrentTime()).setUpdatedTime(DateUtil.getCurrentTime());
@@ -660,11 +661,12 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
         } catch (Exception e) {
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError("无法连接中继器服务器");
         }
         if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         }
         RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(recordBase.getRecordEcgId());
         Integer oldMachineId = recordEcg.getMachineId();
@@ -698,7 +700,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public CommonResult startMachine(Integer type, Integer machineId, Integer bedId, Integer patientId, String token) throws Exception {
         // 查询 or 新增RecordBase
         Example example = new Example(RecordBase.class);
@@ -762,7 +764,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.NESTED)
     public CommonResult startTemperatureMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         if (recordBase.getRecordTemperatureId().equals(RecordBaseEnum.MACHINE_UN_USE.getType())) {
@@ -785,28 +787,23 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     EcgService ecgService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public CommonResult startEcgMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         // 心电设备能否启用
-        boolean b = ecgService.hasRepeater(recordBase.getBedId());
+//        boolean b = ecgService.hasRepeater(recordBase.getBedId());
 //        boolean b = true;
-        if (!b) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_USAGE_ECG);
-        }
+//        if (!b) {
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_USAGE_ECG);
+//        }
         // 连接心电设备
         BackgroundResult backgroundResult = null;
-        try {
-            ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-            backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError("无法连接中继器服务器");
-        }
+        ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+        backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
         if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_ECG);
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         }
 
         if (recordBase.getRecordEcgId().equals(RecordBaseEnum.MACHINE_UN_USE.getType())) {
@@ -826,7 +823,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public CommonResult startBloodMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         if (recordBase.getRecordBloodId().equals(RecordBaseEnum.MACHINE_UN_USE.getType())) {
@@ -846,7 +843,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public CommonResult startSleepingMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         if (recordBase.getRecordSleepingId().equals(RecordBaseEnum.MACHINE_UN_USE.getType())) {

@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * @Description: 中继器管理模块
  * @author CentreS
+ * @Description: 中继器管理模块
  * @create 2019/8/23
  */
 @Service
@@ -38,6 +38,14 @@ public class RepeaterServiceImpl extends BaseService implements RepeaterService 
 
     @Override
     public int insertSelective(ZsRepeaterInfo repeater) {
+        ZsRepeaterInfo zsRepeaterInfo = super.zsRepeaterInfoMapper.selectByMac(repeater.getMac());
+        if (zsRepeaterInfo != null) {
+            return 0;
+        }
+        zsRepeaterInfo = super.zsRepeaterInfoMapper.selectByIP(repeater.getIp());
+        if (zsRepeaterInfo != null) {
+            return 0;
+        }
         return super.zsRepeaterInfoMapper.insertSelective(repeater);
     }
 
@@ -47,7 +55,7 @@ public class RepeaterServiceImpl extends BaseService implements RepeaterService 
     }
 
     @Override
-    public int stopRepeater(Integer id,String remark) {
+    public int stopRepeater(Integer id, String remark) {
         return super.zsRepeaterInfoMapper.updateByPrimaryKeySelective(new ZsRepeaterInfo().setLinkStatus(2).setId(id).setRemark(remark).setFailCount(0));
     }
 

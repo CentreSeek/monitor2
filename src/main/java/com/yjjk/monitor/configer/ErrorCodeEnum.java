@@ -28,8 +28,9 @@ public enum ErrorCodeEnum {
     TOKEN_ERROR("303", "token错误"),
     PAGE_INFO_ERROR("304", "分页参数错误"),
     UPDATE_ERROR("305", "更新失败"),
+    /********** repeater **********/
+    REPEATER_ADD_ERROR("310", "路由新增失败"),
 
-    NON_RECORD("320", "无法找到病护记录"),
 //    ERROR_RECORD("321", "记录错误"),
     /********** MachineController **********/
     MACHINE_INSERT_ERROR("340", "设备新增失败"),
@@ -51,7 +52,7 @@ public enum ErrorCodeEnum {
     EXIST_RECORD("360", "该用户已在其他床位启用监护"),
     ERROR_MACHINE_TYPE("361", "设备类型有误"),
     ERROR_USAGE_ECG("362","该床位无法使用心电设备"),
-    ERROR_CONNECT_ECG("363","心电设备连接失败"),
+    ERROR_CONNECT_DATA_SERVICE("363","数据服务器连接失败"),
     ERROR_MACHINE_STOP("364", "停用失败，设备类型错误"),
 
     PATIENT_EXIST_ERROR("360", "该病例已存在"),

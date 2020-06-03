@@ -13,13 +13,12 @@ package com.yjjk.monitor.controller;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
-import com.yjjk.monitor.entity.pojo.RecordTemperature;
 import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
 import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.xmlbeans.impl.regex.REUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,6 +64,7 @@ public class RepeaterController extends BaseController {
         return ResultUtil.returnSuccess(list);
     }
 
+
     @RequestMapping(value = "/repeater", method = RequestMethod.POST)
     public CommonResult addRepeater(@RequestParam(value = "machineTypeId") Integer machineTypeId,
                                     @RequestParam(value = "mac") String mac,
@@ -73,6 +73,9 @@ public class RepeaterController extends BaseController {
                                     @RequestParam(value = "ip") String ip) {
         /********************** 参数初始化 **********************/
         int i = super.repeaterService.insertSelective(new ZsRepeaterInfo().setMachineTypeId(machineTypeId).setMac(mac).setDepartmentId(departmentId).setRoomId(roomId).setIp(ip));
+        if (i == 0) {
+            ResultUtil.returnError(ErrorCodeEnum.REPEATER_ADD_ERROR);
+        }
         return ResultUtil.returnSuccess(i);
     }
 

@@ -63,14 +63,16 @@
         SELECT zri.id
         FROM `zs_repeater_info` zri
                  LEFT JOIN hospital_bed zbi ON zbi.`room_id` = zri.`room_id`
-        WHERE zbi.`bed_id` = #{bedId,jdbcType=INTEGER} and linkStatus = 0
+        WHERE zbi.`bed_id` = #{bedId,jdbcType=INTEGER}
+          and linkStatus = 0
     </select>
 
     <select id="hasRepeaterCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
         SELECT count(*)
         FROM `zs_repeater_info` zri
                  LEFT JOIN hospital_bed zbi ON zbi.`room_id` = zri.`room_id`
-        WHERE zbi.`bed_id` = #{bedId,jdbcType=INTEGER} and linkStatus = 0
+        WHERE zbi.`bed_id` = #{bedId,jdbcType=INTEGER}
+          and linkStatus = 0
     </select>
 
     <select id="isExistRepeater" resultType="java.lang.Integer"
@@ -84,6 +86,17 @@
                 and room_id = #{roomId, jdbcType=INTEGER}
             </if>
         </where>
+    </select>
+
+    <select id="selectByMac" parameterType="java.lang.String" resultType="com.yjjk.monitor.entity.pojo.ZsRepeaterInfo">
+        SELECT *
+        FROM `zs_repeater_info`
+        where mac = #{mac, jdbcType=INTEGER}
+    </select>
+    <select id="selectByIP" parameterType="java.lang.String" resultType="com.yjjk.monitor.entity.pojo.ZsRepeaterInfo">
+        SELECT *
+        FROM `zs_repeater_info`
+        where IP = #{ip, jdbcType=INTEGER}
     </select>
 
 </mapper>

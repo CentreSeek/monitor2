@@ -45,4 +45,8 @@ public interface ZsRepeaterInfoMapper extends MyMapper<ZsRepeaterInfo> {
      * @return int
      */
     int isExistRepeater(ZsRepeaterInfo zsRepeaterInfo);
+
+    ZsRepeaterInfo selectByMac(String mac);
+
+    ZsRepeaterInfo selectByIP(String ip);
 }

@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.net.ConnectException;
 import java.util.List;
 
 /**
@@ -64,7 +66,7 @@ public class MonitorController extends BaseController {
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     @ApiOperation(value = "启用设备")
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     public synchronized CommonResult startTemperatureMachine(@Valid StartBO startBO, HttpServletRequest request) {
@@ -75,8 +77,13 @@ public class MonitorController extends BaseController {
                 ResultUtil.returnError(ErrorCodeEnum.EXIST_RECORD);
             }
             return super.monitorService.startMachine(startBO.getType(), startBO.getMachineId(), startBO.getBedId(), patientId, request.getHeader("token"));
+        } catch (ConnectException c) {
+            c.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         } catch (Exception e) {
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
     }
@@ -93,6 +100,7 @@ public class MonitorController extends BaseController {
             return super.monitorService.changeMachine(baseId, type, machineId, request.getHeader("token"));
         } catch (Exception e) {
             e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
     }
@@ -125,6 +133,7 @@ public class MonitorController extends BaseController {
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
     }
+
     @ApiOperation("获取服务器时间")
     @RequestMapping(value = "/time", method = RequestMethod.GET)
     public CommonResult getTime() {
