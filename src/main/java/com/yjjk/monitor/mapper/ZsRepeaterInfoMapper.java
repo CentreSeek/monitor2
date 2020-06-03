@@ -21,14 +21,14 @@ public interface ZsRepeaterInfoMapper extends MyMapper<ZsRepeaterInfo> {
      * @param record
      * @return
      */
-    int selectRepeaterCount(ZsRepeaterInfo record);
+    Integer selectRepeaterCount(ZsRepeaterInfo record);
 
     /**
      * @param bedId
      * @return int
      * @Description 查询repeaterId
      */
-    int selectByBedId(Integer bedId);
+    Integer selectByBedId(Integer bedId);
 
     /**
      * 查询该床位连接的中继器数量
@@ -36,7 +36,7 @@ public interface ZsRepeaterInfoMapper extends MyMapper<ZsRepeaterInfo> {
      * @param bedId
      * @return
      */
-    int hasRepeaterCount(Integer bedId);
+    Integer hasRepeaterCount(Integer bedId);
 
     /**
      * 获取当前房间绑定的路由总数
@@ -44,7 +44,7 @@ public interface ZsRepeaterInfoMapper extends MyMapper<ZsRepeaterInfo> {
      * @param zsRepeaterInfo
      * @return int
      */
-    int isExistRepeater(ZsRepeaterInfo zsRepeaterInfo);
+    Integer isExistRepeater(ZsRepeaterInfo zsRepeaterInfo);
 
     ZsRepeaterInfo selectByMac(String mac);
 
