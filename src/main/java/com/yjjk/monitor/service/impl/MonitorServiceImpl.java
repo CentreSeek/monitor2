@@ -94,7 +94,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                             .setText(BatteryConstant.ALERT_TEMPERATURE);
                     machinesInfoVOList.add(temp);
                 }
-                if (monitorVOList.get(i).getMonitorTemperatureVO().getBoxBatteryStatus() == BatteryConstant.BOX_STATUS_LOW) {
+                if (monitorVOList.get(i).getMonitorTemperatureVO().getBoxBatteryStatus() != null
+                        && monitorVOList.get(i).getMonitorTemperatureVO().getBoxBatteryStatus().equals(BatteryConstant.BOX_STATUS_LOW)) {
                     MachinesInfoVO temp = new MachinesInfoVO();
                     temp.setMachineType(MachineEnum.TEMPERATURE.getType())
                             .setMachineTypeName(MachineEnum.TEMPERATURE.getValue())
