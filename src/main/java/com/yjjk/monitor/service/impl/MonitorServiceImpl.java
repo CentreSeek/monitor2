@@ -148,7 +148,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         MonitorRule hRule = null;
         MonitorRule rRule = null;
         MonitorRule bRule = null;
-        int errorStatus = 1;
         for (int i = 0; i < rule.size(); i++) {
             if (rule.get(i).getType().equals(MonitorEnum.TEMPERATURE.getType())) {
                 tRule = rule.get(i);
@@ -169,6 +168,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         }
 
         for (int i = 0; i < monitorVOList.size(); i++) {
+            int errorStatus = 1;
             // 启用并且有数据
             if (monitorVOList.get(i).getMonitorTemperatureVO() != null && monitorVOList.get(i).getMonitorTemperatureVO().getTemperature() != null) {
                 Double temperature = Double.parseDouble(monitorVOList.get(i).getMonitorTemperatureVO().getTemperature());
