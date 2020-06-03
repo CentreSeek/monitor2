@@ -194,4 +194,5 @@ public interface MachineService {
     boolean connectionService(String machineNum) throws Exception;
 
 
+
 }

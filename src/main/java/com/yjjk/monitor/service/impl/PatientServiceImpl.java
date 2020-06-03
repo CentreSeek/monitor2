@@ -67,7 +67,7 @@ public class PatientServiceImpl extends BaseService implements PatientService {
             criterion.andEqualTo("usageStatus", RecordBaseEnum.USAGE_STATE_USE.getType());
             List<RecordBase> recordBases = super.recordBaseMapper.selectByExample(example);
             // 如果病人已在其他床位启用设备 null
-            if (StringUtils.isNullorEmpty(recordBases)) {
+            if (!StringUtils.isNullorEmpty(recordBases)) {
                 for (int i = 0; i < recordBases.size(); i++) {
                     if (!recordBases.get(i).getBedId().equals(bedId)) {
                         return null;

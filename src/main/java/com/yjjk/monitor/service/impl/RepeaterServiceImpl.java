@@ -10,13 +10,18 @@
  */
 package com.yjjk.monitor.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
+import com.yjjk.monitor.entity.transaction.BackgroundResult;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.RepeaterService;
+import com.yjjk.monitor.utility.NetUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author CentreS
@@ -25,6 +30,24 @@ import java.util.List;
  */
 @Service
 public class RepeaterServiceImpl extends BaseService implements RepeaterService {
+
+    @Override
+    public boolean addRepeater() {
+        Map map = new HashMap();
+        String s = null;
+        try {
+            s = NetUtils.doPost(machineConfig.getUrl(), map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
+        logger.debug(s);
+        if (s != null && backgroundResult.getCode().equals("200")) {
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public List<MachineTypeInfo> selectMachineTypes() {
@@ -44,6 +67,12 @@ public class RepeaterServiceImpl extends BaseService implements RepeaterService 
         }
         zsRepeaterInfo = super.zsRepeaterInfoMapper.selectByIP(repeater.getIp());
         if (zsRepeaterInfo != null) {
+            return 0;
+        }
+        ZsRepeaterInfo pojo = new ZsRepeaterInfo();
+        pojo.setRoomId(repeater.getRoomId());
+        int existRepeater = super.zsRepeaterInfoMapper.isExistRepeater(pojo);
+        if (existRepeater > 0) {
             return 0;
         }
         return super.zsRepeaterInfoMapper.insertSelective(repeater);

@@ -74,7 +74,7 @@ public class MonitorController extends BaseController {
             // 获取患者id (检验、查询\新增)
             Integer patientId = super.patientService.checkPatient(startBO.getPatientName(), startBO.getCaseNum(), startBO.getBedId());
             if (patientId == null) {
-                ResultUtil.returnError(ErrorCodeEnum.EXIST_RECORD);
+                return ResultUtil.returnError(ErrorCodeEnum.EXIST_RECORD);
             }
             return super.monitorService.startMachine(startBO.getType(), startBO.getMachineId(), startBO.getBedId(), patientId, request.getHeader("token"));
         } catch (ConnectException c) {

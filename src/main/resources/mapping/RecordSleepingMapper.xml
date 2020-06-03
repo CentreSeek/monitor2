@@ -85,14 +85,14 @@
     </select>
     <select id="getSleeping" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO">
-        SELECT current.sleep_state, current.sleepingLeaveTimes
+        SELECT current.sleep_state as sleepingState, current.sleepingLeaveTimes as sleepingLeaveTimes
         from record_sleeping rs
         left join
         (SELECT sleep_state, CONCAT(TIMESTAMPDIFF(MINUTE, create_time, CONCAT(CURDATE(),' ',CURTIME())) DIV
         60,'小时',TIMESTAMPDIFF(MINUTE, create_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'分') as
         sleepingLeaveTimes,machine_id
         FROM zs_sleeping_belt_info
-        WHERE machine_id = 535 AND TIMESTAMPDIFF(MINUTE,
+        WHERE TIMESTAMPDIFF(MINUTE,
         create_time, CONCAT(CURDATE(),' ',CURTIME()))
         <![CDATA[<]]>
         3 ORDER BY create_time DESC LIMIT 1) current on rs.machine_id = current.machine_id

@@ -22,6 +22,13 @@ import java.util.List;
  */
 public interface RepeaterService {
 
+
+    /**
+     * 新增路由
+     * @return
+     * @throws Exception
+     */
+    boolean addRepeater();
     /**
      * 查询设备名称
      * @return

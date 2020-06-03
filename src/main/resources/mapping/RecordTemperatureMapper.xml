@@ -34,7 +34,7 @@
         rt.`id` as recordId,
         # zmi.`machine_id`,
         zmi.battery,
-        zmi.`box_battery`,
+        zmi.`box_battery` as boxBatteryStatus,
         zti.temperature,
         CONCAT(TIMESTAMPDIFF(MINUTE, rt.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'小时',TIMESTAMPDIFF(MINUTE,
         rt.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'分') as useTimes

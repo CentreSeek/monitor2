@@ -12,4 +12,5 @@ public class MachineConfig {
      * 新增体温贴
      */
     private String url;
+    private String repeater;
 }

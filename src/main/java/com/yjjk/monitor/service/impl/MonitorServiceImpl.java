@@ -294,7 +294,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public MonitorBaseVO getTemperature(MonitorBaseVO monitorBaseVO, Integer recordId) {
         MonitorTemperatureVO data = new MonitorTemperatureVO();
         data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
@@ -369,10 +368,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 // 启用离床感应
                 MonitorBaseVO sleeping = super.recordSleepingMapper.getSleeping(list.get(i).getRecordSleepingId());
                 if (sleeping == null) {
-                    list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType());
+                    list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType())
+                            .setSleepingState(null);
                 } else {
                     list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType())
-                            .setSleepingUsage(MonitorUtils.getSleepingState(sleeping.getSleepingState()))
+                            .setSleepingState(MonitorUtils.getSleepingState(sleeping.getSleepingState()))
                             .setSleepingLeaveTimes(sleeping.getSleepingLeaveTimes());
                 }
             } else {
