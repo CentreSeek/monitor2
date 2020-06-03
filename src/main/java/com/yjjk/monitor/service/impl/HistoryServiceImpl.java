@@ -102,7 +102,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
 
     @Override
     public PagedGridResult getHistory(PageBO pageBO, GetRecordsBO bo) {
-        PageHelper.startPage(pageBO.getPage(), pageBO.getPageSize(), false);
+        PageHelper.startPage(pageBO.getPage(), pageBO.getPageSize());
         switch (bo.getType()) {
             case MachineConstant.TEMPERATURE:
                 List<RecordsHistory> list = super.recordTemperatureMapper.getHistoryRecords(bo);
