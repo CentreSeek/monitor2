@@ -36,6 +36,8 @@ public class MonitorRespiratoryRateVO {
     private String useTimes;
     @ApiModelProperty(value = "param：设备电量")
     private Integer battery;
+    @ApiModelProperty(value = "param：是否为预热中")
+    private Boolean isReady;
 
     @ApiModelProperty(value = "异常预警：0-正常 1-异常预警")
     private Integer alert;

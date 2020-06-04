@@ -29,6 +29,14 @@ import java.util.List;
 public interface MonitorService {
 
     /**
+     * 是否为预热中的状态
+     * @param type
+     * @param recordId
+     * @return
+     */
+    Boolean isReady(Integer type, Integer recordId);
+
+    /**
      * 设置设备状态
      *
      * @param monitorVO
@@ -51,7 +59,7 @@ public interface MonitorService {
      * @param departmentId
      * @return
      */
-    List<MonitorBaseVO> getMonitors(Integer departmentId,Integer start,Integer end);
+    List<MonitorBaseVO> getMonitors(Integer departmentId, Integer start, Integer end);
 
     MonitorBaseVO getTemperature(MonitorBaseVO monitorBaseVO, Integer recordId);
 

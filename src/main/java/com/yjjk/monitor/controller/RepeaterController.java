@@ -124,7 +124,7 @@ public class RepeaterController extends BaseController {
 
     @RequestMapping(value = "/repeater", method = RequestMethod.GET)
     public CommonResult getRepeaters(@RequestParam(value = "departmentId", required = false) Integer departmentId,
-                                     @RequestParam(value = "currentPage", required = false) Integer currentPage,
+                                     @RequestParam(value = "page", required = false) Integer currentPage,
                                      @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                      HttpServletRequest request, HttpServletResponse response) {
         /********************** 参数初始化 **********************/
@@ -141,9 +141,12 @@ public class RepeaterController extends BaseController {
             int totalCount = super.repeaterService.selectRepeaterCount(repeaterInfo);
             // 分页必须信息
             int startLine = (currentPage - 1) * (pageSize);
+            // 计算总页数
+            int totalPage = (totalCount + pageSize - 1) / pageSize;
             repeaterInfo.setStartLine(startLine).setPageSize(pageSize);
-            map.put("totalCount", totalCount);
-            map.put("currentPage", currentPage);
+            map.put("total", totalPage);
+            map.put("page", currentPage);
+            map.put("records", totalCount);
         }
 
         List<ZsRepeaterInfo> list = super.repeaterService.selectRepeaters(repeaterInfo);

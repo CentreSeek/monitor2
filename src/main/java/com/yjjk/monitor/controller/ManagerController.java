@@ -124,9 +124,9 @@ public class ManagerController extends BaseController {
      */
     @RequestMapping(value = "/manager", method = RequestMethod.GET)
     public CommonResult getManagerInfo(@ApiParam(value = "id不为空则按id查询") @RequestParam(value = "Id", required = false) Integer Id,
-                                       @RequestParam(value = "role", required = false) Integer role,
+                                       @RequestParam(value = "role") Integer role,
                                        @RequestParam(value = "departmentId", required = false) Integer departmentId,
-                                       @RequestParam(value = "currentPage", required = false) Integer currentPage,
+                                       @RequestParam(value = "page", required = false) Integer currentPage,
                                        @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         /********************** 参数初始化 **********************/
         if (Id == null && (currentPage == null || currentPage <= 0 || pageSize == null || pageSize <= 0)) {
@@ -153,8 +153,9 @@ public class ManagerController extends BaseController {
             int totalPage = (totalCount + pageSize - 1) / pageSize;
             paramMap.put("startLine", startLine);
             paramMap.put("pageSize", pageSize);
-            reqMap.put("totalPage", totalPage);
-            reqMap.put("currentPage", currentPage);
+            reqMap.put("total", totalPage);
+            reqMap.put("page", currentPage);
+            reqMap.put("records", totalCount);
         } else {
             paramMap.put("Id", Id);
         }

@@ -38,24 +38,4 @@ public class BloodHistoryData extends BaseData {
     @ApiModelProperty(value = "呼吸率(deprecated)")
     private Double respiratoryRate;
 
-
-    public static void main(String[] args) {
-        List<BloodHistoryData> list = new ArrayList<>();
-        BloodHistoryData a = new BloodHistoryData();
-        BloodHistoryData b = new BloodHistoryData();
-        BloodHistoryData c = new BloodHistoryData();
-        c.setTimestamp(2L);
-        a.setTimestamp(0L);
-        b.setTimestamp(1L);
-        list.add(a);
-        list.add(b);
-        list.add(c);
-        Collections.sort(list);
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getTimestamp());
-
-        }
-    }
-
-
 }

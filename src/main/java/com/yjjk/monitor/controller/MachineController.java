@@ -113,7 +113,7 @@ public class MachineController extends BaseController {
                                    @ApiParam(value = "machineTypeId") @RequestParam(value = "machineTypeId", required = false) Integer machineTypeId,
                                    @RequestParam(value = "departmentId", required = false) Integer departmentId,
                                    @RequestParam(value = "machineNum", required = false) String machineNum,
-                                   @RequestParam(value = "currentPage", required = false) Integer currentPage,
+                                   @RequestParam(value = "page", required = false) Integer currentPage,
                                    @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         /********************** 参数初始化 **********************/
         Map<String, Object> map = new HashMap<>();
@@ -143,8 +143,9 @@ public class MachineController extends BaseController {
             int totalPage = (totalCount + pageSize - 1) / pageSize;
             machineInfo.setStartLine(startLine);
             machineInfo.setPageSize(pageSize);
-            map.put("totalPage", totalPage);
-            map.put("currentPage", currentPage);
+            map.put("total", totalPage);
+            map.put("page", currentPage);
+            map.put("records", totalCount);
         }
 
         List<ZsMachineInfo> list = super.machineService.selectByUsageState(machineInfo);
