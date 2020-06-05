@@ -20,7 +20,6 @@ import com.yjjk.monitor.utility.StringUtils;
 import io.swagger.annotations.Api;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,7 +65,6 @@ public class RepeaterController extends BaseController {
         return ResultUtil.returnSuccess(list);
     }
 
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @RequestMapping(value = "/repeater", method = RequestMethod.POST)
     public CommonResult addRepeater(@RequestParam(value = "machineTypeId") Integer machineTypeId,
                                     @RequestParam(value = "mac") String mac,
@@ -79,11 +77,7 @@ public class RepeaterController extends BaseController {
             if (i == 0) {
                 return ResultUtil.returnError(ErrorCodeEnum.REPEATER_ADD_ERROR);
             }
-            boolean b = super.repeaterService.addRepeater();
-            if (!b) {
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-            }
+            super.repeaterService.addRepeater();
             return ResultUtil.returnSuccess(i);
         } catch (Exception e) {
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
