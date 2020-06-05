@@ -154,6 +154,7 @@
                 and pai.name = #{patientName, jdbcType=VARCHAR}
             </if>
         </where>
+        order by record.record_status ,record.created_time desc
     </select>
 
     <select id="getExportList" resultType="com.yjjk.monitor.entity.export.history.HistoryExportSleepingVO"
