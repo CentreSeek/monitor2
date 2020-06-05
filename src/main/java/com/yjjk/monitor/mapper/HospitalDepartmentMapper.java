@@ -19,4 +19,10 @@ public interface HospitalDepartmentMapper extends MyMapper<HospitalDepartment> {
      * @return
      */
     List<HospitalDepartment> selectDepartments();
+
+    /**
+     * 获取医院名称
+     * @return
+     */
+    String getHospitalName();
 }

@@ -28,8 +28,10 @@
     <select id="selectDetail" parameterType="com.yjjk.monitor.entity.pojo.HospitalDepartment" resultMap="BaseResultMap">
         select
         zdi.department_id, zdi.name, zdi.create_time, zdi.status,
-        zri.room_id , zri.department_id as room_department_id, zri.name as room_name, zri.create_time as room_create_time, zri.status as room_status,
-        zbi.bed_id as bed_id, zbi.room_id as bed_room_id, zbi.name as bed_name, zbi.create_time as bed_create_time, zbi.status as bed_status, zhi.hospital_name
+        zri.room_id , zri.department_id as room_department_id, zri.name as room_name, zri.create_time as
+        room_create_time, zri.status as room_status,
+        zbi.bed_id as bed_id, zbi.room_id as bed_room_id, zbi.name as bed_name, zbi.create_time as bed_create_time,
+        zbi.status as bed_status, zhi.hospital_name
         from hospital_department zdi
         left join hospital_room zri on zdi.department_id = zri.department_id
         left join hospital_bed zbi on zri.room_id = zbi.room_id
@@ -42,10 +44,15 @@
     </select>
 
     <select id="selectDepartments" resultType="com.yjjk.monitor.entity.pojo.HospitalDepartment">
-        select
-        department_id as departmentId, name
+        select department_id as departmentId,
+               name
         from hospital_department
         where status = 0
+    </select>
+
+    <select id="getHospitalName" resultType="java.lang.String">
+        select hospital_name
+        from hospital_info
     </select>
 
 </mapper>

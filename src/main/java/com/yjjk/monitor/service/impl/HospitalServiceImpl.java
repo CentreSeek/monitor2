@@ -33,6 +33,11 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
 
 
     @Override
+    public String getHospitalName() {
+        return super.HospitalDepartmentMapper.getHospitalName();
+    }
+
+    @Override
     public List<HospitalDepartment> selectDetail(Integer departmentId) {
         return super.HospitalDepartmentMapper.selectDetail(departmentId);
     }

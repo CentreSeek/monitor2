@@ -26,6 +26,11 @@ import java.util.Map;
 public interface HospitalService {
 
     /**
+     * 获取医院名称
+     * @return
+     */
+    String getHospitalName();
+    /**
      * 查询医院信息详情
      * @param departmentId
      * @return

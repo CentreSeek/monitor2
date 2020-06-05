@@ -39,6 +39,13 @@ import java.util.Map;
 public class HospitalController extends BaseController {
 
 
+    @RequestMapping(value = "/hospital", method = RequestMethod.GET)
+    public CommonResult getHospitalInfo() {
+        /********************** 参数初始化 **********************/
+        String s = super.hospitalService.getHospitalName();
+        return ResultUtil.returnSuccess(s);
+    }
+
     /**
      * 查询科室信息
      *
