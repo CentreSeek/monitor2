@@ -36,7 +36,7 @@ public class RepeaterServiceImpl extends BaseService implements RepeaterService 
         Map map = new HashMap();
         String s = null;
         try {
-            s = NetUtils.doPost(machineConfig.getUrl(), map);
+            s = NetUtils.doPost(machineConfig.getRepeater(), map);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
