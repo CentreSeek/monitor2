@@ -18,6 +18,9 @@ import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
 import io.swagger.annotations.Api;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,7 +66,7 @@ public class RepeaterController extends BaseController {
         return ResultUtil.returnSuccess(list);
     }
 
-
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @RequestMapping(value = "/repeater", method = RequestMethod.POST)
     public CommonResult addRepeater(@RequestParam(value = "machineTypeId") Integer machineTypeId,
                                     @RequestParam(value = "mac") String mac,
@@ -72,13 +75,14 @@ public class RepeaterController extends BaseController {
                                     @RequestParam(value = "ip") String ip) {
         /********************** 参数初始化 **********************/
         try {
-            boolean b = super.repeaterService.addRepeater();
-            if (!b) {
-                ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-            }
             int i = super.repeaterService.insertSelective(new ZsRepeaterInfo().setMachineTypeId(machineTypeId).setMac(mac).setDepartmentId(departmentId).setRoomId(roomId).setIp(ip));
             if (i == 0) {
-                ResultUtil.returnError(ErrorCodeEnum.REPEATER_ADD_ERROR);
+                return ResultUtil.returnError(ErrorCodeEnum.REPEATER_ADD_ERROR);
+            }
+            boolean b = super.repeaterService.addRepeater();
+            if (!b) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
             }
             return ResultUtil.returnSuccess(i);
         } catch (Exception e) {

@@ -32,15 +32,10 @@ import java.util.Map;
 public class RepeaterServiceImpl extends BaseService implements RepeaterService {
 
     @Override
-    public boolean addRepeater() {
+    public boolean addRepeater() throws Exception {
         Map map = new HashMap();
         String s = null;
-        try {
-            s = NetUtils.doPost(machineConfig.getRepeater(), map);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        s = NetUtils.doPost(machineConfig.getRepeater(), map);
         BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
         logger.debug(s);
         if (s != null && backgroundResult.getCode().equals("200")) {

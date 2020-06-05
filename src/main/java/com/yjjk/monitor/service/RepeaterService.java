@@ -28,7 +28,7 @@ public interface RepeaterService {
      * @return
      * @throws Exception
      */
-    boolean addRepeater();
+    boolean addRepeater() throws Exception;
     /**
      * 查询设备名称
      * @return
