@@ -8,6 +8,8 @@ import com.yjjk.monitor.entity.export.history.HistoryExportBloodVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportSleepingVO;
 import com.yjjk.monitor.entity.history.BloodHistoryData;
 import com.yjjk.monitor.entity.pojo.RecordBlood;
+import com.yjjk.monitor.entity.pojo.ZsBloodOxygenInfo;
+import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
 import com.yjjk.monitor.my.mapper.MyMapper;
 
 import java.util.List;
@@ -51,4 +53,5 @@ public interface RecordBloodMapper extends MyMapper<RecordBlood> {
      * @return
      */
     List<RecordsHistory> getHistoryRecords(GetRecordsBO getRecordsBO);
+
 }

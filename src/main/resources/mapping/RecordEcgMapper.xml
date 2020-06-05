@@ -153,4 +153,5 @@
             and record.`id` = #{recordId,jdbcType=INTEGER}
         </if>
     </select>
+
 </mapper>

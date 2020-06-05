@@ -23,7 +23,10 @@ import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.export.machine.MachineExport;
 import com.yjjk.monitor.entity.export.machine.MachineExportVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
+import com.yjjk.monitor.entity.pojo.ZsBloodOxygenInfo;
+import com.yjjk.monitor.entity.pojo.ZsHealthInfo;
 import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
+import com.yjjk.monitor.entity.pojo.ZsSleepingBeltInfo;
 import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
 import com.yjjk.monitor.entity.transaction.BackgroundResult;
 import com.yjjk.monitor.entity.transaction.BackgroundSend;
@@ -35,8 +38,6 @@ import com.yjjk.monitor.utility.NetUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
@@ -225,7 +226,41 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     @Override
     public CommonResult searchMachine(Map<String, Object> map) {
         List<SearchMachineVO> list = super.ZsMachineInfoMapper.searchRepeaterBaseInfo((Integer) map.get("departmentId"));
-        ZsTemperatureInfo temperatureInfo = super.zsTemperatureInfoMapper.getByMachineId((Integer) map.get("machineId"));
+        Integer repeaterId = null;
+        String createTIme = null;
+        switch ((Integer) map.get("type")) {
+            case MachineConstant.TEMPERATURE:
+                ZsTemperatureInfo temperatureInfo = super.zsTemperatureInfoMapper.getByMachineId((Integer) map.get("machineId"));
+                if (temperatureInfo != null) {
+                    repeaterId = temperatureInfo.getRepeaterId();
+                    createTIme = temperatureInfo.getCreateTime();
+                }
+                break;
+            case MachineConstant.ECG:
+                ZsHealthInfo zsHealthInfo = super.zsHealthInfoMapper.getByMachineId((Integer) map.get("machineId"));
+                if (zsHealthInfo != null) {
+                    repeaterId = zsHealthInfo.getRepeaterId();
+                    createTIme = zsHealthInfo.getCreateTime();
+                }
+                break;
+            case MachineConstant.BLOOD:
+                ZsBloodOxygenInfo zsBloodOxygenInfo = super.zsBloodOxygenInfoMapper.getByMachineId((Integer) map.get("machineId"));
+                if (zsBloodOxygenInfo != null) {
+                    repeaterId = zsBloodOxygenInfo.getRepeaterId();
+                    createTIme = zsBloodOxygenInfo.getCreateTime();
+                }
+                break;
+            case MachineConstant.SLEEPING:
+                ZsSleepingBeltInfo zsSleepingBeltInfo = super.zsSleepingBeltInfoMapper.getByMachineId((Integer) map.get("machineId"));
+                if (zsSleepingBeltInfo != null) {
+                    repeaterId = zsSleepingBeltInfo.getRepeaterId();
+                    createTIme = zsSleepingBeltInfo.getCreateTime();
+                }
+                break;
+            default:
+                return ResultUtil.returnError(ErrorCodeEnum.ERROR_MACHINE_TYPE);
+        }
+
         SearchMachineVOBase searchMachineVOBase = new SearchMachineVOBase();
         searchMachineVOBase.setStatus(1).setList(list);
         for (SearchMachineVO temp : list) {
@@ -236,24 +271,24 @@ public class MachineServiceImpl extends BaseService implements MachineService {
             }
         }
         boolean flag = false;
-        if (temperatureInfo == null) {
+        if (repeaterId == null || createTIme == null) {
             searchMachineVOBase.setStatus(2);
             return ResultUtil.returnSuccess(searchMachineVOBase, "没有搜索到设备");
         } else {
             for (int i = 0; i < list.size(); i++) {
-                if (temperatureInfo.getRepeaterId().equals(list.get(i).getRepeaterId())) {
+                if (repeaterId.equals(list.get(i).getRepeaterId())) {
                     flag = true;
                     // 5m内数据为有效数据
-                    if (DateUtil.timeDifferentLong(temperatureInfo.getCreateTime(), DateUtil.getCurrentTime()) <= 5) {
+                    if (DateUtil.timeDifferentLong(createTIme, DateUtil.getCurrentTime()) <= 5) {
                         list.get(i).setRepeaterStatus(SearchMachineConstant.FIND);
-                        list.get(i).setLastRecordTime(temperatureInfo.getCreateTime());
+                        list.get(i).setLastRecordTime(createTIme);
                         searchMachineVOBase.setStatus(0);
                         searchMachineVOBase.setRoomName(list.get(i).getRoomName());
-                        searchMachineVOBase.setLastRecordTime(temperatureInfo.getCreateTime());
+                        searchMachineVOBase.setLastRecordTime(createTIme);
                     } else {
                         list.get(i).setRepeaterStatus(SearchMachineConstant.NOT_FIND);
-                        list.get(i).setLastRecordTime(temperatureInfo.getCreateTime());
-                        searchMachineVOBase.setLastRecordTime(temperatureInfo.getCreateTime());
+                        list.get(i).setLastRecordTime(createTIme);
+                        searchMachineVOBase.setLastRecordTime(createTIme);
                         searchMachineVOBase.setRoomName(list.get(i).getRoomName());
                         return ResultUtil.returnSuccess(searchMachineVOBase, "没有搜索到设备");
                     }

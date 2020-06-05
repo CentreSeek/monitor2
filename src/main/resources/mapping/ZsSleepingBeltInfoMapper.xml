@@ -16,4 +16,14 @@
     <result column="humidity" property="humidity" jdbcType="VARCHAR" />
     <result column="repeater_id" property="repeaterId" jdbcType="INTEGER" />
   </resultMap>
+
+  <select id="getByMachineId" resultType="com.yjjk.monitor.entity.pojo.ZsSleepingBeltInfo"
+          parameterType="java.lang.Integer">
+    SELECT zti.*
+    FROM zs_sleeping_belt_info zti
+    WHERE machine_id = #{machineId,jdbcType=INTEGER}
+      AND zti.repeater_id IS NOT NULL
+    ORDER BY create_time DESC
+    LIMIT 1
+  </select>
 </mapper>

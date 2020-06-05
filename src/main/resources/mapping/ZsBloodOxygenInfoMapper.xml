@@ -17,4 +17,13 @@
     <result column="rssi" jdbcType="INTEGER" property="rssi" />
     <result column="repeater_id" jdbcType="INTEGER" property="repeaterId" />
   </resultMap>
+  <select id="getByMachineId" resultType="com.yjjk.monitor.entity.pojo.ZsBloodOxygenInfo"
+          parameterType="java.lang.Integer">
+    SELECT zti.*
+    FROM zs_blood_oxygen_info zti
+    WHERE machine_id = #{machineId,jdbcType=INTEGER}
+      AND zti.repeater_id IS NOT NULL
+    ORDER BY create_time DESC
+    LIMIT 1
+  </select>
 </mapper>

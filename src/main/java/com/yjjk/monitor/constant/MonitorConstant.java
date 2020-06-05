@@ -10,9 +10,8 @@
  */
 package com.yjjk.monitor.constant;
 
-import com.yjjk.monitor.utility.MathUtils;
-
-import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author CentreS
@@ -26,5 +25,5 @@ public class MonitorConstant {
     public static final int TEMPERATURE = 0;
     public static final int HEART_RESPIRATORY_RATE = 1;
     public static final int BLOOD_PI = 2;
-
+    public static Map<Integer, String> sleepingTimesMap = new HashMap<>();
 }

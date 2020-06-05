@@ -7,6 +7,8 @@ import com.yjjk.monitor.entity.VO.monitor.MonitorHeartRateVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportEcgVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportSleepingVO;
 import com.yjjk.monitor.entity.history.EcgHistoryData;
+import com.yjjk.monitor.entity.pojo.ZsHealthInfo;
+import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
 import com.yjjk.monitor.my.mapper.MyMapper;
 import com.yjjk.monitor.entity.pojo.RecordEcg;
 
@@ -51,4 +53,6 @@ public interface RecordEcgMapper extends MyMapper<RecordEcg> {
      * @return
      */
     List<RecordsHistory> getHistoryRecords(GetRecordsBO getRecordsBO);
+
+
 }

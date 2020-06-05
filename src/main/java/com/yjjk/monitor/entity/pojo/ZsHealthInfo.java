@@ -40,11 +40,12 @@ public class ZsHealthInfo {
      * 记录时间
      */
     @Column(name = "create_time")
-    private Date createTime;
+    private String createTime;
 
     /**
      * 时间戳
      */
     private Long timestamp;
+    private Integer repeaterId;
 
 }

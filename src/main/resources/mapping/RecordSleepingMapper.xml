@@ -84,18 +84,13 @@
         </where>
     </select>
     <select id="getSleeping" parameterType="java.util.Map"
-            resultType="com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO">
-        SELECT current.sleep_state as sleepingState, current.sleepingLeaveTimes as sleepingLeaveTimes
+            resultType="com.yjjk.monitor.entity.SleepingState">
+        SELECT rs.id, current.sleep_state as state, current.create_time as time
         from record_sleeping rs
-        left join
-        (SELECT sleep_state, CONCAT(TIMESTAMPDIFF(MINUTE, create_time, CONCAT(CURDATE(),' ',CURTIME())) DIV
-        60,'小时',TIMESTAMPDIFF(MINUTE, create_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'分') as
-        sleepingLeaveTimes,machine_id
+        left join (SELECT *
         FROM zs_sleeping_belt_info
-        WHERE TIMESTAMPDIFF(MINUTE,
-        create_time, CONCAT(CURDATE(),' ',CURTIME()))
-        <![CDATA[<]]>
-        3 ORDER BY create_time DESC LIMIT 1) current on rs.machine_id = current.machine_id
+        ORDER BY CREATE_TIME DESC
+        LIMIT 1) current on rs.machine_id = current.machine_id
         <where>
             <if test="recordId != null">
                 and rs.`id` = #{recordId,jdbcType=INTEGER}
@@ -179,8 +174,8 @@
         ON hr.`department_id` = hd.`department_id`
         WHERE record.status = 0 and rb.status = 0
         <if test="date != null">
-        AND record.`start_time`<![CDATA[>=]]> concat(#{date, jdbcType=VARCHAR} ,' 00:00:00')
-        AND record.`start_time` <![CDATA[<=]]> concat(#{date, jdbcType=VARCHAR} ,' 24:00:00')
+            AND record.`start_time`<![CDATA[>=]]> concat(#{date, jdbcType=VARCHAR} ,' 00:00:00')
+            AND record.`start_time` <![CDATA[<=]]> concat(#{date, jdbcType=VARCHAR} ,' 24:00:00')
         </if>
         <if test="departmentId != null">
             and hd.department_id = #{departmentId,jdbcType=INTEGER}
@@ -189,4 +184,5 @@
             and record.`id` = #{recordId,jdbcType=INTEGER}
         </if>
     </select>
+
 </mapper>

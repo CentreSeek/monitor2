@@ -69,12 +69,10 @@ public class DateUtil {
     }
 
 
-    @Deprecated
     public static String getDatePoor(String startTime) {
         return getDatePoor(startTime, getCurrentTime());
     }
 
-    @Deprecated
     public static String getDatePoor(String startTime, String endTime) {
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date startDate = null;
