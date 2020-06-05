@@ -1,6 +1,5 @@
 package com.yjjk.monitor.entity.VO.monitor;
 
-import com.yjjk.monitor.entity.ListVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -49,7 +48,7 @@ public class MonitorBaseVO {
     @ApiModelProperty(value = "离床感应：离床状态 0-离床 1-在床")
     private Integer sleepingState;
     @ApiModelProperty(value = "离床感应：离床时间")
-    private String sleepingLeaveTimes;
+    private Long sleepingLeaveTimes;
 
     private Integer recordTemperatureId;
     private Integer recordEcgId;

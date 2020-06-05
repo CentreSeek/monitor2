@@ -175,6 +175,9 @@ public class DateUtil {
         }
         return 0L;
     }
+    public static Long timeDifferentLong(String startTime) {
+        return  timeDifferentLong(startTime,DateUtil.getCurrentTime());
+    }
 
     public static Long getDateTimeLong(String startTime) {
         try {
