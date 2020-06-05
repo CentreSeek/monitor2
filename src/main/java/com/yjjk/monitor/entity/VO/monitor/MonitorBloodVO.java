@@ -36,8 +36,6 @@ public class MonitorBloodVO {
     private Integer bloodOxygenAlert;
     @ApiModelProperty(value = "param：使用时间(min)")
     private String useTimes;
-    @ApiModelProperty(value = "param：是否为预热中")
-    private Boolean isReady;
 
     @ApiModelProperty(value = "param：设备电量")
     private Integer battery;
