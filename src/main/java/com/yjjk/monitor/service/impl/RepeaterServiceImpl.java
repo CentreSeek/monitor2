@@ -10,10 +10,8 @@
  */
 package com.yjjk.monitor.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
-import com.yjjk.monitor.entity.transaction.BackgroundResult;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.RepeaterService;
 import com.yjjk.monitor.utility.NetUtils;
@@ -34,14 +32,13 @@ public class RepeaterServiceImpl extends BaseService implements RepeaterService 
     @Override
     public boolean addRepeater() throws Exception {
         Map map = new HashMap();
-        String s = null;
-        s = NetUtils.doPost(machineConfig.getRepeater(), map);
-        BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
-        logger.debug(s);
-        if (s != null && backgroundResult.getCode().equals("200")) {
-            return true;
-        }
-        return false;
+        NetUtils.doPost(machineConfig.getRepeater(), map);
+//        BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
+//        logger.debug(s);
+//        if (s != null && backgroundResult.getCode().equals("200")) {
+//            return true;
+//        }
+        return true;
     }
 
     @Override
