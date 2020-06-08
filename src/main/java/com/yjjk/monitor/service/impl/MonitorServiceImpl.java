@@ -372,7 +372,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(sleepingRecordId);
         if (sleepingRecordId != -1 && recordSleeping.getRecordStatus().equals(MonitorEnum.CHILDREN_RECORD_USED.getType())) {
             data = super.recordSleepingMapper.getHeartRate(recordSleeping.getMachineId(), sleepingRecordId);
-            if (data.getHeart().equals(0)) {
+            if (data.getHeart() != null && data.getHeart().equals(0)) {
                 data.setHeart("");
             }
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType());
@@ -407,6 +407,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(ecgRecordId);
         if (ecgRecordId != -1 && recordEcg.getRecordStatus().equals(MonitorEnum.CHILDREN_RECORD_USED.getType())) {
             data = super.recordEcgMapper.getRespiratoryRate(recordEcg.getMachineId(), ecgRecordId);
+            if (data.getRespiratory() != null && data.getRespiratory().equals(0)) {
+                data.setRespiratory("");
+            }
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType());
 //                    .setIsReady(isReady(MachineEnum.ECG.getType(), ecgRecordId));
         }
