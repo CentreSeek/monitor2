@@ -31,7 +31,7 @@
     <select id="getBloodOxygen" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorBloodVO">
         SELECT
-        rt.`id`,
+        rt.`id` as recordId,
         # zmi.`machine_id`,
         # zmi.machine_no,
         # zmi.machine_num,
