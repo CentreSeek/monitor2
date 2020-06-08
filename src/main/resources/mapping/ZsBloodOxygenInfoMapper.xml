@@ -14,7 +14,7 @@
     <result column="blood_oxygen_status" jdbcType="VARCHAR" property="bloodOxygenStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="timestamp" jdbcType="BIGINT" property="timestamp" />
-    <result column="rssi" jdbcType="INTEGER" property="rssi" />
+    <result column="pi" jdbcType="DECIMAL" property="pi" />
     <result column="repeater_id" jdbcType="INTEGER" property="repeaterId" />
   </resultMap>
   <select id="getByMachineId" resultType="com.yjjk.monitor.entity.pojo.ZsBloodOxygenInfo"

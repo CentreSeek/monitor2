@@ -353,8 +353,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         }
         // 获取睡眠数据
         allBaseRecords = getSleeping(allBaseRecords);
-        //
-
         return allBaseRecords;
     }
 
@@ -367,7 +365,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             data = super.recordTemperatureMapper.getTemperature(recordTemperature.getMachineId(), recordId);
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType());
 //                    .setIsReady(isReady(MachineEnum.TEMPERATURE.getType(), recordId));
-
         }
         monitorBaseVO.setMonitorTemperatureVO(data);
         return monitorBaseVO;
