@@ -1,19 +1,19 @@
 spring:
   profiles:
-    #    active: local
-    active: dev
+        active: local
+#    active: dev
   application:
     name: monitor
 
 machine:
-  #  url: http://127.0.0.1:8084/web/getChargeInfo
-  url: http://192.168.31.165:8084/web/getChargeInfo
-  #  repeater: http://127.0.0.1:8084/web/getRepeaterChargeInfo
-  repeater: http://192.168.31.165:8084/web/getRepeaterChargeInfo
+    url: http://127.0.0.1:8084/web/getChargeInfo
+#  url: http://192.168.31.165:8084/web/getChargeInfo
+    repeater: http://127.0.0.1:8084/web/getRepeaterChargeInfo
+#  repeater: http://192.168.31.165:8084/web/getRepeaterChargeInfo
 
 connect:
   # Cassia
-  #  url: http://127.0.0.1:8084/web/isCassiaConnectNotice
-  url: http://192.168.31.165:8084/web/isCassiaConnectNotice
-  #  start: http://127.0.0.1:8084/web/enableNotice
-  start: http://192.168.31.165:8084/web/enableNotice
+    url: http://127.0.0.1:8084/web/isCassiaConnectNotice
+#  url: http://192.168.31.165:8084/web/isCassiaConnectNotice
+    start: http://127.0.0.1:8084/web/enableNotice
+#  start: http://192.168.31.165:8084/web/enableNotice
