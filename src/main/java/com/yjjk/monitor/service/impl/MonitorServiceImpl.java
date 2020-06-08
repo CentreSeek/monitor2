@@ -212,8 +212,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             // 启用并且有数据
             if (tRule != null
                     && monitorVOList.get(i).getMonitorTemperatureVO() != null
-                    && monitorVOList.get(i).getMonitorTemperatureVO().getTemperature() != null
-                    && Double.parseDouble(monitorVOList.get(i).getMonitorTemperatureVO().getTemperature()) != 0) {
+                    && monitorVOList.get(i).getMonitorTemperatureVO().getTemperature() != null) {
+//                    && Double.parseDouble(monitorVOList.get(i).getMonitorTemperatureVO().getTemperature()) != 0) {
                 Double temperature = Double.parseDouble(monitorVOList.get(i).getMonitorTemperatureVO().getTemperature());
                 if ((temperature < tRule.getParamTwo() && temperature > 32) || (temperature > tRule.getParamOne() && temperature <= tRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
@@ -237,8 +237,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             }
             if (hRule != null
                     && monitorVOList.get(i).getMonitorHeartRateVO() != null
-                    && monitorVOList.get(i).getMonitorHeartRateVO().getHeart() != null
-                    && Double.parseDouble(monitorVOList.get(i).getMonitorHeartRateVO().getHeart()) != 0) {
+                    && monitorVOList.get(i).getMonitorHeartRateVO().getHeart() != null) {
+//                    && Double.parseDouble(monitorVOList.get(i).getMonitorHeartRateVO().getHeart()) != 0) {
                 Double heart = Double.parseDouble(monitorVOList.get(i).getMonitorHeartRateVO().getHeart());
                 if (heart < hRule.getParamTwo() || (heart > hRule.getParamOne() && heart <= hRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
@@ -257,13 +257,13 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             }
             if (rRule != null
                     && monitorVOList.get(i).getMonitorRespiratoryRateVO() != null
-                    && monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory() != null
-                    && Double.parseDouble(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory()) != 0) {
+                    && monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory() != null) {
+//                    && Double.parseDouble(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory()) != 0) {
                 Double respiratoryRate = Double.parseDouble(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory());
-                if (respiratoryRate < rRule.getParamTwo() || (respiratoryRate > rRule.getParamOne() && respiratoryRate <= rRule.getParamThree())) {
+                if (respiratoryRate < rRule.getParamTwo() || (respiratoryRate > rRule.getParamOne() && respiratoryRate < rRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
                     errorStatus = 2;
-                } else if (respiratoryRate > rRule.getParamThree()) {
+                } else if (respiratoryRate >= rRule.getParamThree()) {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_RED.getType());
                     errorStatus = 3;
                 } else {
@@ -277,8 +277,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             }
             if (bRule != null
                     && monitorVOList.get(i).getMonitorBloodVO() != null
-                    && monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen() != null
-                    && Double.parseDouble(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen()) != 0) {
+                    && monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen() != null) {
+//                    && Double.parseDouble(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen()) != 0) {
                 Double blood = Double.parseDouble(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen());
                 if (blood < bRule.getParamOne() && (blood >= bRule.getParamTwo())) {
                     monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
