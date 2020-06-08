@@ -67,7 +67,7 @@ public class ZsBloodOxygenInfo {
     /**
      * 信号强度1~200%，无效值：0，表示脉搏搏动强度
      */
-    private Integer rssi;
+    private Double pi;
 
     /**
      * 路由器id

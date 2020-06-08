@@ -31,7 +31,7 @@ public class MonitorBloodVO {
     @ApiModelProperty(value = "param：血氧")
     private String bloodOxygen;
     @ApiModelProperty(value = "param：PI")
-    private Integer pi;
+    private Double pi;
     @ApiModelProperty(value = "param：预警 0：正常 1：橙色 2：红色")
     private Integer bloodOxygenAlert;
     @ApiModelProperty(value = "param：使用时间(min)")
