@@ -229,7 +229,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     }
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_WHITE.getType());
                 }
-                if (tRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType()) && (temperature < tRule.getLowAlert() || temperature > tRule.getHighAlert())) {
+                if (tRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType()) && temperature != 0 && (temperature < tRule.getLowAlert() || temperature > tRule.getHighAlert())) {
                     monitorVOList.get(i).getMonitorTemperatureVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                 } else {
                     monitorVOList.get(i).getMonitorTemperatureVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
@@ -249,7 +249,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 } else {
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_WHITE.getType());
                 }
-                if (hRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType()) && (heart < hRule.getLowAlert() || heart > hRule.getHighAlert())) {
+                if (hRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType()) && heart != 0 && (heart < hRule.getLowAlert() || heart > hRule.getHighAlert())) {
                     monitorVOList.get(i).getMonitorHeartRateVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                 } else {
                     monitorVOList.get(i).getMonitorHeartRateVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
@@ -269,7 +269,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 } else {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_WHITE.getType());
                 }
-                if (rRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType()) && (respiratoryRate < rRule.getLowAlert() || respiratoryRate > rRule.getHighAlert())) {
+                if (rRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType()) && respiratoryRate != 0 && (respiratoryRate < rRule.getLowAlert() || respiratoryRate > rRule.getHighAlert())) {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                 } else {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
@@ -289,7 +289,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 } else {
                     monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_WHITE.getType());
                 }
-                if (bRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType()) && blood < bRule.getLowAlert()) {
+                if (bRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType()) && blood != 0 && blood < bRule.getLowAlert()) {
                     monitorVOList.get(i).getMonitorBloodVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                 } else {
                     monitorVOList.get(i).getMonitorBloodVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
@@ -372,6 +372,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(sleepingRecordId);
         if (sleepingRecordId != -1 && recordSleeping.getRecordStatus().equals(MonitorEnum.CHILDREN_RECORD_USED.getType())) {
             data = super.recordSleepingMapper.getHeartRate(recordSleeping.getMachineId(), sleepingRecordId);
+            if (data.getHeart().equals(0)) {
+                data.setHeart("");
+            }
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType());
 //                    .setIsReady(isReady(MachineEnum.SLEEPING.getType(), sleepingRecordId));
         }
