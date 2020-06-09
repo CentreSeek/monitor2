@@ -441,8 +441,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         for (int i = 0; i < list.size(); i++) {
             RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(list.get(i).getBaseId());
             if (recordBase.getMachineSleepingState().equals(MonitorEnum.SLEEPING_USAGE_USED.getType())) {
+                RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(list.get(i).getRecordSleepingId());
                 // 启用离床感应
-                SleepingState sleeping = super.recordSleepingMapper.getSleeping(list.get(i).getRecordSleepingId());
+                SleepingState sleeping = super.recordSleepingMapper.getSleeping(recordSleeping.getMachineId(), list.get(i).getRecordSleepingId());
                 // 无数据
                 if (sleeping == null) {
                     list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType())

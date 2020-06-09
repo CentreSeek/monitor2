@@ -89,6 +89,8 @@
         from record_sleeping rs
         left join (SELECT *
         FROM zs_sleeping_belt_info
+        WHERE machine_id = #{machineId,jdbcType=INTEGER} AND TIMESTAMPDIFF(MINUTE,
+        create_time, CONCAT(CURDATE(),' ',CURTIME()))<![CDATA[<]]> 3
         ORDER BY CREATE_TIME DESC
         LIMIT 1) current on rs.machine_id = current.machine_id
         <where>

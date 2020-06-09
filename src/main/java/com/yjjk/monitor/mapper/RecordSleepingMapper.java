@@ -58,9 +58,10 @@ public interface RecordSleepingMapper extends MyMapper<RecordSleeping> {
      * 获取离床数据
      *
      * @param recordId
+     * @param machineId
      * @return
      */
-    SleepingState getSleeping(Integer recordId);
+    SleepingState getSleeping(Integer machineId, Integer recordId);
 
     /**
      * 获取睡眠床带电量
