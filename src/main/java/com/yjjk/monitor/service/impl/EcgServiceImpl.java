@@ -21,7 +21,6 @@ import com.yjjk.monitor.utility.FileUtils;
 import com.yjjk.monitor.utility.NetUtils;
 import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.io.File;
 import java.net.ConnectException;

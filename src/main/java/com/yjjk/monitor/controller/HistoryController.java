@@ -11,18 +11,13 @@
 package com.yjjk.monitor.controller;
 
 import com.yjjk.monitor.configer.CommonResult;
-import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.MachineConstant;
 import com.yjjk.monitor.entity.BO.PageBO;
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
 import com.yjjk.monitor.entity.VO.PagedGridResult;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.history.BaseData;
-import com.yjjk.monitor.entity.history.BloodHistory;
-import com.yjjk.monitor.entity.history.EcgHistory;
-import com.yjjk.monitor.entity.history.SleepingHistory;
 import com.yjjk.monitor.entity.history.TemperatureHistory;
-import com.yjjk.monitor.utility.DataUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,13 +50,8 @@ public class HistoryController extends BaseController {
     @ApiOperation("获取所有历史记录")
     @RequestMapping(value = "/records", method = RequestMethod.GET)
     public CommonResult<PagedGridResult<RecordsHistory>> getRecordHistory(@Valid PageBO pageBO, @Valid GetRecordsBO bo) {
-        try {
-            PagedGridResult history = super.historyService.getHistory(pageBO, bo);
-            return ResultUtil.returnSuccess(history);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        PagedGridResult history = super.historyService.getHistory(pageBO, bo);
+        return ResultUtil.returnSuccess(history);
     }
 
     @ApiOperation("page历史记录：查询历史记录")
@@ -70,16 +59,11 @@ public class HistoryController extends BaseController {
     public CommonResult getHistoryData(@ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type,
                                        @RequestParam(value = "recordId") Integer recordId) {
         /********************** 参数初始化 **********************/
-        try {
-            Object monitorHistory = null;
-            if (recordId != -1) {
-                monitorHistory = super.historyService.getHistoryData(type, recordId);
-            }
-            return ResultUtil.returnSuccess(monitorHistory);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
+        Object monitorHistory = null;
+        if (recordId != -1) {
+            monitorHistory = super.historyService.getHistoryData(type, recordId);
         }
+        return ResultUtil.returnSuccess(monitorHistory);
     }
 
     @ApiOperation("page监控页面：查询历史记录")
@@ -87,14 +71,9 @@ public class HistoryController extends BaseController {
     public CommonResult getMonitorHistoryData(@ApiParam(value = "查询类型： 0-体温 1-心率/呼吸率 2-血氧/PI") @RequestParam(value = "type") Integer type,
                                               @RequestParam(value = "baseId") Integer baseId) {
         /********************** 参数初始化 **********************/
-        try {
-            List<BaseData> list = super.historyService.getMonitorData(type, baseId);
-            Collections.sort(list);
-            return ResultUtil.returnSuccess(list);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        List<BaseData> list = super.historyService.getMonitorData(type, baseId);
+        Collections.sort(list);
+        return ResultUtil.returnSuccess(list);
     }
 
     @ApiOperation("page历史记录：时间点拍批量导出")
@@ -104,14 +83,9 @@ public class HistoryController extends BaseController {
                        @RequestParam(value = "departmentId") Integer departmentId,
                        @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type,
 //                       @ApiParam(value = "语言 0：中文 1：英文", required = true) @RequestParam(value = "language") Integer language,
-                       HttpServletResponse response) {
-        try {
-            List list = super.historyService.getExportHistoryList(type, departmentId, date, timeList);
-            super.historyService.export(response, type, list);
-        } catch (IOException e) {
-            e.printStackTrace();
-            ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+                       HttpServletResponse response) throws IOException {
+        List list = super.historyService.getExportHistoryList(type, departmentId, date, timeList);
+        super.historyService.export(response, type, list);
     }
 
     @ApiOperation("page历史记录：单人导出")

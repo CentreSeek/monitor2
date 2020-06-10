@@ -18,8 +18,6 @@ import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
 import io.swagger.annotations.Api;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,18 +68,14 @@ public class RepeaterController extends BaseController {
                                     @RequestParam(value = "mac") String mac,
                                     @RequestParam(value = "departmentId") Integer departmentId,
                                     @RequestParam(value = "roomId") Integer roomId,
-                                    @RequestParam(value = "ip") String ip) {
+                                    @RequestParam(value = "ip") String ip) throws Exception {
         /********************** 参数初始化 **********************/
-        try {
-            int i = super.repeaterService.insertSelective(new ZsRepeaterInfo().setMachineTypeId(machineTypeId).setMac(mac).setDepartmentId(departmentId).setRoomId(roomId).setIp(ip));
-            if (i == 0) {
-                return ResultUtil.returnError(ErrorCodeEnum.REPEATER_ADD_ERROR);
-            }
-            super.repeaterService.addRepeater();
-            return ResultUtil.returnSuccess(i);
-        } catch (Exception e) {
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
+        int i = super.repeaterService.insertSelective(new ZsRepeaterInfo().setMachineTypeId(machineTypeId).setMac(mac).setDepartmentId(departmentId).setRoomId(roomId).setIp(ip));
+        if (i == 0) {
+            return ResultUtil.returnError(ErrorCodeEnum.REPEATER_ADD_ERROR);
         }
+        super.repeaterService.addRepeater();
+        return ResultUtil.returnSuccess(i);
     }
 
     /**

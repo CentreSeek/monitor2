@@ -57,16 +57,11 @@ public class MonitorController extends BaseController {
     @ApiOperation(value = "获取病人信息")
     @RequestMapping(value = "/patient", method = RequestMethod.GET)
     public synchronized CommonResult checkPatient(@ApiParam(value = "床位号", required = true) @RequestParam("bedId") Integer bedId) {
-        try {
-            PatientInfo patientInfo = super.patientService.getPatientInfo(bedId);
-            return ResultUtil.returnSuccess(patientInfo);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        PatientInfo patientInfo = super.patientService.getPatientInfo(bedId);
+        return ResultUtil.returnSuccess(patientInfo);
     }
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @ApiOperation(value = "启用设备")
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     public synchronized CommonResult startTemperatureMachine(@Valid StartBO startBO, HttpServletRequest request) {
@@ -80,10 +75,12 @@ public class MonitorController extends BaseController {
         } catch (ConnectException c) {
             c.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            logger.error("业务异常信息：[{}]", c.getMessage(), c);
             return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            logger.error("业务异常信息：[{}]", e.getMessage(), e);
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
     }
@@ -101,6 +98,7 @@ public class MonitorController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            logger.error("业务异常信息：[{}]", e.getMessage(), e);
             return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
         }
     }
@@ -111,12 +109,7 @@ public class MonitorController extends BaseController {
     @RequestMapping(value = {"/bed"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT})
     public synchronized CommonResult changeBed(@ApiParam(value = "新床位号", required = true) @RequestParam("newBedId") Integer newBedId,
                                                @ApiParam(value = "现床位号", required = true) @RequestParam("currentBedId") Integer currentBedId, HttpServletRequest request) {
-        try {
-            return super.monitorService.changeBed(currentBedId, newBedId, request.getHeader("token"));
-        } catch (Exception e) {
-            LOGGER.error("业务异常信息：[{}]", e.getMessage(), e);
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        return super.monitorService.changeBed(currentBedId, newBedId, request.getHeader("token"));
     }
 
     /****************************** 停止监测 ******************************/
@@ -124,26 +117,16 @@ public class MonitorController extends BaseController {
     @ApiOperation("停止监测")
     @RequestMapping(value = "/record", method = RequestMethod.PUT)
     public CommonResult stopRecord(@RequestParam(value = "baseId") Integer baseId,
-                                   @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type, HttpServletRequest request) {
+                                   @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type, HttpServletRequest request) throws Exception {
         /********************** 参数初始化 **********************/
-        try {
-            return super.monitorService.stopMachine(baseId, type, request.getHeader("token"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        return super.monitorService.stopMachine(baseId, type, request.getHeader("token"));
     }
 
     @ApiOperation("获取服务器时间")
     @RequestMapping(value = "/time", method = RequestMethod.GET)
     public CommonResult getTime() {
         /********************** 参数初始化 **********************/
-        try {
-            return ResultUtil.returnSuccess(DateUtil.getCurrentTimeLong());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        return ResultUtil.returnSuccess(DateUtil.getCurrentTimeLong());
     }
 
 
@@ -155,19 +138,14 @@ public class MonitorController extends BaseController {
     public CommonResult<MonitorVO> getMonitors(@ApiParam(value = "科室id", required = true) @NotNull @RequestParam(value = "departmentId") Integer departmentId,
                                                @ApiParam(value = "起始床位id") @RequestParam(value = "start", required = false) Integer start,
                                                @ApiParam(value = "结束床位id") @RequestParam(value = "end", required = false) Integer end) {
-        try {
-            MonitorVO monitorVO = new MonitorVO();
-            List<MonitorBaseVO> monitors = super.monitorService.getMonitors(departmentId, start, end);
-            List<MachineTypeListVO> list = super.machineService.getMonitorTypeList(departmentId);
-            monitorVO.setMonitorVOList(monitors).setMachineTypeList(list);
-            monitorVO = super.monitorService.setMonitorRule(monitorVO, departmentId);
-            monitorVO = super.monitorService.setMachineState(monitorVO);
-            monitorVO.setBedCount(super.hospitalService.getBedCount(departmentId, start, end));
-            return ResultUtil.returnSuccess(monitorVO);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        MonitorVO monitorVO = new MonitorVO();
+        List<MonitorBaseVO> monitors = super.monitorService.getMonitors(departmentId, start, end);
+        List<MachineTypeListVO> list = super.machineService.getMonitorTypeList(departmentId);
+        monitorVO.setMonitorVOList(monitors).setMachineTypeList(list);
+        monitorVO = super.monitorService.setMonitorRule(monitorVO, departmentId);
+        monitorVO = super.monitorService.setMachineState(monitorVO);
+        monitorVO.setBedCount(super.hospitalService.getBedCount(departmentId, start, end));
+        return ResultUtil.returnSuccess(monitorVO);
     }
 
     @ApiOperation("设置监测规则")
@@ -175,25 +153,15 @@ public class MonitorController extends BaseController {
 //    @PostMapping("/setRule")
 //    @ResponseBody
     public CommonResult setMonitorRule(@RequestBody MonitorRuleBOData data, HttpServletRequest request) {
-        try {
-            super.monitorRuleService.setMonitorRule(data.getList(), request.getHeader("token"));
-            return ResultUtil.returnSuccess("");
-        } catch (Exception e) {
-            LOGGER.error("业务异常信息：[{}]", e.getMessage(), e);
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        super.monitorRuleService.setMonitorRule(data.getList(), request.getHeader("token"));
+        return ResultUtil.returnSuccess("");
     }
 
     @ApiOperation("获取默认监测规则")
     @RequestMapping(value = "/rule", method = RequestMethod.GET)
     public CommonResult<List<MonitorRule>> getRule(@ApiParam(value = "科室id，值为-1获取默认规则", required = true) @RequestParam(value = "departmentId") Integer departmentId) {
-        try {
-            List<MonitorRule> monitorRule = super.monitorRuleService.getMonitorRule(departmentId);
-            return ResultUtil.returnSuccess(monitorRule);
-        } catch (Exception e) {
-            LOGGER.error("业务异常信息：[{}]", e.getMessage(), e);
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        List<MonitorRule> monitorRule = super.monitorRuleService.getMonitorRule(departmentId);
+        return ResultUtil.returnSuccess(monitorRule);
     }
 //    @Autowired
 //    RecordTemperature recordTemperature;

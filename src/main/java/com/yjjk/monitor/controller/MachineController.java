@@ -191,7 +191,7 @@ public class MachineController extends BaseController {
     public void export(@RequestParam(value = "usageState", required = false) Integer usageState,
                        @RequestParam(value = "departmentId", required = false) Integer departmentId,
                        @ApiParam(value = "machineTypeId") @RequestParam(value = "machineTypeId", required = false) Integer machineTypeId,
-                       HttpServletRequest request, HttpServletResponse response) {
+                       HttpServletRequest request, HttpServletResponse response) throws IOException {
         /********************** 参数初始化 **********************/
         ZsMachineInfo machineInfo = new ZsMachineInfo();
         // 设备检索条件
@@ -209,29 +209,19 @@ public class MachineController extends BaseController {
         machineInfo.setDepartmentId(departmentId);
         machineInfo.setMachineTypeId(machineTypeId);
         List<MachineExportVO> list = super.machineService.export(machineInfo);
-        try {
-            ExcelUtils.exportExcel(response, list, "MachineList", MachineConstant.EXPORT);
-        } catch (IOException e) {
-            e.printStackTrace();
-            ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        ExcelUtils.exportExcel(response, list, "MachineList", MachineConstant.EXPORT);
     }
 
     @ApiOperation(value = "page设备管理：获取所有设备")
     @RequestMapping(value = "/selectAllMachine", method = RequestMethod.GET)
     public CommonResult selectAllMachine(@RequestParam Integer departmentId,
                                          @ApiParam(value = "设备类型id", required = true) @RequestParam Integer machineTypeId) {
-        try {
-            /********************** 参数初始化 **********************/
-            Map<String, Object> paraMap = new HashMap<>();
-            paraMap.put("departmentId", departmentId);
-            paraMap.put("machineType", machineTypeId);
-            List<ZsMachineInfo> list = super.machineService.selectAllMachines(paraMap);
-            return ResultUtil.returnSuccess(list);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        /********************** 参数初始化 **********************/
+        Map<String, Object> paraMap = new HashMap<>();
+        paraMap.put("departmentId", departmentId);
+        paraMap.put("machineType", machineTypeId);
+        List<ZsMachineInfo> list = super.machineService.selectAllMachines(paraMap);
+        return ResultUtil.returnSuccess(list);
     }
 
     @ApiOperation(value = "page设备管理：查找设备")
@@ -239,18 +229,13 @@ public class MachineController extends BaseController {
     public CommonResult<SearchMachineVOBase> searchMachine(@RequestParam Integer departmentId,
                                                            @ApiParam(value = "设备id", required = true) @RequestParam Integer machineId,
                                                            @ApiParam(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type) {
-        try {
-            /********************** 参数初始化 **********************/
-            Map<String, Object> paraMap = new HashMap<>();
-            paraMap.put("departmentId", departmentId);
-            paraMap.put("machineId", machineId);
-            paraMap.put("type", type);
-            CommonResult commonResult = super.machineService.searchMachine(paraMap);
-            return commonResult;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        /********************** 参数初始化 **********************/
+        Map<String, Object> paraMap = new HashMap<>();
+        paraMap.put("departmentId", departmentId);
+        paraMap.put("machineId", machineId);
+        paraMap.put("type", type);
+        CommonResult commonResult = super.machineService.searchMachine(paraMap);
+        return commonResult;
     }
 
     /**
@@ -261,14 +246,9 @@ public class MachineController extends BaseController {
     @ApiOperation(value = "page设备管理-list：获取设备名称")
     @RequestMapping(value = "/machineName", method = RequestMethod.GET)
     public CommonResult<List<MachineTypeInfo>> getTemperatureMachineName() {
-        try {
-            /********************** 参数初始化 **********************/
-            List<MachineTypeInfo> list = super.machineService.getTemperatureMachineName();
-            return ResultUtil.returnSuccess(list);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        /********************** 参数初始化 **********************/
+        List<MachineTypeInfo> list = super.machineService.getTemperatureMachineName();
+        return ResultUtil.returnSuccess(list);
     }
 
     /**
@@ -279,14 +259,9 @@ public class MachineController extends BaseController {
     @ApiOperation(value = "page设备管理-list：获取设备型号")
     @RequestMapping(value = "/machineModel", method = RequestMethod.GET)
     public CommonResult getMachineModel(@ApiParam(value = "设备类型id", required = true) @RequestParam Integer machineTypeId) {
-        try {
-            /********************** 参数初始化 **********************/
-            List<MachineTypeInfo> list = super.machineService.getMachineModel(machineTypeId);
-            return ResultUtil.returnSuccess(list);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+        /********************** 参数初始化 **********************/
+        List<MachineTypeInfo> list = super.machineService.getMachineModel(machineTypeId);
+        return ResultUtil.returnSuccess(list);
     }
 
 }
