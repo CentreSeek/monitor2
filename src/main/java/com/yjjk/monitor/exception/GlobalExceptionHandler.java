@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public CommonResult processException(Exception e) {
+
         /**
          * 未知异常
          */

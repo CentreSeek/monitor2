@@ -95,7 +95,7 @@
     <select id="selectUsageListByTypeId" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.ListVO">
         select
-        zmi.machine_id as id, concat(zmi.machine_no,'|',zmi.machine_num) as value
+        zmi.machine_id as id, concat(zmi.machine_no,' | ',zmi.machine_num) as value
         from zs_machine_info zmi
         left join hospital_department zdi on zmi.department_id = zdi.department_id
         left join machine_type_info mti on zmi.machine_type_id = mti.id

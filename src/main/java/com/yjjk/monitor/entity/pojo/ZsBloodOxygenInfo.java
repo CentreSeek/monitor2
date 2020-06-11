@@ -34,13 +34,13 @@ public class ZsBloodOxygenInfo {
      * 血氧 范围：35~100%，无效值：127
      */
     @Column(name = "blood_oxygen")
-    private BigDecimal bloodOxygen;
+    private Integer bloodOxygen;
 
     /**
      * 脉率 范围：25~250bmp，无效值：255
      */
     @Column(name = "pulse_rate")
-    private BigDecimal pulseRate;
+    private Integer pulseRate;
 
     /**
      * 设备剩余电量

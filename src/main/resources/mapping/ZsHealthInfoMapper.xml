@@ -7,8 +7,8 @@
     -->
     <result column="temperature_id" jdbcType="INTEGER" property="temperatureId" />
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
-    <result column="heart_rate" jdbcType="DECIMAL" property="heartRate" />
-    <result column="respiratory_rate" jdbcType="DECIMAL" property="respiratoryRate" />
+    <result column="heart_rate" jdbcType="INTEGER" property="heartRate" />
+    <result column="respiratory_rate" jdbcType="INTEGER" property="respiratoryRate" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="timestamp" jdbcType="BIGINT" property="timestamp" />
   </resultMap>

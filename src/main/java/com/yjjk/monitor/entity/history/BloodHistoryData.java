@@ -30,12 +30,12 @@ import java.util.List;
 public class BloodHistoryData extends BaseData {
 
     @ApiModelProperty(value = "血氧")
-    private Double bloodOxygen;
+    private Integer bloodOxygen;
     @ApiModelProperty(value = "pi")
-    private Integer pi;
+    private Double pi;
     @ApiModelProperty(value = "心率")
-    private Double heartRate;
+    private Integer heartRate;
     @ApiModelProperty(value = "呼吸率(deprecated)")
-    private Double respiratoryRate;
+    private Integer respiratoryRate;
 
 }

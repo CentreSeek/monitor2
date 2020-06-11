@@ -241,7 +241,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     && monitorVOList.get(i).getMonitorHeartRateVO() != null
                     && monitorVOList.get(i).getMonitorHeartRateVO().getHeart() != null) {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorHeartRateVO().getHeart()) != 0) {
-                Double heart = Double.parseDouble(monitorVOList.get(i).getMonitorHeartRateVO().getHeart());
+                Integer heart = Integer.parseInt(monitorVOList.get(i).getMonitorHeartRateVO().getHeart());
                 if (heart < hRule.getParamTwo() || (heart > hRule.getParamOne() && heart <= hRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
                     if (errorStatus < 3) {
@@ -263,7 +263,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     && monitorVOList.get(i).getMonitorRespiratoryRateVO() != null
                     && monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory() != null) {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory()) != 0) {
-                Double respiratoryRate = Double.parseDouble(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory());
+                Integer respiratoryRate = Integer.parseInt(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory());
                 if (respiratoryRate < rRule.getParamTwo() || (respiratoryRate > rRule.getParamOne() && respiratoryRate < rRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
                     if (errorStatus < 3) {
@@ -285,7 +285,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     && monitorVOList.get(i).getMonitorBloodVO() != null
                     && monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen() != null) {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen()) != 0) {
-                Double blood = Double.parseDouble(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen());
+                Integer blood = Integer.parseInt(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen());
                 if (blood < bRule.getParamOne() && (blood >= bRule.getParamTwo())) {
                     monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
                     if (errorStatus < 3) {
@@ -373,7 +373,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     @Override
     public MonitorBaseVO getHeartRate(MonitorBaseVO monitorBaseVO, Integer ecgRecordId, Integer bloodRecordId, Integer sleepingRecordId) {
         MonitorHeartRateVO data = new MonitorHeartRateVO();
-        data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
         RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(sleepingRecordId);
         if (sleepingRecordId != -1 && recordSleeping.getRecordStatus().equals(MonitorEnum.CHILDREN_RECORD_USED.getType())) {
             data = super.recordSleepingMapper.getHeartRate(recordSleeping.getMachineId(), sleepingRecordId);
@@ -395,6 +394,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType());
 //                    .setIsReady(isReady(MachineEnum.ECG.getType(), ecgRecordId));
         }
+        if (StringUtils.isNullorEmpty(data.getRecordState())) {
+        data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
+        }
         monitorBaseVO.setMonitorHeartRateVO(data);
         return monitorBaseVO;
     }
@@ -402,7 +404,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     @Override
     public MonitorBaseVO getRespiratory(MonitorBaseVO monitorBaseVO, Integer ecgRecordId, Integer sleepingRecordId) {
         MonitorRespiratoryRateVO data = new MonitorRespiratoryRateVO();
-        data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
         RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(sleepingRecordId);
         if (sleepingRecordId != -1 && recordSleeping.getRecordStatus().equals(MonitorEnum.CHILDREN_RECORD_USED.getType())) {
             data = super.recordSleepingMapper.getRespiratoryRate(recordSleeping.getMachineId(), sleepingRecordId);
@@ -418,6 +419,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType());
 //                    .setIsReady(isReady(MachineEnum.ECG.getType(), ecgRecordId));
         }
+        if (StringUtils.isNullorEmpty(data.getRecordState())) {
+            data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
+        }
         monitorBaseVO.setMonitorRespiratoryRateVO(data);
         return monitorBaseVO;
     }
@@ -425,12 +429,14 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     @Override
     public MonitorBaseVO getBloodOxygen(MonitorBaseVO monitorBaseVO, Integer recordId) {
         MonitorBloodVO data = new MonitorBloodVO();
-        data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
         RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(recordId);
         if (recordId != -1 && recordBlood.getRecordStatus().equals(MonitorEnum.CHILDREN_RECORD_USED.getType())) {
             data = super.recordBloodMapper.getBloodOxygen(recordBlood.getMachineId(), recordId);
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType());
 //                    .setIsReady(isReady(MachineEnum.BLOOD.getType(), recordId));
+        }
+        if (StringUtils.isNullorEmpty(data.getRecordState())) {
+            data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
         }
         monitorBaseVO.setMonitorBloodVO(data);
         return monitorBaseVO;

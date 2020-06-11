@@ -7,8 +7,8 @@
     -->
     <result column="id" property="id" jdbcType="INTEGER" />
     <result column="machine_id" property="machineId" jdbcType="VARCHAR" />
-    <result column="heart_rate" property="heartRate" jdbcType="VARCHAR" />
-    <result column="respiratory_rate" property="respiratoryRate" jdbcType="VARCHAR" />
+    <result column="heart_rate" property="heartRate" jdbcType="INTEGER" />
+    <result column="respiratory_rate" property="respiratoryRate" jdbcType="INTEGER" />
     <result column="sleep_state" property="sleepState" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="timestamp" property="timestamp" jdbcType="BIGINT" />

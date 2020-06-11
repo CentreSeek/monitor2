@@ -61,11 +61,12 @@ public class StringUtils {
         if (param == null) {
             return true;
         }
-        if (param instanceof Integer) {
-            if ((Integer) param == 0) {
-                return true;
-            }
-        } else if (param instanceof String) {
+//        if (param instanceof Integer) {
+//            if ((Integer) param == 0) {
+//                return true;
+//            }
+//        } else
+        if (param instanceof String) {
             String str = (String) param;
             if (str.length() <= 0) {
                 return true;
@@ -184,6 +185,7 @@ public class StringUtils {
 
     /**
      * 获取模糊查询名字
+     *
      * @param name
      * @return
      */

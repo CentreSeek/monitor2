@@ -26,13 +26,13 @@ public class ZsSleepingBeltInfo {
      * 心率
      */
     @Column(name = "heart_rate")
-    private String heartRate;
+    private Integer heartRate;
 
     /**
      * 呼吸率
      */
     @Column(name = "respiratory_rate")
-    private String respiratoryRate;
+    private Integer respiratoryRate;
 
     /**
      * 睡眠状态 离床:0，入睡:1 ，清醒(浅睡):2，在床状态:3 

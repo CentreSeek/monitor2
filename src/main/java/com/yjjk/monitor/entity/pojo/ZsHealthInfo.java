@@ -28,13 +28,13 @@ public class ZsHealthInfo {
      * 心率
      */
     @Column(name = "heart_rate")
-    private BigDecimal heartRate;
+    private Integer heartRate;
 
     /**
      * 呼吸率
      */
     @Column(name = "respiratory_rate")
-    private BigDecimal respiratoryRate;
+    private Integer respiratoryRate;
 
     /**
      * 记录时间

@@ -32,7 +32,8 @@
         SELECT id, NAME, type_code
         FROM `machine_type_info`
         WHERE TYPE = 0
-          AND LEVEL = 0;
+          AND LEVEL = 0
+        order by type_code
     </select>
     <select id="getMachineModel" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         SELECT id, NAME

@@ -26,9 +26,9 @@ import lombok.experimental.Accessors;
 public class SleepingHistoryData  extends BaseData {
 
     @ApiModelProperty(value = "心率")
-    private Double heartRate;
+    private Integer heartRate;
     @ApiModelProperty(value = "呼吸率")
-    private Double respiratoryRate;
+    private Integer respiratoryRate;
     @ApiModelProperty(value = "睡眠状态")
     private Integer sleepState;
 }

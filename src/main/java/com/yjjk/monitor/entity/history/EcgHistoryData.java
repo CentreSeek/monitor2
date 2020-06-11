@@ -26,8 +26,8 @@ import lombok.experimental.Accessors;
 public class EcgHistoryData  extends BaseData {
 
     @ApiModelProperty(value = "心率")
-    private Double heartRate;
+    private Integer heartRate;
     @ApiModelProperty(value = "呼吸率")
-    private Double respiratoryRate;
+    private Integer respiratoryRate;
 
 }

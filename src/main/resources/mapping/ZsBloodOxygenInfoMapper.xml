@@ -8,8 +8,8 @@
     <result column="id" jdbcType="INTEGER" property="id" />
     <result column="machine_id" jdbcType="VARCHAR" property="machineId" />
     <result column="machine_num" jdbcType="VARCHAR" property="machineNum" />
-    <result column="blood_oxygen" jdbcType="DECIMAL" property="bloodOxygen" />
-    <result column="pulse_rate" jdbcType="DECIMAL" property="pulseRate" />
+    <result column="blood_oxygen" jdbcType="INTEGER" property="bloodOxygen" />
+    <result column="pulse_rate" jdbcType="INTEGER" property="pulseRate" />
     <result column="battery" jdbcType="INTEGER" property="battery" />
     <result column="blood_oxygen_status" jdbcType="VARCHAR" property="bloodOxygenStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
