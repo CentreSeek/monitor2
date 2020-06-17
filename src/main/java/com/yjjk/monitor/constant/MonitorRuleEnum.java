@@ -20,7 +20,12 @@ public enum MonitorRuleEnum {
     ALERT_ORANGE(1, "橙"),
     ALERT_RED(2, "红"),
 
-    ;
+    TEMPERATURE_ALERT_L(32, "L"),
+    TEMPERATURE_ALERT_H(42, "H"),
+    HEART_ALERT_L(40, "L"),
+    HEART_ALERT_H(300, "H"),
+    RESPIRATORY_ALERT_L(5, "L"),
+    RESPIRATORY_ALERT_H(35, "H");
 
     private Integer type;
 
@@ -33,6 +38,10 @@ public enum MonitorRuleEnum {
 
     public Integer getType() {
         return this.type;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public static String getName(Integer type) {
