@@ -22,6 +22,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -127,6 +128,10 @@ public final class NetUtils {
         String charSet = "UTF-8";
         StringEntity entity = new StringEntity(params, charSet);
         httpPost.setEntity(entity);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(5000).setConnectionRequestTimeout(1000)
+                .setSocketTimeout(5000).build();
+        httpPost.setConfig(requestConfig);
         CloseableHttpResponse response = null;
 
         try {

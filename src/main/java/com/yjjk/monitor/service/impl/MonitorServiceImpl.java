@@ -583,6 +583,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public CommonResult stopMachine(Integer baseId, Integer type, String token) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         // 管理日志
@@ -805,7 +806,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
 
 
     @Override
-//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public CommonResult startMachine(Integer type, Integer machineId, Integer bedId, Integer patientId, String token) throws Exception {
         // 查询 or 新增RecordBase
         Example example = new Example(RecordBase.class);

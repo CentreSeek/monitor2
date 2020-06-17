@@ -61,10 +61,10 @@ public class MonitorController extends BaseController {
         return ResultUtil.returnSuccess(patientInfo);
     }
 
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @ApiOperation(value = "启用设备")
     @RequestMapping(value = "/start", method = RequestMethod.POST)
-    public synchronized CommonResult startTemperatureMachine(@Valid StartBO startBO, HttpServletRequest request) {
+    public synchronized CommonResult startMachine(@Valid StartBO startBO, HttpServletRequest request) {
         try {
             // 获取患者id (检验、查询\新增)
             Integer patientId = super.patientService.checkPatient(startBO.getPatientName(), startBO.getCaseNum(), startBO.getBedId());
@@ -113,7 +113,7 @@ public class MonitorController extends BaseController {
     }
 
     /****************************** 停止监测 ******************************/
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @ApiOperation("停止监测")
     @RequestMapping(value = "/record", method = RequestMethod.PUT)
     public CommonResult stopRecord(@RequestParam(value = "baseId") Integer baseId,
