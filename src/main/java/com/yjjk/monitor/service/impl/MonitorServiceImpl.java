@@ -243,18 +243,18 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     && monitorVOList.get(i).getMonitorHeartRateVO().getHeart() != null) {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorHeartRateVO().getHeart()) != 0) {
                 Integer heart = Integer.parseInt(monitorVOList.get(i).getMonitorHeartRateVO().getHeart());
-                if ((heart < hRule.getParamTwo() && heart >= MonitorRuleEnum.HEART_ALERT_L.getType()) || (heart > hRule.getParamOne() && heart <= hRule.getParamThree())) {
+                if ((heart < hRule.getParamTwo() && heart > MonitorRuleEnum.HEART_ALERT_L.getType()) || (heart > hRule.getParamOne() && heart < hRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
                     if (errorStatus < 3) {
                         errorStatus = 2;
                     }
-                } else if (heart > hRule.getParamThree() && heart <= MonitorRuleEnum.HEART_ALERT_H.getType()) {
+                } else if (heart >= hRule.getParamThree() && heart < MonitorRuleEnum.HEART_ALERT_H.getType()) {
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_RED.getType());
                     errorStatus = 3;
                 } else {
-                    if (heart < MonitorRuleEnum.HEART_ALERT_L.getType()) {
+                    if (heart <= MonitorRuleEnum.HEART_ALERT_L.getType()) {
                         monitorVOList.get(i).getMonitorHeartRateVO().setHeart(MonitorRuleEnum.HEART_ALERT_L.getName());
-                    } else if (heart > MonitorRuleEnum.HEART_ALERT_H.getType()) {
+                    } else if (heart >= MonitorRuleEnum.HEART_ALERT_H.getType()) {
                         monitorVOList.get(i).getMonitorHeartRateVO().setHeart(MonitorRuleEnum.HEART_ALERT_H.getName());
                     }
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_WHITE.getType());
@@ -271,18 +271,19 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     && monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory() != null) {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory()) != 0) {
                 Integer respiratoryRate = Integer.parseInt(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory());
-                if ((respiratoryRate < rRule.getParamTwo() && respiratoryRate >= MonitorRuleEnum.RESPIRATORY_ALERT_L.getType()) || (respiratoryRate > rRule.getParamOne() && respiratoryRate < rRule.getParamThree())) {
+                if ((respiratoryRate < rRule.getParamTwo() && respiratoryRate > MonitorRuleEnum.RESPIRATORY_ALERT_L.getType())
+                        || (respiratoryRate > rRule.getParamOne() && respiratoryRate < rRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
                     if (errorStatus < 3) {
                         errorStatus = 2;
                     }
-                } else if (respiratoryRate >= rRule.getParamThree() && respiratoryRate <= MonitorRuleEnum.RESPIRATORY_ALERT_H.getType()) {
+                } else if (respiratoryRate >= rRule.getParamThree() && respiratoryRate < MonitorRuleEnum.RESPIRATORY_ALERT_H.getType()) {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_RED.getType());
                     errorStatus = 3;
                 } else {
-                    if (respiratoryRate < MonitorRuleEnum.RESPIRATORY_ALERT_L.getType()) {
+                    if (respiratoryRate <= MonitorRuleEnum.RESPIRATORY_ALERT_L.getType()) {
                         monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratory(MonitorRuleEnum.RESPIRATORY_ALERT_L.getName());
-                    } else if (respiratoryRate > MonitorRuleEnum.RESPIRATORY_ALERT_H.getType()) {
+                    } else if (respiratoryRate >= MonitorRuleEnum.RESPIRATORY_ALERT_H.getType()) {
                         monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratory(MonitorRuleEnum.RESPIRATORY_ALERT_H.getName());
                     }
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_WHITE.getType());
