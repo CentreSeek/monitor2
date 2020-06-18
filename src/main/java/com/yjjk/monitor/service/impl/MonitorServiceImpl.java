@@ -215,7 +215,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     && monitorVOList.get(i).getMonitorTemperatureVO().getTemperature() != null) {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorTemperatureVO().getTemperature()) != 0) {
                 Double temperature = Double.parseDouble(monitorVOList.get(i).getMonitorTemperatureVO().getTemperature());
-                if ((temperature < tRule.getParamTwo() && temperature > MonitorRuleEnum.TEMPERATURE_ALERT_L.getType()) || (temperature > tRule.getParamOne() && temperature <= tRule.getParamThree())) {
+                if ((temperature < tRule.getParamTwo() && temperature > MonitorRuleEnum.TEMPERATURE_ALERT_L.getType()) || (temperature > tRule.getParamOne() && temperature < tRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
                     if (errorStatus < 3) {
                         errorStatus = 2;
