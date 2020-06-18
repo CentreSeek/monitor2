@@ -64,25 +64,25 @@ public class MonitorController extends BaseController {
 //    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @ApiOperation(value = "启用设备")
     @RequestMapping(value = "/start", method = RequestMethod.POST)
-    public synchronized CommonResult startMachine(@Valid StartBO startBO, HttpServletRequest request) {
-        try {
+    public synchronized CommonResult startMachine(@Valid StartBO startBO, HttpServletRequest request) throws Exception {
+//        try {
             // 获取患者id (检验、查询\新增)
             Integer patientId = super.patientService.checkPatient(startBO.getPatientName(), startBO.getCaseNum(), startBO.getBedId());
             if (patientId == null) {
                 return ResultUtil.returnError(ErrorCodeEnum.EXIST_RECORD);
             }
             return super.monitorService.startMachine(startBO.getType(), startBO.getMachineId(), startBO.getBedId(), patientId, request.getHeader("token"));
-        } catch (ConnectException c) {
-            c.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            logger.error("业务异常信息：[{}]", c.getMessage(), c);
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            logger.error("业务异常信息：[{}]", e.getMessage(), e);
-            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-        }
+//        } catch (ConnectException c) {
+//            c.printStackTrace();
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            logger.error("业务异常信息：[{}]", c.getMessage(), c);
+//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            logger.error("业务异常信息：[{}]", e.getMessage(), e);
+//            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
+//        }
     }
 
 

@@ -38,6 +38,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -123,7 +124,7 @@ public final class NetUtils {
      * @param params json格式的参数
      * @return
      */
-    public static String doPost(String url, String params) throws Exception {
+    public static String doPost(String url, String params) {
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);// 创建httpPost
@@ -164,7 +165,7 @@ public final class NetUtils {
                 e.printStackTrace();
             }
         }
-        return null;
+        return "500";
     }
 
     public static String doPost(String url, Object data) throws Exception {

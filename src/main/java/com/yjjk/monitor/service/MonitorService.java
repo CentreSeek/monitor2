@@ -85,7 +85,7 @@ public interface MonitorService {
      */
     CommonResult stopMachine(Integer baseId, Integer type, String token) throws Exception;
 
-    CommonResult stopTemperatureMachine(Integer recordId) throws Exception;
+    CommonResult  stopTemperatureMachine(Integer recordId) throws Exception;
 
     CommonResult stopEcgMachine(Integer recordId, Integer bedId) throws Exception;
 
