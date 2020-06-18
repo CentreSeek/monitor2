@@ -220,7 +220,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     if (errorStatus < 3) {
                         errorStatus = 2;
                     }
-                } else if (temperature > tRule.getParamThree() && temperature < MonitorRuleEnum.TEMPERATURE_ALERT_H.getType()) {
+                } else if (temperature >= tRule.getParamThree() && temperature < MonitorRuleEnum.TEMPERATURE_ALERT_H.getType()) {
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_RED.getType());
                     errorStatus = 3;
                 } else {
