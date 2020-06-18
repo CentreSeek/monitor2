@@ -42,7 +42,6 @@ public enum ErrorCodeEnum {
     MANAGER_EXIST_ERROR("350", "新增失败，该账户已存在"),
     MANAGER_INSERT_ERROR("351", "用户新增失败"),
     MANAGER_UPDATE_ERROR("352", "管理员更新失败"),
-    MANAGER_DELETE_ERROR("353", "删除失败"),
     MANAGER_ROLE_ERROR("354", "角色信息错误"),
     MANAGER_NOT_EXIST("355", "账户不存在"),
     MANAGER_PASSWORD_ERROR("356", "密码错误"),
@@ -51,19 +50,8 @@ public enum ErrorCodeEnum {
     /********** MonitorController **********/
     EXIST_RECORD("360", "该用户已在其他床位启用监护"),
     ERROR_MACHINE_TYPE("361", "设备类型有误"),
-    ERROR_USAGE_ECG("362","该床位无法使用心电设备"),
     ERROR_CONNECT_DATA_SERVICE("363","数据服务器连接失败"),
     ERROR_MACHINE_STOP("364", "停用失败，设备类型错误"),
-
-    PATIENT_EXIST_ERROR("360", "该病例已存在"),
-    ADD_PATIENT_ERROR("361", "添加用户失败"),
-    ADD_RECORD_ERROR("362", "添加记录失败"),
-    PATIENT_GET_RECORD_ERROR("364", "获取历史记录失败"),
-    PATIENT_RECORD_NOT_FIND("365", "未找到该记录"),
-    TEMPERATURE_BOUND_DEPARTMENT_ERROR("367", "不能修改默认规则"),
-    PATIENT_CHANGE_BED_ERROR("368", "目标床位已有病人，请确认床位信息输入正确"),
-
-
     UNKNOWN_ERROR("500", "系统繁忙...");
 
     private String code;

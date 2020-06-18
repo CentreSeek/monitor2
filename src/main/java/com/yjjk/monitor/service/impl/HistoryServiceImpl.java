@@ -85,19 +85,39 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
     }
 
     @Override
-    public void export(HttpServletResponse response, Integer type, List dataList) throws IOException {
+    public void export(HttpServletResponse response, Integer type, List dataList, Integer language, Integer temType) throws IOException {
+        String[] tital = null;
         if (type == MachineConstant.TEMPERATURE) {
-            ExcelUtils.exportExcel(response, dataList, FileNameUtils.getHistoryFileName(), ExportExcelConstant.TEMPERATURE_TITLE);
+            if (language == ExportExcelConstant.CN) {
+                tital = ExportExcelConstant.TEMPERATURE_TITLE;
+            } else if (temType == ExportExcelConstant.CENTIGRADE) {
+                tital = ExportExcelConstant.TEMPERATURE_TITLE_EN;
+            } else {
+                tital = ExportExcelConstant.TEMPERATURE_TITLE_EN_F;
+            }
         }
         if (type == MachineConstant.ECG) {
-            ExcelUtils.exportExcel(response, dataList, FileNameUtils.getHistoryFileName(), ExportExcelConstant.ECG_TITLE);
+            if (language == ExportExcelConstant.CN) {
+                tital = ExportExcelConstant.ECG_TITLE;
+            } else {
+                tital = ExportExcelConstant.ECG_TITLE_EN;
+            }
         }
         if (type == MachineConstant.BLOOD) {
-            ExcelUtils.exportExcel(response, dataList, FileNameUtils.getHistoryFileName(), ExportExcelConstant.BLOOD_TITLE);
+            if (language == ExportExcelConstant.CN) {
+                tital = ExportExcelConstant.BLOOD_TITLE;
+            } else {
+                tital = ExportExcelConstant.BLOOD_TITLE_EN;
+            }
         }
         if (type == MachineConstant.SLEEPING) {
-            ExcelUtils.exportExcel(response, dataList, FileNameUtils.getHistoryFileName(), ExportExcelConstant.SLEEPING_TITLE);
+            if (language == ExportExcelConstant.CN) {
+                tital = ExportExcelConstant.SLEEPING_TITLE;
+            } else {
+                tital = ExportExcelConstant.SLEEPING_TITLE_EN;
+            }
         }
+        ExcelUtils.exportExcel(response, dataList, FileNameUtils.getHistoryFileName(), tital);
     }
 
     @Override

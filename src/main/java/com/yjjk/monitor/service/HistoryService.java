@@ -46,9 +46,11 @@ public interface HistoryService {
      * @param response
      * @param type
      * @param dataList
+     * @param language
+     * @param temType
      * @throws IOException
      */
-    void export(HttpServletResponse response,Integer type, List dataList) throws IOException;
+    void export(HttpServletResponse response,Integer type, List dataList, Integer language,Integer temType) throws IOException;
     /**
      * records-获取历史记录
      * @param pageBO

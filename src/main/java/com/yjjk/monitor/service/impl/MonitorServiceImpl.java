@@ -465,15 +465,16 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType())
                             .setSleepingState(null);
                 } else {
-                    Long leaveTimes = null;
-                    if (sleeping.getState() == 0) {
-                        if (MonitorConstant.sleepingTimesMap.get(sleeping.getMachineId()) == null) {
-                            MonitorConstant.sleepingTimesMap.put(sleeping.getMachineId(), sleeping.getTime());
-                        }
-                        leaveTimes = DateUtil.timeDifferentLong(MonitorConstant.sleepingTimesMap.get(sleeping.getMachineId()));
-                    } else {
-                        MonitorConstant.sleepingTimesMap.put(sleeping.getMachineId(), null);
-                    }
+//                    Long leaveTimes = null;
+//                    if (sleeping.getState() == 0) {
+//                        if (MonitorConstant.sleepingTimesMap.get(sleeping.getMachineId()) == null) {
+//                            MonitorConstant.sleepingTimesMap.put(sleeping.getMachineId(), sleeping.getTime());
+//                        }
+//                    } else {
+//                        MonitorConstant.sleepingTimesMap.put(sleeping.getMachineId(), null);
+//                    }
+                    String s = MonitorConstant.sleepingTimesMap.get(recordSleeping.getMachineId());
+                    Long leaveTimes = DateUtil.timeDifferentLong(s);
                     list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType())
                             .setSleepingState(MonitorUtils.getSleepingState(sleeping.getState()))
                             .setSleepingLeaveTimes(leaveTimes);
@@ -798,6 +799,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(recordBase.getRecordSleepingId());
         Integer oldMachineId = recordSleeping.getMachineId();
         MonitorConstant.sleepingTimesMap.put(oldMachineId, null);
+        MonitorConstant.sleepingTimesMap.put(machineId, DateUtil.getCurrentTime());
         cacheMonitorHistory(MachineEnum.SLEEPING.getType(), recordSleeping.getId());
         recordSleeping.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordSleepingMapper.updateByPrimaryKeySelective(recordSleeping);
@@ -964,7 +966,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             recordSleeping.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime()).setRecordStatus(0);
             super.recordSleepingMapper.updateByPrimaryKeySelective(recordSleeping);
         }
-        MonitorConstant.sleepingTimesMap.put(machineId, null);
+        MonitorConstant.sleepingTimesMap.put(machineId, DateUtil.getCurrentTime());
         changeMachineState(machineId, MachineConstant.USAGE_STATE_USED);
         return machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
     }
