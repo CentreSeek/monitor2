@@ -40,7 +40,7 @@
         zmi.`box_battery`,
         current.heart_rate as heart,
         CONCAT(TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) div 1440, 'D-',
-        TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'H-',TIMESTAMPDIFF(MINUTE,
+        TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) mod 1440 div 60,'H-',TIMESTAMPDIFF(MINUTE,
         rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'M') as useTimes
         FROM
         record_sleeping rs
@@ -68,7 +68,7 @@
         zmi.`box_battery`,
         current.respiratory_rate as respiratory,
         CONCAT(TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) div 1440, 'D-',
-        TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'H-',TIMESTAMPDIFF(MINUTE,
+        TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) mod 1440 div 60,'H-',TIMESTAMPDIFF(MINUTE,
         rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'M') as useTimes
         FROM
         record_sleeping rs
