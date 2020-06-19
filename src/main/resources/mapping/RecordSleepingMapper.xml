@@ -39,8 +39,9 @@
         zmi.battery,
         zmi.`box_battery`,
         current.heart_rate as heart,
-        CONCAT(TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'小时',TIMESTAMPDIFF(MINUTE,
-        rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'分') as useTimes
+        CONCAT(TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) div 1440, 'D-',
+        TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'H-',TIMESTAMPDIFF(MINUTE,
+        rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'M') as useTimes
         FROM
         record_sleeping rs
         LEFT JOIN zs_machine_info zmi
@@ -66,8 +67,9 @@
         zmi.battery,
         zmi.`box_battery`,
         current.respiratory_rate as respiratory,
-        CONCAT(TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'小时',TIMESTAMPDIFF(MINUTE,
-        rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'分') as useTimes
+        CONCAT(TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) div 1440, 'D-',
+        TIMESTAMPDIFF(MINUTE, rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'H-',TIMESTAMPDIFF(MINUTE,
+        rs.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'M') as useTimes
         FROM
         record_sleeping rs
         LEFT JOIN zs_machine_info zmi

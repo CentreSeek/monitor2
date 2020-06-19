@@ -36,8 +36,9 @@
         zmi.battery,
         zmi.`box_battery` as boxBatteryStatus,
         zti.temperature,
-        CONCAT(TIMESTAMPDIFF(MINUTE, rt.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'小时',TIMESTAMPDIFF(MINUTE,
-        rt.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'分') as useTimes
+        CONCAT(TIMESTAMPDIFF(MINUTE, rt.start_time, CONCAT(CURDATE(),' ',CURTIME())) div 1440, 'D-',
+        TIMESTAMPDIFF(MINUTE, rt.start_time, CONCAT(CURDATE(),' ',CURTIME())) DIV 60,'H-',TIMESTAMPDIFF(MINUTE,
+        rt.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'M') as useTimes
         FROM
         record_temperature rt
         LEFT JOIN zs_machine_info zmi

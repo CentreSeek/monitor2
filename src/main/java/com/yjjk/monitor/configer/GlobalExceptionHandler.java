@@ -46,7 +46,6 @@ public class GlobalExceptionHandler {
          */
         logger.error("数据服务器连接失败：[{}]", e.getMessage(), e);
         e.printStackTrace();
-        System.out.println("============================================================");
         return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
 
     }
@@ -58,7 +57,6 @@ public class GlobalExceptionHandler {
          */
         logger.error("业务异常信息：[{}]", e.getMessage(), e);
         e.printStackTrace();
-        System.out.println("============================================================");
         return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
 
     }
