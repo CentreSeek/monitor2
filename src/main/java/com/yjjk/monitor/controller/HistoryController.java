@@ -82,8 +82,8 @@ public class HistoryController extends BaseController {
                        @ApiParam(value = "导出日期：格式  0000-00-00", required = true) @RequestParam(value = "date") String date,
                        @RequestParam(value = "departmentId") Integer departmentId,
                        @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type,
-                       @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language") Integer language,
-                       @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType") Integer temType,
+                       @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language", required = false) Integer language,
+                       @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType", required = false) Integer temType,
                        HttpServletResponse response) throws IOException {
         List list = super.historyService.getExportHistoryList(type, departmentId, date, timeList);
         if (language == null) {
@@ -100,8 +100,8 @@ public class HistoryController extends BaseController {
     public void privateExport(@ApiParam(value = "筛选规则，筛选大于该摄氏度的体温") @RequestParam(value = "temperature", required = false) Double temperature,
                               @ApiParam(value = "recordId", required = true) @RequestParam(value = "recordId") Integer recordId,
                               @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type,
-                              @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language") Integer language,
-                              @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType") Integer temType,
+                              @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language", required = false) Integer language,
+                              @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType", required = false) Integer temType,
                               HttpServletResponse response) throws IOException {
         Object historyData = super.historyService.getHistoryData(type, recordId);
         if (type == MachineConstant.TEMPERATURE && temperature != null) {
