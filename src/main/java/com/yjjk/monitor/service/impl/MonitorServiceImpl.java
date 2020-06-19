@@ -482,8 +482,10 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     String s = MonitorConstant.sleepingTimesMap.get(recordSleeping.getMachineId());
                     Long leaveTimes = DateUtil.timeDifferentLong(s);
                     list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType())
-                            .setSleepingState(MonitorUtils.getSleepingState(sleeping.getState()))
-                            .setSleepingLeaveTimes(leaveTimes);
+                            .setSleepingState(MonitorUtils.getSleepingState(sleeping.getState()));
+                    if (sleeping.getState() == 0) {
+                        list.get(i).setSleepingLeaveTimes(leaveTimes);
+                    }
                 }
             } else {
                 list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_UN_USED.getType());
