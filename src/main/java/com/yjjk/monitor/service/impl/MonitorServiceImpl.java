@@ -67,8 +67,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.naming.ldap.HasControls;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author CentreS
@@ -471,20 +474,19 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType())
                             .setSleepingState(null);
                 } else {
-//                    Long leaveTimes = null;
-//                    if (sleeping.getState() == 0) {
-//                        if (MonitorConstant.sleepingTimesMap.get(sleeping.getMachineId()) == null) {
-//                            MonitorConstant.sleepingTimesMap.put(sleeping.getMachineId(), sleeping.getTime());
-//                        }
-//                    } else {
-//                        MonitorConstant.sleepingTimesMap.put(sleeping.getMachineId(), null);
-//                    }
-                    String s = MonitorConstant.sleepingTimesMap.get(recordSleeping.getMachineId());
-                    Long leaveTimes = DateUtil.timeDifferentLong(s);
-                    list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType())
-                            .setSleepingState(MonitorUtils.getSleepingState(sleeping.getState()));
                     if (sleeping.getState() == 0) {
-                        list.get(i).setSleepingLeaveTimes(leaveTimes);
+                        if (StringUtils.isNullorEmpty(MonitorConstant.sleepingTimesMap.get(recordSleeping.getMachineId()))) {
+                            MonitorConstant.sleepingTimesMap.put(recordSleeping.getMachineId(), DateUtil.getCurrentTime());
+                        }
+                        String s = MonitorConstant.sleepingTimesMap.get(recordSleeping.getMachineId());
+                        Long leaveTimes = DateUtil.timeDifferentLong(s);
+                        list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType())
+                                .setSleepingState(MonitorUtils.getSleepingState(sleeping.getState()))
+                                .setSleepingLeaveTimes(leaveTimes);
+                    } else {
+                        list.get(i).setSleepingUsage(MonitorEnum.SLEEPING_USAGE_USED.getType())
+                                .setSleepingState(MonitorUtils.getSleepingState(sleeping.getState()));
+                        MonitorConstant.sleepingTimesMap.remove(recordSleeping.getMachineId());
                     }
                 }
             } else {
@@ -709,7 +711,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         recordSleeping.setRecordStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType()).setEndTime(DateUtil.getCurrentTime()).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordSleepingMapper.updateByPrimaryKeySelective(recordSleeping);
         deletePastData(MachineEnum.SLEEPING.getType(), recordSleeping.getMachineId());
-        MonitorConstant.sleepingTimesMap.put(recordSleeping.getMachineId(), null);
+        MonitorConstant.sleepingTimesMap.remove(recordSleeping.getMachineId());
         changeMachineState(recordSleeping.getMachineId(), MachineConstant.USAGE_STATE_NORMAL);
         return machineService.startMachine(recordSleeping.getMachineId(), BackgroundSend.DATA_LOSE_CONNECTION);
     }
@@ -807,7 +809,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(recordBase.getRecordSleepingId());
         Integer oldMachineId = recordSleeping.getMachineId();
-        MonitorConstant.sleepingTimesMap.put(oldMachineId, null);
+        MonitorConstant.sleepingTimesMap.remove(oldMachineId);
         MonitorConstant.sleepingTimesMap.put(machineId, DateUtil.getCurrentTime());
         cacheMonitorHistory(MachineEnum.SLEEPING.getType(), recordSleeping.getId());
         recordSleeping.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime());
