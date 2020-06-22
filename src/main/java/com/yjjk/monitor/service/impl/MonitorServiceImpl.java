@@ -768,9 +768,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     @Override
     public CommonResult changeEcgMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
+        RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(recordBase.getRecordEcgId());
         // 连接心电设备
         BackgroundResult backgroundResult = null;
         try {
+            ecgService.connectEcgMachine(recordEcg.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
             ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
             backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
         } catch (Exception e) {
@@ -782,7 +784,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         }
-        RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(recordBase.getRecordEcgId());
         Integer oldMachineId = recordEcg.getMachineId();
         cacheMonitorHistory(MachineEnum.ECG.getType(), recordEcg.getId());
         recordEcg.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime());

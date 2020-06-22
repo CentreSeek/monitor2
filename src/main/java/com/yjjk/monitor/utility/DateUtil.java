@@ -11,8 +11,6 @@
 package com.yjjk.monitor.utility;
 
 
-import springfox.documentation.spring.web.SpringfoxWebMvcConfiguration;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -163,6 +161,13 @@ public class DateUtil {
      * @return Long min
      */
     public static Long timeDifferentLong(String startTime, String endTime) {
+        String temp = DateUtil.getCurrentTime();
+        if (StringUtils.isNullorEmpty(startTime)) {
+            startTime = temp;
+        }
+        if (StringUtils.isNullorEmpty(endTime)) {
+            endTime = temp;
+        }
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date start = format.parse(startTime);
@@ -175,8 +180,9 @@ public class DateUtil {
         }
         return 0L;
     }
+
     public static Long timeDifferentLong(String startTime) {
-        return  timeDifferentLong(startTime,DateUtil.getCurrentTime());
+        return timeDifferentLong(startTime, DateUtil.getCurrentTime());
     }
 
     public static Long getDateTimeLong(String startTime) {
