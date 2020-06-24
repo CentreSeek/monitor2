@@ -191,6 +191,7 @@ public class MachineController extends BaseController {
     public void export(@RequestParam(value = "usageState", required = false) Integer usageState,
                        @RequestParam(value = "departmentId", required = false) Integer departmentId,
                        @ApiParam(value = "machineTypeId") @RequestParam(value = "machineTypeId", required = false) Integer machineTypeId,
+                       @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language", required = false, defaultValue = "0") Integer language,
                        HttpServletRequest request, HttpServletResponse response) throws IOException {
         /********************** 参数初始化 **********************/
         ZsMachineInfo machineInfo = new ZsMachineInfo();
@@ -208,8 +209,14 @@ public class MachineController extends BaseController {
         }
         machineInfo.setDepartmentId(departmentId);
         machineInfo.setMachineTypeId(machineTypeId);
-        List<MachineExportVO> list = super.machineService.export(machineInfo);
-        ExcelUtils.exportExcel(response, list, "MachineList", MachineConstant.EXPORT);
+        List<MachineExportVO> list = super.machineService.export(machineInfo, language);
+        String[] export;
+        if (language == 0) {
+            export = MachineConstant.EXPORT;
+        } else {
+            export = MachineConstant.EXPORT_EU;
+        }
+        ExcelUtils.exportExcel(response, list, "MachineList", export);
     }
 
     @ApiOperation(value = "page设备管理：获取所有设备")

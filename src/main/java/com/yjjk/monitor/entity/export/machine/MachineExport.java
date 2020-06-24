@@ -33,12 +33,20 @@ public class MachineExport {
     private String createTime;
     private String remark;
 
-    public MachineExportVO transBean(MachineExport bean) {
+    public MachineExportVO transBean(MachineExport bean, Integer language) {
         String usageStateString = "";
         if (bean.usageState == 0 || bean.usageState == 2) {
-            usageStateString = "正常";
+            if (language == 0) {
+                usageStateString = "正常";
+            } else {
+                usageStateString = "normal";
+            }
         } else if (bean.usageState == 1) {
-            usageStateString = "停用";
+            if (language == 0) {
+                usageStateString = "停用";
+            } else {
+                usageStateString = "Deactivation";
+            }
         }
         MachineExportVO transBean = new MachineExportVO();
         transBean.setMachineNo(this.machineNo).setName(this.name).setMachineModel(this.machineModel).setMachineNum(this.machineNum).setDepartmentName(this.departmentName).setUsageState(usageStateString).setCreateTime(this.createTime).setRemark(this.remark);

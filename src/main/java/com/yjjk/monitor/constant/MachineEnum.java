@@ -19,6 +19,7 @@ public enum MachineEnum {
     ECG(1, "心电贴"),
     BLOOD(2, "血氧仪"),
     SLEEPING(3, "离床感应"),
+    TEMPERATURE_BOX(4, "体温盒"),
     ;
 
     private Integer type;

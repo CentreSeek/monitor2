@@ -67,11 +67,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import tk.mybatis.mapper.entity.Example;
 
-import javax.naming.ldap.HasControls;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author CentreS
@@ -131,18 +128,18 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 if (monitorVOList.get(i).getMonitorTemperatureVO().getBattery() <= 10) {
                     MachinesInfoVO temp = new MachinesInfoVO();
                     temp.setMachineType(MachineEnum.TEMPERATURE.getType())
-                            .setMachineTypeName(MachineEnum.TEMPERATURE.getValue())
-                            .setBedName(monitorVOList.get(i).getBedName())
-                            .setText(BatteryConstant.ALERT_TEMPERATURE);
+//                            .setMachineTypeName(MachineEnum.TEMPERATURE.getValue())
+                            .setBedName(monitorVOList.get(i).getBedName());
+//                            .setText(BatteryConstant.ALERT_TEMPERATURE);
                     machinesInfoVOList.add(temp);
                 }
                 if (monitorVOList.get(i).getMonitorTemperatureVO().getBoxBatteryStatus() != null
                         && monitorVOList.get(i).getMonitorTemperatureVO().getBoxBatteryStatus().equals(BatteryConstant.BOX_STATUS_LOW)) {
                     MachinesInfoVO temp = new MachinesInfoVO();
-                    temp.setMachineType(MachineEnum.TEMPERATURE.getType())
-                            .setMachineTypeName(MachineEnum.TEMPERATURE.getValue())
-                            .setBedName(monitorVOList.get(i).getBedName())
-                            .setText(BatteryConstant.ALERT_TEMPERATURE_BOX);
+                    temp.setMachineType(MachineEnum.TEMPERATURE_BOX.getType())
+//                            .setMachineTypeName(MachineEnum.TEMPERATURE.getValue())
+                            .setBedName(monitorVOList.get(i).getBedName());
+//                            .setText(BatteryConstant.ALERT_TEMPERATURE_BOX);
                     machinesInfoVOList.add(temp);
                 }
             }
@@ -150,9 +147,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 if (monitorVOList.get(i).getMonitorHeartRateVO().getBattery() <= 10) {
                     MachinesInfoVO temp = new MachinesInfoVO();
                     temp.setMachineType(MachineEnum.ECG.getType())
-                            .setMachineTypeName(MachineEnum.ECG.getValue())
-                            .setBedName(monitorVOList.get(i).getBedName())
-                            .setText(BatteryConstant.ALERT_ECG);
+//                            .setMachineTypeName(MachineEnum.ECG.getValue())
+                            .setBedName(monitorVOList.get(i).getBedName());
+//                            .setText(BatteryConstant.ALERT_ECG);
                     machinesInfoVOList.add(temp);
                 }
             }
@@ -160,9 +157,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 if (monitorVOList.get(i).getMonitorBloodVO().getBattery() <= 20) {
                     MachinesInfoVO temp = new MachinesInfoVO();
                     temp.setMachineType(MachineEnum.BLOOD.getType())
-                            .setMachineTypeName(MachineEnum.BLOOD.getValue())
-                            .setBedName(monitorVOList.get(i).getBedName())
-                            .setText(BatteryConstant.ALERT_BLOOD);
+//                            .setMachineTypeName(MachineEnum.BLOOD.getValue())
+                            .setBedName(monitorVOList.get(i).getBedName());
+//                            .setText(BatteryConstant.ALERT_BLOOD);
                     machinesInfoVOList.add(temp);
                 }
             }
@@ -171,9 +168,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 if (battery <= 10) {
                     MachinesInfoVO temp = new MachinesInfoVO();
                     temp.setMachineType(MachineEnum.SLEEPING.getType())
-                            .setMachineTypeName(MachineEnum.SLEEPING.getValue())
-                            .setBedName(monitorVOList.get(i).getBedName())
-                            .setText(BatteryConstant.ALERT_SLEEPING);
+//                            .setMachineTypeName(MachineEnum.SLEEPING.getValue())
+                            .setBedName(monitorVOList.get(i).getBedName());
+//                            .setText(BatteryConstant.ALERT_SLEEPING);
                     machinesInfoVOList.add(temp);
                 }
             }

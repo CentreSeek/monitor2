@@ -14,7 +14,7 @@ public class ExportExcelConstant {
     public static final String[] ECG_TITLE = {"姓名", "住院号", "科室", "房号", "床位", "时间点", "心率", "呼吸率"};
     public static final String[] ECG_TITLE_EN = {"full name", "Inpatient No", "Department", "room number", "bed number", "time", "HR", "RR"};
     public static final String[] BLOOD_TITLE = {"姓名", "住院号", "科室", "房号", "床位", "时间点", "血氧", "PI", "心率"};
-    public static final String[] BLOOD_TITLE_EN = {"full name", "Inpatient No", "Department", "room number", "bed number", "time", "SaO2", "Perfusion index IP", "RR"};
+    public static final String[] BLOOD_TITLE_EN = {"full name", "Inpatient No", "Department", "room number", "bed number", "time", "SaO2", "Perfusion index PI", "RR"};
     public static final String[] SLEEPING_TITLE = {"姓名", "住院号", "科室", "房号", "床位", "时间点", "离床状态", "心率", "呼吸率"};
     public static final String[] SLEEPING_TITLE_EN = {"full name", "Inpatient No", "Department", "room number", "bed number", "time point", "HR", "RR"};
 

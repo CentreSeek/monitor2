@@ -94,6 +94,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                 tital = ExportExcelConstant.TEMPERATURE_TITLE_EN;
             } else {
                 tital = ExportExcelConstant.TEMPERATURE_TITLE_EN_F;
+                dataList = transFahrenheit((List<HistoryExportTemperatureVOO>) dataList);
             }
         }
         if (type == MachineConstant.ECG) {
@@ -416,8 +417,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
             List<SleepingHistoryData> timesData = DataUtils.concatList(sleepingHistory.getHistory());
             for (int j = 0; j < timesData.size(); j++) {
                 HistoryExportSleepingVOO pojo = new HistoryExportSleepingVOO();
-                pojo.setSleepingState(String.valueOf(MonitorUtils.getSleepingState(timesData.get(j).getSleepState())))
-                        .setHeartRate(String.valueOf(timesData.get(j).getHeartRate()))
+                pojo.setHeartRate(String.valueOf(timesData.get(j).getHeartRate()))
                         .setRespiratoryRate(String.valueOf(timesData.get(j).getRespiratoryRate()))
                         .setBed(exportList.get(0).getBed())
                         .setCaseNum(exportList.get(0).getCaseNum())
@@ -429,5 +429,13 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
             }
         }
         return result;
+    }
+
+    @Override
+    public List<HistoryExportTemperatureVOO> transFahrenheit(List<HistoryExportTemperatureVOO> data) {
+        for (HistoryExportTemperatureVOO temp : data) {
+            temp.setTemperature(Double.toString(DataUtils.transFahrenheit(Double.valueOf(temp.getTemperature()))));
+        }
+        return data;
     }
 }

@@ -2,7 +2,9 @@ package com.yjjk.monitor.utility;
 
 
 import com.yjjk.monitor.entity.history.BaseData;
+import org.apache.poi.ss.formula.functions.T;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,12 +32,6 @@ public class DataUtils {
             }
         }
         return result;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(DateUtil.getDateTime(1590979242360L));
-        System.out.println(DateUtil.getDateTimeLong("2020-06-01 10:40:42"));
-        System.out.println(1590979242360L);
     }
 
     /**
@@ -121,6 +117,11 @@ public class DataUtils {
             para.addAll(list.get(i));
         }
         return para;
+    }
+    public static Double transFahrenheit(Double temperature) {
+        BigDecimal a = new BigDecimal(temperature);
+        BigDecimal add = a.multiply(new BigDecimal(9)).divide(new BigDecimal(5)).add(new BigDecimal(32));
+        return add.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
 }

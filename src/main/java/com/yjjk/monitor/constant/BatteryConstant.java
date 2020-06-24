@@ -19,10 +19,10 @@ public class BatteryConstant {
     /** 体温贴盒子状态 */
     public static final String BOX_STATUS_NORMAL = "NORMAL";
     public static final String BOX_STATUS_LOW = "LOW";
-    public static final String ALERT_TEMPERATURE = "电量不足10%，请及时充电";
-    public static final String ALERT_TEMPERATURE_BOX = "电量低，需更换底座AAA电池";
-    public static final String ALERT_ECG = "电量不足10%，请及时充电";
-    public static final String ALERT_BLOOD = "电量不足20%，请及时充电";
-    public static final String ALERT_SLEEPING = "电量不足10%，请及时充电";
+//    public static final String 0 = "电量不足10%，请及时充电";
+//    public static final String 4 = "电量低，需更换底座AAA电池";
+//    public static final String 1 = "电量不足10%，请及时充电";
+//    public static final String 2 = "电量不足20%，请及时充电";
+//    public static final String 3 = "电量不足10%，请及时充电";
 
 }

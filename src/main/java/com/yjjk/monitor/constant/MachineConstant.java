@@ -18,6 +18,7 @@ package com.yjjk.monitor.constant;
 public class MachineConstant {
 
     public static final String[] EXPORT = {"编号", "名称", "型号", "SN序列号", "使用科室", "状态", "添加日期", "备注"};
+    public static final String[] EXPORT_EU = {"id", "equipment name", "device model", "SN", "Use department", "state", "Add date", "notes"};
 
     /**
      * 设备使用状态

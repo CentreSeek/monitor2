@@ -159,11 +159,11 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
 
     @Override
-    public List<MachineExportVO> export(ZsMachineInfo machineInfo) {
+    public List<MachineExportVO> export(ZsMachineInfo machineInfo,Integer language) {
         List<MachineExport> list = super.ZsMachineInfoMapper.export(machineInfo);
         List<MachineExportVO> reqList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            reqList.add(list.get(i).transBean(list.get(i)));
+            reqList.add(list.get(i).transBean(list.get(i),language));
         }
         return reqList;
     }
