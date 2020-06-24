@@ -17,8 +17,10 @@ import com.yjjk.monitor.entity.VO.PagedGridResult;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
+import com.yjjk.monitor.entity.export.history.export.HistoryExportTemperatureVOO;
 import com.yjjk.monitor.entity.history.BaseData;
 import com.yjjk.monitor.entity.history.TemperatureHistory;
+import com.yjjk.monitor.entity.history.TemperatureHistoryData;
 import com.yjjk.monitor.entity.log.ManageLog;
 import org.springframework.stereotype.Service;
 
@@ -87,5 +89,12 @@ public interface HistoryService {
     List getExportHistoryList(Integer type, Integer departmentId,String date,List<String> timeList);
 
     List getPrivateExportHistoryList(Integer type,Integer recordId,Object data);
+
+    /**
+     * 转换华氏度
+     * @param data
+     * @return
+     */
+    List<HistoryExportTemperatureVOO> transFahrenheit(List<HistoryExportTemperatureVOO> data);
 
 }

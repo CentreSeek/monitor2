@@ -105,7 +105,7 @@ public interface MachineService {
      * @param machineInfo
      * @return
      */
-    List<MachineExportVO> export(ZsMachineInfo machineInfo);
+    List<MachineExportVO> export(ZsMachineInfo machineInfo,Integer language);
 
     /**
      * 更新设备信息
