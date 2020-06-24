@@ -66,17 +66,20 @@ public interface HistoryService {
      *
      * @param type
      * @param recordId
+     * @param temType
      * @return
      */
+    Object getHistoryData(Integer type, Integer recordId,Integer temType);
     Object getHistoryData(Integer type, Integer recordId);
 
     /**
      * 获取实时历史数据
      * @param type
      * @param baseId
+     * @param temType
      * @return
      */
-    List<BaseData> getMonitorData(Integer type, Integer baseId);
+    List<BaseData> getMonitorData(Integer type, Integer baseId,Integer temType);
 
     /**
      * 获取导出数据

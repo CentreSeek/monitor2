@@ -57,11 +57,12 @@ public class HistoryController extends BaseController {
     @ApiOperation("page历史记录：查询历史记录")
     @RequestMapping(value = "/historyData", method = RequestMethod.GET)
     public CommonResult getHistoryData(@ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type,
+                                       @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType", required = false, defaultValue = "0") Integer temType,
                                        @RequestParam(value = "recordId") Integer recordId) {
         /********************** 参数初始化 **********************/
         Object monitorHistory = null;
         if (recordId != -1) {
-            monitorHistory = super.historyService.getHistoryData(type, recordId);
+            monitorHistory = super.historyService.getHistoryData(type, recordId,temType);
         }
         return ResultUtil.returnSuccess(monitorHistory);
     }
@@ -69,9 +70,10 @@ public class HistoryController extends BaseController {
     @ApiOperation("page监控页面：查询历史记录")
     @RequestMapping(value = "/monitorHistoryData", method = RequestMethod.GET)
     public CommonResult getMonitorHistoryData(@ApiParam(value = "查询类型： 0-体温 1-心率/呼吸率 2-血氧/PI") @RequestParam(value = "type") Integer type,
+                                              @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType", required = false, defaultValue = "0") Integer temType,
                                               @RequestParam(value = "baseId") Integer baseId) {
         /********************** 参数初始化 **********************/
-        List<BaseData> list = super.historyService.getMonitorData(type, baseId);
+        List<BaseData> list = super.historyService.getMonitorData(type, baseId,temType);
         Collections.sort(list);
         return ResultUtil.returnSuccess(list);
     }

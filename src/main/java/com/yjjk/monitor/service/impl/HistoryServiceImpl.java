@@ -49,6 +49,7 @@ import com.yjjk.monitor.utility.ExcelUtils;
 import com.yjjk.monitor.utility.FileNameUtils;
 import com.yjjk.monitor.utility.MonitorUtils;
 import com.yjjk.monitor.utility.StringUtils;
+import org.springframework.jdbc.support.incrementer.PostgresSequenceMaxValueIncrementer;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -144,7 +145,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
 
 
     @Override
-    public Object getHistoryData(Integer type, Integer recordId) {
+    public Object getHistoryData(Integer type, Integer recordId, Integer temType) {
         switch (type) {
             case MachineConstant.TEMPERATURE:
                 RecordTemperature recordTemperature = super.recordTemperatureMapper.selectByPrimaryKey(recordId);
@@ -159,6 +160,14 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                     List<TemperatureHistoryData> temp = iterator.next();
                     if (StringUtils.isNullorEmpty(temp)) {
                         iterator.remove();
+                    }
+                }
+                // 转换华氏度
+                if (temType == ExportExcelConstant.FAHRENHEIT) {
+                    for (List<TemperatureHistoryData> tempLis : temperatureHistory.getHistory()) {
+                        for (TemperatureHistoryData temp : tempLis) {
+                            temp.setTemperature(DataUtils.transFahrenheit(temp.getTemperature()));
+                        }
                     }
                 }
                 return temperatureHistory;
@@ -214,10 +223,23 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
     }
 
     @Override
-    public List<BaseData> getMonitorData(Integer type, Integer baseId) {
+    public Object getHistoryData(Integer type, Integer recordId) {
+        return getHistoryData(type, recordId, ExportExcelConstant.CENTIGRADE);
+    }
+
+    @Override
+    public List<BaseData> getMonitorData(Integer type, Integer baseId, Integer temType) {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         if (type == MonitorConstant.TEMPERATURE && recordBase.getRecordTemperatureId() != -1) {
-            TemperatureHistory temData = (TemperatureHistory) getHistoryData(MachineConstant.TEMPERATURE, recordBase.getRecordTemperatureId());
+            TemperatureHistory temData = (TemperatureHistory) getHistoryData(MachineConstant.TEMPERATURE, recordBase.getRecordTemperatureId(), temType);
+            // 转换华氏度
+//            if (temType == ExportExcelConstant.FAHRENHEIT) {
+//                for (List<TemperatureHistoryData> tempLis : temData.getHistory()) {
+//                    for (TemperatureHistoryData temp : tempLis) {
+//                        temp.setTemperature(DataUtils.transFahrenheit(temp.getTemperature()));
+//                    }
+//                }
+//            }
             List<BaseData> param1 = new ArrayList<>();
             for (int i = 0; i < temData.getHistory().size(); i++) {
                 param1.addAll(temData.getHistory().get(i));
