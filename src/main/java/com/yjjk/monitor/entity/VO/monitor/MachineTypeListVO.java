@@ -22,8 +22,8 @@ public class MachineTypeListVO {
     private String typeName;
     @ApiModelProperty(value = "设备概况：0-体温 1-心电 2-血氧 3-离床感应")
     private Integer id;
-    @ApiModelProperty(value = "设备概况：床位信息")
-    private String value;
+//    @ApiModelProperty(value = "设备概况：床位信息")
+//    private String value;
     @ApiModelProperty(value = "设备概况：设备数量")
     private Integer machineCount;
 }

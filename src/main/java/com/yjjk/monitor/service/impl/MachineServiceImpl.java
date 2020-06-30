@@ -212,7 +212,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
         }
         for (int i = 0; i < temperatureMachineName.size(); i++) {
             MachineTypeListVO temp = temperatureMachineName.get(i);
-            temp.setValue(MachineEnum.getName(temperatureMachineName.get(i).getId()));
+//            temp.setValue(MachineEnum.getName(temperatureMachineName.get(i).getId()));
         }
         return temperatureMachineName;
     }

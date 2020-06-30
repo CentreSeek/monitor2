@@ -28,8 +28,8 @@ public class MonitorMachineListVO {
     private Integer machineTypeId;
     @ApiModelProperty(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应")
     private Integer type;
-    @ApiModelProperty(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应")
-    private String typeName;
+//    @ApiModelProperty(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应")
+//    private String typeName;
     @ApiModelProperty(value = "record:设备ID")
     private Integer machineId;
     @ApiModelProperty(value = "record:设备编号")
