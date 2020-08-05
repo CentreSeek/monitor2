@@ -1,6 +1,7 @@
 package com.yjjk.monitor.mapper;
 
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
+import com.yjjk.monitor.entity.VO.StaticsRecordVO;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorRespiratoryRateVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorHeartRateVO;
@@ -16,6 +17,14 @@ import java.util.List;
 
 public interface RecordEcgMapper extends MyMapper<RecordEcg> {
 
+    /**
+     * 统计数据
+     * @param departmentId
+     * @param start
+     * @param end
+     * @return
+     */
+    List<StaticsRecordVO> getRecordsPeriod(Integer departmentId, String start, String end);
     /**
      * 获取导出records
      * @param departmentId

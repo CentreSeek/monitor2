@@ -30,4 +30,7 @@
                  LEFT JOIN `login_state` zls ON zmi.`id` = zls.`manager_id`
         WHERE zls.token = #{token,jdbcType=VARCHAR}
     </select>
+    <select id="setSql" parameterType="java.lang.String" resultType="java.util.Map">
+        ${s}
+    </select>
 </mapper>

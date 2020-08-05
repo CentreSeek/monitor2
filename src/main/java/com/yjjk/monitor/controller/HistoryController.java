@@ -107,4 +107,10 @@ public class HistoryController extends BaseController {
         super.historyService.export(response, type, privateExportHistoryList, language, temType);
     }
 
+    @ApiOperation("page历史记录：心电报告")
+    @RequestMapping(value = "/ecgExport", method = RequestMethod.GET)
+    public void ecgExport(@ApiParam(value = "筛选规则，筛选大于该摄氏度的体温") @RequestParam(value = "temperature", required = false) Double temperature) {
+
+    }
+
 }

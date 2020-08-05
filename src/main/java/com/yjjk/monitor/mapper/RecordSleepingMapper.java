@@ -3,6 +3,7 @@ package com.yjjk.monitor.mapper;
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
 import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.SleepingState;
+import com.yjjk.monitor.entity.VO.StaticsRecordVO;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorHeartRateVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorRespiratoryRateVO;
@@ -18,7 +19,14 @@ import java.util.List;
 
 public interface RecordSleepingMapper extends MyMapper<RecordSleeping> {
 
-
+    /**
+     * 统计数据
+     * @param departmentId
+     * @param start
+     * @param end
+     * @return
+     */
+    List<StaticsRecordVO> getRecordsPeriod(Integer departmentId, String start, String end);
     /**
      * 获取导出records
      *

@@ -628,7 +628,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 && recordBase.getMachineSleepingState().equals(RecordBaseEnum.MACHINE_STATE_UN_USED.getType())) {
             param.setUsageStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
         }
-        super.recordBaseMapper.updateByPrimaryKeySelective(param);
+        super.recordBaseMapper.updateByPrimaryKeySelective(param );
 
         switch (type) {
             case MachineConstant.TEMPERATURE:

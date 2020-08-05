@@ -11,6 +11,7 @@
 package com.yjjk.monitor.utility;
 
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -121,6 +122,45 @@ public class DateUtil {
         return "";
     }
 
+    /**
+     * 改变时间
+     *
+     * @param dateTime
+     * @param calendarType like Calendar.MONTH
+     * @param num
+     * @return
+     */
+    public static String modifyDateTime(String dateTime, Integer calendarType, Integer num) {
+        try {
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(ft.parse(dateTime));
+            cal.add(calendarType, num);
+            return ft.format(cal.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * 比较时间
+     * @param dateTime1
+     * @param dateTime2
+     * @return
+     */
+    public static boolean compareDate(String dateTime1, String dateTime2) {
+        try {
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date one = ft.parse(dateTime1);
+            Date two = ft.parse(dateTime2);
+            return one.getTime() > two.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static String timeDifferent(String startTime) {
         return timeDifferent(startTime, getCurrentTime());
     }
@@ -153,6 +193,52 @@ public class DateUtil {
         return "";
     }
 
+    public static final int SECOND = 0;
+    public static final int MIN = 1;
+    public static final int HOUR = 2;
+    public static final int DAY = 3;
+
+    /**
+     * 获取时间差(向上取整)
+     *
+     * @param startTime
+     * @param endTime
+     * @param unit      单位 DateUtil.SECOND
+     * @return
+     */
+    public static Integer timeDifferent(String startTime, String endTime, int unit) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date start = format.parse(startTime);
+            Date end = format.parse(endTime);
+            long between = end.getTime() - start.getTime();
+            Long resultDay = new BigDecimal(between).divide(new BigDecimal(24 * 60 * 60 * 1000), BigDecimal.ROUND_CEILING).longValue();
+            Long resultHour = new BigDecimal(between).divide(new BigDecimal((60 * 60 * 1000)), BigDecimal.ROUND_CEILING).longValue();
+            Long resultMin = new BigDecimal(between).divide(new BigDecimal((60 * 1000)), BigDecimal.ROUND_CEILING).longValue();
+            Long resultSecond = new BigDecimal(between).divide(new BigDecimal(1000), BigDecimal.ROUND_CEILING).longValue();
+            if (unit == DateUtil.SECOND) {
+                return resultSecond.intValue();
+            } else if (unit == DateUtil.MIN) {
+                return resultMin.intValue();
+            } else if (unit == DateUtil.HOUR) {
+                return resultHour.intValue();
+            } else if (unit == DateUtil.DAY) {
+                return resultDay.intValue();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+//    public static void main(String[] args) {
+//        System.out.println(timeDifferent("2020-08-05 00:00:00","2020-08-06 00:00:01",DateUtil.DAY));
+//    }
+
+    public static Long timeDifferentLong(String startTime) {
+        return timeDifferentLong(startTime, DateUtil.getCurrentTime());
+    }
+
     /**
      * 返回时间差
      *
@@ -181,9 +267,6 @@ public class DateUtil {
         return 0L;
     }
 
-    public static Long timeDifferentLong(String startTime) {
-        return timeDifferentLong(startTime, DateUtil.getCurrentTime());
-    }
 
     public static Long getDateTimeLong(String startTime) {
         try {

@@ -1,6 +1,7 @@
 package com.yjjk.monitor.mapper;
 
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
+import com.yjjk.monitor.entity.VO.StaticsRecordVO;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorTemperatureVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportTemperatureVO;
@@ -11,7 +12,14 @@ import com.yjjk.monitor.entity.pojo.RecordTemperature;
 import java.util.List;
 
 public interface RecordTemperatureMapper extends MyMapper<RecordTemperature> {
-
+    /**
+     * 统计数据
+     * @param departmentId
+     * @param start
+     * @param end
+     * @return
+     */
+    List<StaticsRecordVO> getRecordsPeriod(Integer departmentId, String start, String end);
     /**
      * 获取某设备的数据
      * @param machineId

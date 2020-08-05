@@ -54,4 +54,5 @@
             and hb.bed_id <![CDATA[<=]]> #{end,jdbcType=INTEGER}
         </if>
     </select>
+
 </mapper>

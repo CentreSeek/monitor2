@@ -72,8 +72,8 @@ public class BaseController {
     protected MonitorRuleService monitorRuleService;
     @Resource
     protected HistoryService historyService;
-
-
+    @Resource
+    protected StaticsService staticsService;
 
     /**
      * WEB端返回值，判断是否过期

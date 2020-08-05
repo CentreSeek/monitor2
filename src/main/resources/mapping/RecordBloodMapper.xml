@@ -157,4 +157,31 @@
             and record.`id` = #{recordId,jdbcType=INTEGER}
         </if>
     </select>
+
+    <select id="getRecordsPeriod" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.VO.StaticsRecordVO">
+        SELECT record.start_time,record.end_time,hd.name as departmentName
+        FROM record_blood record
+        left join record_base rb
+        on record.base_id = rb.id
+        LEFT JOIN hospital_bed hb
+        ON rb.`bed_id` = hb.`bed_id`
+        LEFT JOIN hospital_room hr
+        ON hb.`room_id` = hr.`room_id`
+        LEFT JOIN hospital_department hd
+        ON hr.`department_id` = hd.`department_id`
+        WHERE record.status = 0
+        and hb.status = 0
+        and hr.status = 0
+        and hd.status = 0
+        <if test="departmentId != null">
+            and hd.department_id = #{departmentId,jdbcType=INTEGER}
+        </if>
+        <if test="start != null">
+            and record.start_time <![CDATA[>=]]> #{start,jdbcType=VARCHAR}
+        </if>
+        <if test="end != null">
+            and record.start_time <![CDATA[<=]]> #{end,jdbcType=VARCHAR}
+        </if>
+    </select>
 </mapper>
