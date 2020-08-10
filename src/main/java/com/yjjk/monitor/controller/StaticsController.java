@@ -11,6 +11,8 @@
 package com.yjjk.monitor.controller;
 
 import com.yjjk.monitor.configer.CommonResult;
+import com.yjjk.monitor.entity.VO.monitor.StaticsRecordDepartmentVO;
+import com.yjjk.monitor.utility.DataUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +24,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,29 +45,40 @@ public class StaticsController extends BaseController {
 
     @ApiOperation("使用设备数量")
     @RequestMapping(value = "/machine", method = RequestMethod.GET)
-    public CommonResult<Map<String, Integer>> useMachines(@ApiParam(value = "科室id") @RequestParam(value = "departmentId", required = false) Integer departmentId,
-                                                          @ApiParam(value = "起始日期", example = "2020-08-05") @RequestParam(value = "start") String start,
-                                                          @ApiParam(value = "终止日期", example = "2020-08-06") @RequestParam(value = "end") String end,
-                                                          @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type) {
+    public CommonResult<String[][]> useMachines(@ApiParam(value = "科室id") @RequestParam(value = "departmentId", required = false) Integer departmentId,
+                                                @ApiParam(value = "起始日期", example = "2020-08-05", required = true) @RequestParam(value = "start") String start,
+                                                @ApiParam(value = "终止日期", example = "2020-08-06", required = true) @RequestParam(value = "end") String end,
+                                                @NotNull @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应", required = true) @RequestParam(value = "type") Integer type) {
         Map<String, Integer> machineStatics = super.staticsService.getMachineStatics(departmentId, type, start, end);
-        return ResultUtil.returnSuccess(machineStatics);
+        return ResultUtil.returnSuccess(DataUtils.map2Arr(machineStatics));
     }
 
     @ApiOperation("科室使用人数排行")
     @RequestMapping(value = "/department", method = RequestMethod.GET)
-    public CommonResult<Map<String, Integer>> usePeoples(@ApiParam(value = "起始日期", example = "2020-08-05") @RequestParam(value = "start") String start,
-                                                         @ApiParam(value = "终止日期", example = "2020-08-06") @RequestParam(value = "end") String end,
-                                                         @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type) {
-        Map<String, Integer> stringIntegerMap = super.staticsService.usePeoples(type, start, end);
-        return ResultUtil.returnSuccess(stringIntegerMap);
+    public CommonResult<List<StaticsRecordDepartmentVO>> usePeoples(@ApiParam(value = "起始日期", example = "2020-08-05", required = true) @RequestParam(value = "start") String start,
+                                                                    @ApiParam(value = "终止日期", example = "2020-08-06", required = true) @RequestParam(value = "end") String end,
+                                                                    @NotNull @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应", required = true) @RequestParam(value = "type") Integer type) {
+        Map<String, Integer> map = super.staticsService.usePeoples(type, start, end);
+        List<StaticsRecordDepartmentVO> list = new ArrayList<>();
+        int count = 1;
+        for (String s : map.keySet()) {
+            StaticsRecordDepartmentVO pojo = new StaticsRecordDepartmentVO();
+            pojo.setRank(count);
+            pojo.setDepartmentName(s);
+            pojo.setEquipmentQuantity(map.get(s));
+            list.add(pojo);
+            count++;
+        }
+        Collections.sort(list);
+        return ResultUtil.returnSuccess(list);
     }
 
     @ApiOperation("最近30天不同监测时长分布")
     @RequestMapping(value = "/monitor", method = RequestMethod.GET)
-    public CommonResult<Map<String, Integer>> monitorPeriods(@ApiParam(value = "科室id") @RequestParam(value = "departmentId", required = false) Integer departmentId,
-                                                             @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type) {
-        Map<String, Integer> stringIntegerMap = super.staticsService.monitorPeriods(departmentId, type);
-        return ResultUtil.returnSuccess(stringIntegerMap);
+    public CommonResult<String[][]> monitorPeriods(@ApiParam(value = "科室id") @RequestParam(value = "departmentId", required = false) Integer departmentId,
+                                                   @NotNull @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应", required = true) @RequestParam(value = "type") Integer type) {
+        Map<String, Integer> map = super.staticsService.monitorPeriods(departmentId, type);
+        return ResultUtil.returnSuccess(DataUtils.map2Arr(map));
     }
 
 

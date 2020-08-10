@@ -2,14 +2,17 @@ package com.yjjk.monitor.utility;
 
 
 import com.yjjk.monitor.entity.history.BaseData;
+import org.apache.poi.ss.formula.functions.Count;
 import org.apache.poi.ss.formula.functions.T;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @program: monitor2
@@ -122,6 +125,21 @@ public class DataUtils {
         BigDecimal a = new BigDecimal(temperature);
         BigDecimal add = a.multiply(new BigDecimal(9)).divide(new BigDecimal(5)).add(new BigDecimal(32));
         return add.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+    /**
+     * 将map转化为二维数组
+     * @return
+     */
+    public static String[][] map2Arr(Map<String, Integer> map) {
+        String[][] arr = new String[map.size()][2];
+        int count = 0;
+        for (String s : map.keySet()) {
+            arr[count][0] = s;
+            arr[count][1] = map.get(s).toString();
+            count++;
+        }
+        return arr;
     }
 
 }

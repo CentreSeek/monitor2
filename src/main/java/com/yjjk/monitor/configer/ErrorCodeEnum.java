@@ -27,7 +27,7 @@ public enum ErrorCodeEnum {
     PARAM_ERROR("302", "参数错误"),
     TOKEN_ERROR("303", "token错误"),
     PAGE_INFO_ERROR("304", "分页参数错误"),
-    UPDATE_ERROR("305", "更新失败"),
+    DATA_PARSE_ERROR("305", "数据解析异常"),
     /********** repeater **********/
     REPEATER_ADD_ERROR("310", "路由新增失败"),
 

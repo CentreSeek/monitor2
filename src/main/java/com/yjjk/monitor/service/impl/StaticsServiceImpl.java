@@ -12,6 +12,7 @@ package com.yjjk.monitor.service.impl;
 
 import com.yjjk.monitor.constant.MachineEnum;
 import com.yjjk.monitor.entity.VO.StaticsRecordVO;
+import com.yjjk.monitor.entity.pojo.HospitalDepartment;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.StaticsService;
 import com.yjjk.monitor.utility.DateUtil;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +62,11 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
     public Map<String, Integer> usePeoples(Integer type, String start, String end) {
         start += " 00:00:00";
         end = DateUtil.modifyDateTime(end + " 00:00:00", Calendar.DATE, 1);
-        Map<String, Integer> map = new HashMap<>();
+        List<HospitalDepartment> hospitalDepartments = super.HospitalDepartmentMapper.selectDepartments();
+        Map<String, Integer> map = new LinkedHashMap<>();
+        for (HospitalDepartment hospitalDepartment : hospitalDepartments) {
+            map.put(hospitalDepartment.getName(), 0);
+        }
         List<StaticsRecordVO> recordsPeriod = new ArrayList<>();
         if (type.equals(MachineEnum.TEMPERATURE.getType())) {
             recordsPeriod = super.recordTemperatureMapper.getRecordsPeriod(null, start, end);
@@ -77,11 +82,7 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
         }
         for (StaticsRecordVO staticsRecordVO : recordsPeriod) {
             String departmentName = staticsRecordVO.getDepartmentName();
-            if (map.containsKey(departmentName)) {
-                map.put(departmentName, map.get(departmentName) + 1);
-            } else {
-                map.put(departmentName, 1);
-            }
+            map.put(departmentName, map.get(departmentName) + 1);
 
         }
         return map;
@@ -90,7 +91,7 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
     @Override
     public Map<String, Integer> monitorPeriods(Integer departmentId, Integer type) {
         String end = DateUtil.getCurrentTime();
-        String start = DateUtil.modifyDateTime(end, Calendar.DATE, -100);
+        String start = DateUtil.modifyDateTime(end, Calendar.DATE, -300);
         Map<String, Integer> map = setMonitorPeriods();
         List<StaticsRecordVO> recordsPeriod = new ArrayList<>();
         if (type.equals(MachineEnum.TEMPERATURE.getType())) {
@@ -126,12 +127,17 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
                 map.put(">25天", map.get(">25天") + 1);
             }
         }
+        if (recordsPeriod.size() != 0) {
+            for (String s : map.keySet()) {
+                map.put(s, map.get(s) * 100 / recordsPeriod.size());
+            }
+        }
         return map;
     }
 
     public static Map<String, Integer> cutDate(String start, String end) {
         String temp = start;
-        Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = new LinkedHashMap<>();
         while (!temp.equals(end)) {
             map.put(temp, 0);
             temp = DateUtil.modifyDateTime(temp, Calendar.DATE, 1);
@@ -150,7 +156,7 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
     }
 
     public static Map<String, Integer> setMonitorPeriods() {
-        Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = new LinkedHashMap<>();
         map.put("0-2天", 0);
         map.put("2-5天", 0);
         map.put("5-10天", 0);
