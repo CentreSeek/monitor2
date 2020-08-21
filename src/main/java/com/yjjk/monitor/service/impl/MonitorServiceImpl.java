@@ -768,6 +768,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     public CommonResult changeEcgMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(recordBase.getRecordEcgId());
+        Integer oldMachineId = recordEcg.getMachineId();
+        CommonResult commonResult = machineService.changeMachine(oldMachineId, machineId);
         // 连接心电设备
         BackgroundResult backgroundResult = null;
         try {
@@ -783,11 +785,10 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         }
-        Integer oldMachineId = recordEcg.getMachineId();
         cacheMonitorHistory(MachineEnum.ECG.getType(), recordEcg.getId());
         recordEcg.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordEcgMapper.updateByPrimaryKeySelective(recordEcg);
-        return machineService.changeMachine(oldMachineId, machineId);
+        return commonResult;
     }
 
     @Override
