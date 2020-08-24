@@ -687,11 +687,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     @Override
     public CommonResult stopBloodMachine(Integer recordId) throws Exception {
         // 连接心电设备
-        RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(recordId);
-        RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(recordEcg.getBaseId());
+        RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(recordId);
+        RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(recordBlood.getBaseId());
         BackgroundResult backgroundResult = null;
         try {
-            backgroundResult = ecgService.connectEcgMachine(recordEcg.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+            backgroundResult = ecgService.connectEcgMachine(recordBlood.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
         } catch (Exception e) {
             e.printStackTrace();
             return ResultUtil.returnError("无法连接中继器服务器");
@@ -704,7 +704,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         if (recordId == -1) {
             ResultUtil.returnError(ErrorCodeEnum.ERROR_MACHINE_STOP);
         }
-        RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(recordId);
         cacheMonitorHistory(MachineEnum.BLOOD.getType(), recordId);
         recordBlood.setRecordStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType()).setEndTime(DateUtil.getCurrentTime()).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordBloodMapper.updateByPrimaryKeySelective(recordBlood);
