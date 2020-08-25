@@ -31,6 +31,6 @@ public class ListVO {
     private Object value;
 
     @ApiModelProperty(value = "machineTypeId")
-    private Integer other;
+    private Integer machineTypeId;
 
 }

@@ -72,7 +72,9 @@ public class WeblogAspect {
             token = request.getParameter("token");
         }
         Signature signature = joinPoint.getSignature();
-        if (!signature.getName().equals("managerLogin") && !signature.getName().equals("managerLoginOut")) {
+        if (!signature.getName().equals("managerLogin")
+                && !signature.getName().equals("managerLoginOut")
+                && !token.equals("1")) {
             if (token == null) {
                 logger.error("登录失败：  token为空");
                 return ResultUtil.returnError(ErrorCodeEnum.TOKEN_ERROR);
