@@ -506,6 +506,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineId(byMachineId.getMachineId())
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum())
+                    .setMachineTypeIdChild(byMachineId.getMachineTypeIdChild())
 //                    .setTypeName(MachineEnum.TEMPERATURE.getValue())
                     .setMachineTypeId(byMachineId.getMachineTypeId());
             if (recordTemperature.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
@@ -529,7 +530,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum())
 //                    .setTypeName(MachineEnum.ECG.getValue())
-                    .setMachineTypeId(byMachineId.getMachineTypeId());
+                    .setMachineTypeId(byMachineId.getMachineTypeId())
+                    .setMachineTypeIdChild(byMachineId.getMachineTypeIdChild());
             ;
             if (recordEcg.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
                 pojo2.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
@@ -552,7 +554,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum())
 //                    .setTypeName(MachineEnum.BLOOD.getValue())
-                    .setMachineTypeId(byMachineId.getMachineTypeId());
+                    .setMachineTypeId(byMachineId.getMachineTypeId())
+                    .setMachineTypeIdChild(byMachineId.getMachineTypeIdChild());
             ;
             if (recordBlood.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
                 pojo3.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
@@ -575,7 +578,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     .setMachineNo(byMachineId.getMachineNo())
                     .setMachineSn(byMachineId.getMachineNum())
 //                    .setTypeName(MachineEnum.SLEEPING.getValue())
-                    .setMachineTypeId(byMachineId.getMachineTypeId());
+                    .setMachineTypeId(byMachineId.getMachineTypeId())
+                    .setMachineTypeIdChild(byMachineId.getMachineTypeIdChild());
             if (recordSleeping.getRecordStatus().equals(RecordBaseEnum.USAGE_STATE_UN_USE.getType())) {
                 pojo4.setUsageState(MonitorMachineListVO.USAGE_UN_USED);
             } else {
@@ -628,7 +632,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 && recordBase.getMachineSleepingState().equals(RecordBaseEnum.MACHINE_STATE_UN_USED.getType())) {
             param.setUsageStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
         }
-        super.recordBaseMapper.updateByPrimaryKeySelective(param );
+        super.recordBaseMapper.updateByPrimaryKeySelective(param);
 
         switch (type) {
             case MachineConstant.TEMPERATURE:

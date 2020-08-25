@@ -30,7 +30,7 @@ public class ListVO {
     @ApiModelProperty(value = "value")
     private Object value;
 
-    @ApiModelProperty(value = "machineTypeId")
-    private Integer machineTypeId;
+    @ApiModelProperty(value = "machineTypeIdChild")
+    private Integer machineTypeIdChild;
 
 }

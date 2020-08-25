@@ -213,8 +213,13 @@
         WHERE TYPE = 0
           AND LEVEL = 0;
     </select>
-    <select id="getByMachineId" resultMap="BaseResultMap">
-        SELECT zmi.machine_id, zmi.machine_num, zmi.machine_no, zmi.usage_state, mti2.id as machine_type_id
+    <select id="getByMachineId" resultType="com.yjjk.monitor.entity.pojo.ZsMachineInfo">
+        SELECT zmi.machine_id,
+               zmi.machine_num,
+               zmi.machine_no,
+               zmi.usage_state,
+               mti2.id as machine_type_id,
+               mti.id  as machineTypeIdChild
         FROM `zs_machine_info` zmi
                  left join machine_type_info mti on zmi.machine_type_id = mti.id
                  left join machine_type_info mti2 on mti.parent_id = mti2.id

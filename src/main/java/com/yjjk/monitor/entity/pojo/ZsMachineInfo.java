@@ -76,6 +76,7 @@ public class ZsMachineInfo {
      */
     @Column(name = "machine_type_id")
     private Integer machineTypeId;
+    private Integer machineTypeIdChild;
 
 
     /**
