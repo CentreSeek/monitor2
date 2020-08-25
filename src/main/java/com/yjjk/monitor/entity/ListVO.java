@@ -30,4 +30,7 @@ public class ListVO {
     @ApiModelProperty(value = "value")
     private Object value;
 
+    @ApiModelProperty(value = "machineTypeId")
+    private Integer other;
+
 }
