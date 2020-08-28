@@ -942,6 +942,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     public CommonResult startEcgMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         // 心电设备能否启用
+        CommonResult commonResult = machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
 //        boolean b = ecgService.hasRepeater(recordBase.getBedId());
 //        boolean b = true;
 //        if (!b) {
@@ -970,13 +971,14 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             super.recordEcgMapper.updateByPrimaryKeySelective(recordEcg);
         }
         changeMachineState(machineId, MachineConstant.USAGE_STATE_USED);
-        return machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
+        return commonResult;
     }
 
     @Override
 //    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public CommonResult startBloodMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
+        CommonResult commonResult = machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
 
         // 连接心电设备
         BackgroundResult backgroundResult = null;
@@ -1000,7 +1002,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             super.recordBloodMapper.updateByPrimaryKeySelective(recordBlood);
         }
         changeMachineState(machineId, MachineConstant.USAGE_STATE_USED);
-        return machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
+        return commonResult;
     }
 
     @Override
