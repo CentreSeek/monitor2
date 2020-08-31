@@ -19,6 +19,7 @@ import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.HospitalService;
 import com.yjjk.monitor.utility.ExcelUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;

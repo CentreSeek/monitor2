@@ -13,8 +13,8 @@ package com.yjjk.monitor.service;
 
 import com.github.pagehelper.PageInfo;
 import com.yjjk.monitor.entity.VO.PagedGridResult;
-import com.yjjk.monitor.entity.config.ConnectRepeater;
-import com.yjjk.monitor.entity.config.MachineConfig;
+import com.yjjk.monitor.constant.config.ConnectRepeater;
+import com.yjjk.monitor.constant.config.MachineConfig;
 import com.yjjk.monitor.mapper.HospitalBedMapper;
 import com.yjjk.monitor.mapper.HospitalDepartmentMapper;
 import com.yjjk.monitor.mapper.HospitalRoomMapper;

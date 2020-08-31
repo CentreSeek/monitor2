@@ -1,12 +1,16 @@
 package com.yjjk.monitor.entity.pojo;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.List;
 
 @Data
 @Table(name = "hospital_department")
+@Accessors(chain = true)
 public class HospitalDepartment {
     /**
      * 科室id

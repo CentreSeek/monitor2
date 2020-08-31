@@ -1,4 +1,4 @@
-package com.yjjk.monitor.entity.config;
+package com.yjjk.monitor.constant.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,4 +17,5 @@ public class ConnectRepeater {
 
     private String url;
     private String start;
+    private String machine;
 }

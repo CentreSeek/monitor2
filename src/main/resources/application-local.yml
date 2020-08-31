@@ -13,25 +13,25 @@ spring:
     password: YJjk_2018
     url: jdbc:mysql://127.0.0.1:3306/monitor2?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
-#  jackson:
-#    default-property-inclusion: non_null
+  #  jackson:
+  #    default-property-inclusion: non_null
   #    druid:
-#      initial-size: 8
-#        min-idle: 1
-#        max-active: 20
-#        max-wait: 60000
-#        time-between-eviction-runsMillis: 60000
-#        min-evictable-idle-timeMillis: 300000
-#        validation-query: select 'x' FROM DUAL
-#        test-while-idle: true
-#        test-on-borrow: false
-#        test-on-return: false
-#        pool-prepared-statements: true
-#        max-open-prepared-statements: 20
-#        max-pool-prepared-statement-per-connection-size: 20
-#        filters: stat
-#        connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-#        use-global-data-source-stat: true
+  #      initial-size: 8
+  #        min-idle: 1
+  #        max-active: 20
+  #        max-wait: 60000
+  #        time-between-eviction-runsMillis: 60000
+  #        min-evictable-idle-timeMillis: 300000
+  #        validation-query: select 'x' FROM DUAL
+  #        test-while-idle: true
+  #        test-on-borrow: false
+  #        test-on-return: false
+  #        pool-prepared-statements: true
+  #        max-open-prepared-statements: 20
+  #        max-pool-prepared-statement-per-connection-size: 20
+  #        filters: stat
+  #        connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  #        use-global-data-source-stat: true
   servlet:
     multipart:
       max-file-size: 2MB
@@ -74,5 +74,6 @@ connect:
   #  url: http://192.168.31.165:8084/web/isCassiaConnectNotice
   #  url: http://192.168.31.229:8084/web/isCassiaConnectNotice
   start: http://127.0.0.1:8084/web/enableNotice
+  machine: http://127.0.0.1:8084/web/getCassiaOnlineList
 #  start: http://192.168.31.165:8084/web/enableNotice
 #  start: http://192.168.31.229:8084/web/enableNotice

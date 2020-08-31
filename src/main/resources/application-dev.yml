@@ -66,3 +66,4 @@ connect:
   # Cassia
   url: http://192.168.31.165:8084/web/isCassiaConnectNotice
   start: http://192.168.31.165:8084/web/enableNotice
+  machine: http://192.168.31.165:8084/web/getCassiaOnlineList
