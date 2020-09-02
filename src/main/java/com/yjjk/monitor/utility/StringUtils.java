@@ -85,6 +85,7 @@ public class StringUtils {
         return false;
     }
 
+
     /**
      * 除字符串中的空格、回车、换行符、制表符
      *
@@ -204,11 +205,4 @@ public class StringUtils {
 //        System.out.println(isNullorEmpty(list));
 //        System.out.println(checkMachineNum("B33/00044267"));
 //    }
-    public static void main(String[] args) {
-        System.out.println("名字: " + replaceNameX("海"));
-        System.out.println("名字: " + replaceNameX("贼王"));
-        System.out.println("名字: " + replaceNameX("海贼王"));
-        System.out.println("名字: " + replaceNameX("大海贼王"));
-        System.out.println("名字: " + replaceNameX("大海发生大发大贼王"));
-    }
 }
