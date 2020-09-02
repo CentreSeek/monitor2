@@ -241,7 +241,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             }
             if (hRule != null
                     && monitorVOList.get(i).getMonitorHeartRateVO() != null
-                    && StringUtils.isNullorEmpty(monitorVOList.get(i).getMonitorHeartRateVO().getHeart())) {
+                    && !StringUtils.isNullorEmpty(monitorVOList.get(i).getMonitorHeartRateVO().getHeart())) {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorHeartRateVO().getHeart()) != 0) {
                 Integer heart = Integer.parseInt(monitorVOList.get(i).getMonitorHeartRateVO().getHeart());
                 if ((heart <= hRule.getParamTwo() && heart > MonitorRuleEnum.HEART_ALERT_L.getType())
@@ -270,7 +270,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             }
             if (rRule != null
                     && monitorVOList.get(i).getMonitorRespiratoryRateVO() != null
-                    && StringUtils.isNullorEmpty(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory())) {
+                    && !StringUtils.isNullorEmpty(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory())) {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory()) != 0) {
                 Integer respiratoryRate = Integer.parseInt(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory());
                 if ((respiratoryRate <= rRule.getParamTwo() && respiratoryRate > MonitorRuleEnum.RESPIRATORY_ALERT_L.getType())
