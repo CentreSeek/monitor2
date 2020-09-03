@@ -127,7 +127,7 @@ public class DateUtil {
      *
      * @param dateTime
      * @param calendarType like Calendar.MONTH
-     * @param num
+     * @param num 300天
      * @return
      */
     public static String modifyDateTime(String dateTime, Integer calendarType, Integer num) {

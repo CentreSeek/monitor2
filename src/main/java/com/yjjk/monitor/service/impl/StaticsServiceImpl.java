@@ -91,7 +91,7 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
     @Override
     public Map<String, Integer> monitorPeriods(Integer departmentId, Integer type) {
         String end = DateUtil.getCurrentTime();
-        String start = DateUtil.modifyDateTime(end, Calendar.DATE, -300);
+        String start = DateUtil.modifyDateTime(end, Calendar.DATE, -30);
         Map<String, Integer> map = setMonitorPeriods();
         List<StaticsRecordVO> recordsPeriod = new ArrayList<>();
         if (type.equals(MachineEnum.TEMPERATURE.getType())) {
