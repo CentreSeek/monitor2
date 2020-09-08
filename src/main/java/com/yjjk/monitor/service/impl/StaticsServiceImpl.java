@@ -139,7 +139,8 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
         String temp = start;
         Map<String, Integer> map = new LinkedHashMap<>();
         while (!temp.equals(end)) {
-            map.put(temp, 0);
+            String[] s = temp.split(" ");
+            map.put(s[0], 0);
             temp = DateUtil.modifyDateTime(temp, Calendar.DATE, 1);
         }
         return map;
@@ -152,7 +153,7 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
 
     public static String parseDate(String dateTime) {
         String[] s = dateTime.split(" ");
-        return s[0] + " 00:00:00";
+        return s[0];
     }
 
     public static Map<String, Integer> setMonitorPeriods() {

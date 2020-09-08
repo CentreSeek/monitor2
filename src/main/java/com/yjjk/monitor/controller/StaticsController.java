@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -63,13 +62,15 @@ public class StaticsController extends BaseController {
         int count = 1;
         for (String s : map.keySet()) {
             StaticsRecordDepartmentVO pojo = new StaticsRecordDepartmentVO();
-            pojo.setRank(count);
             pojo.setDepartmentName(s);
             pojo.setEquipmentQuantity(map.get(s));
             list.add(pojo);
             count++;
         }
         Collections.sort(list);
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).setRank(i + 1);
+        }
         return ResultUtil.returnSuccess(list);
     }
 
