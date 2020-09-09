@@ -59,13 +59,11 @@ public class StaticsController extends BaseController {
                                                                     @NotNull @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应", required = true) @RequestParam(value = "type") Integer type) {
         Map<String, Integer> map = super.staticsService.usePeoples(type, start, end);
         List<StaticsRecordDepartmentVO> list = new ArrayList<>();
-        int count = 1;
         for (String s : map.keySet()) {
             StaticsRecordDepartmentVO pojo = new StaticsRecordDepartmentVO();
             pojo.setDepartmentName(s);
             pojo.setEquipmentQuantity(map.get(s));
             list.add(pojo);
-            count++;
         }
         Collections.sort(list);
         for (int i = 0; i < list.size(); i++) {
