@@ -119,7 +119,7 @@
                 and hd.department_id = #{departmentId, jdbcType=INTEGER}
             </if>
             <if test="patientName != null">
-                and pai.name = #{patientName, jdbcType=VARCHAR}
+                and pai.name like #{patientName, jdbcType=VARCHAR}
             </if>
         </where>
         order by record.record_status ,record.created_time desc

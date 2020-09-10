@@ -49,7 +49,6 @@ import com.yjjk.monitor.utility.ExcelUtils;
 import com.yjjk.monitor.utility.FileNameUtils;
 import com.yjjk.monitor.utility.MonitorUtils;
 import com.yjjk.monitor.utility.StringUtils;
-import org.springframework.jdbc.support.incrementer.PostgresSequenceMaxValueIncrementer;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -124,6 +123,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
 
     @Override
     public PagedGridResult getHistory(PageBO pageBO, GetRecordsBO bo) {
+        bo.setPatientName(StringUtils.getLikeName(bo.getPatientName()));
         PageHelper.startPage(pageBO.getPage(), pageBO.getPageSize());
         switch (bo.getType()) {
             case MachineConstant.TEMPERATURE:

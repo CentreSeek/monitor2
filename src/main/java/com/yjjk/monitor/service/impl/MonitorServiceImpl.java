@@ -628,7 +628,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 && recordBase.getMachineBloodState().equals(RecordBaseEnum.MACHINE_STATE_UN_USED.getType())
                 && recordBase.getMachineEcgState().equals(RecordBaseEnum.MACHINE_STATE_UN_USED.getType())
                 && recordBase.getMachineSleepingState().equals(RecordBaseEnum.MACHINE_STATE_UN_USED.getType())) {
-            param.setUsageStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
+            param.setUsageStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType()).setEndTime(DateUtil.getCurrentTime());
         }
         super.recordBaseMapper.updateByPrimaryKeySelective(param);
 

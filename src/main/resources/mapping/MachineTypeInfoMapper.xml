@@ -70,5 +70,6 @@
         where zmi.department_id = #{departmentId,jdbcType=INTEGER}
           and mti2.id = #{machineTypeId,jdbcType=INTEGER}
           and zmi.status = 0
+          and zmi.usage_state in (0, 2)
     </select>
 </mapper>
