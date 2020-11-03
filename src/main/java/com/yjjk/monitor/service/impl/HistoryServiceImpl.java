@@ -15,6 +15,7 @@ import com.github.pagehelper.PageHelper;
 import com.yjjk.monitor.constant.ExportExcelConstant;
 import com.yjjk.monitor.constant.MachineConstant;
 import com.yjjk.monitor.constant.MonitorConstant;
+import com.yjjk.monitor.constant.SleepEnum;
 import com.yjjk.monitor.entity.BO.PageBO;
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
 import com.yjjk.monitor.entity.VO.PagedGridResult;
@@ -446,7 +447,8 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                         .setDepartmentName(exportList.get(0).getDepartmentName())
                         .setPatientName(exportList.get(0).getPatientName())
                         .setRoom(exportList.get(0).getRoom())
-                        .setTime(DateUtil.getDateTime(timesData.get(j).getTimestamp()));
+                        .setTime(DateUtil.getDateTime(timesData.get(j).getTimestamp()))
+                        .setSleepingState(SleepEnum.getName(timesData.get(j).getSleepState()));
                 result.add(pojo);
             }
         }
