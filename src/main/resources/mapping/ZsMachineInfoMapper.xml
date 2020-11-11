@@ -86,6 +86,9 @@
             <if test="machineNum != null">
                 and zmi.machine_num like #{machineNum, jdbcType=VARCHAR}
             </if>
+            <if test="machineNo != null">
+                and zmi.machine_no like #{machineNo, jdbcType=VARCHAR}
+            </if>
             and zmi.status = 0
         </where>
         <if test="startLine != null and pageSize != null">

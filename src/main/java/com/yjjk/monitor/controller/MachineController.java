@@ -112,7 +112,8 @@ public class MachineController extends BaseController {
     public CommonResult getMachine(@ApiParam(value = "0-未使用 1-已删除 2-使用+未使用") @RequestParam(value = "usageState", required = false) Integer usageState,
                                    @ApiParam(value = "machineTypeId") @RequestParam(value = "machineTypeId", required = false) Integer machineTypeId,
                                    @RequestParam(value = "departmentId", required = false) Integer departmentId,
-                                   @RequestParam(value = "machineNum", required = false) String machineNum,
+                                   @RequestParam(value = "machineNum(支持模糊查询)", required = false) String machineNum,
+                                   @RequestParam(value = "machineNo(支持模糊查询)", required = false) String machineNo,
                                    @RequestParam(value = "page", required = false) Integer currentPage,
                                    @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         /********************** 参数初始化 **********************/
@@ -133,7 +134,13 @@ public class MachineController extends BaseController {
 
         machineInfo.setMachineTypeId(machineTypeId);
         machineInfo.setDepartmentId(departmentId);
-        machineInfo.setMachineNum(StringUtils.getLikeName(machineNum));
+        if (!StringUtils.isNullorEmpty(machineNum)) {
+            machineInfo.setMachineNum(StringUtils.getLikeName(machineNum));
+        }
+        if (!StringUtils.isNullorEmpty(machineNo)) {
+            machineInfo.setMachineNo(StringUtils.getLikeName(machineNo));
+        }
+
         if (!StringUtils.isNullorEmpty(currentPage) && !StringUtils.isNullorEmpty(pageSize)) {
             // 查询总条数
             int totalCount = super.machineService.selectCount(machineInfo);
@@ -155,9 +162,11 @@ public class MachineController extends BaseController {
 
     @ApiOperation(value = "page监控模块-list：获取设备信息")
     @RequestMapping(value = "/machineList", method = RequestMethod.GET)
-    public CommonResult getMachineList(@ApiParam(value = "模糊查询") @RequestParam(value = "name", required = false) String name,
-                                       @RequestParam(value = "departmentId", required = false) Integer departmentId,
-                                       @ApiParam(value = "设备类型：名称", required = true) @RequestParam(value = "machineTypeId") Integer machineTypeId) {
+    public CommonResult getMachineList
+            (@ApiParam(value = "模糊查询") @RequestParam(value = "name", required = false) String name,
+             @RequestParam(value = "departmentId", required = false) Integer departmentId,
+             @ApiParam(value = "设备类型：名称", required = true) @RequestParam(value = "machineTypeId") Integer
+                     machineTypeId) {
         /********************** 参数初始化 **********************/
         Map<String, Object> map = new HashMap<>();
         map.put("name", name);
@@ -170,7 +179,8 @@ public class MachineController extends BaseController {
     @ApiOperation(value = "page设备模块-list：获取设备信息")
     @RequestMapping(value = "/machineListNo", method = RequestMethod.GET)
     public CommonResult getMachineListMachineModel(
-            @ApiParam(value = "设备类型：名称", required = true) @RequestParam(value = "machineTypeId") Integer machineTypeId) {
+            @ApiParam(value = "设备类型：名称", required = true) @RequestParam(value = "machineTypeId") Integer
+                    machineTypeId) {
         /********************** 参数初始化 **********************/
         Map<String, Object> map = new HashMap<>();
         map.put("machineTypeId", machineTypeId);
@@ -190,8 +200,10 @@ public class MachineController extends BaseController {
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public void export(@RequestParam(value = "usageState", required = false) Integer usageState,
                        @RequestParam(value = "departmentId", required = false) Integer departmentId,
-                       @ApiParam(value = "machineTypeId") @RequestParam(value = "machineTypeId", required = false) Integer machineTypeId,
-                       @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language", required = false, defaultValue = "0") Integer language,
+                       @ApiParam(value = "machineTypeId") @RequestParam(value = "machineTypeId", required = false) Integer
+                               machineTypeId,
+                       @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language", required = false, defaultValue = "0") Integer
+                               language,
                        HttpServletRequest request, HttpServletResponse response) throws IOException {
         /********************** 参数初始化 **********************/
         ZsMachineInfo machineInfo = new ZsMachineInfo();
@@ -265,7 +277,8 @@ public class MachineController extends BaseController {
      */
     @ApiOperation(value = "page设备管理-list：获取设备型号")
     @RequestMapping(value = "/machineModel", method = RequestMethod.GET)
-    public CommonResult getMachineModel(@ApiParam(value = "设备类型id", required = true) @RequestParam Integer machineTypeId) {
+    public CommonResult getMachineModel(@ApiParam(value = "设备类型id", required = true) @RequestParam Integer
+                                                machineTypeId) {
         /********************** 参数初始化 **********************/
         List<MachineTypeInfo> list = super.machineService.getMachineModel(machineTypeId);
         return ResultUtil.returnSuccess(list);
