@@ -14,8 +14,8 @@ import java.util.Map;
  * @create: 2019-11-25 20:56:45
  **/
 public enum SleepEnum {
-    SLEEP(0, "入睡"),
-    UN_SLEEP(1, "清醒（浅睡）")
+    OUT(0, "离床"),
+    SLEEP(1, "入睡")
     ;
 
     private Integer type;
