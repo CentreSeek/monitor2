@@ -364,7 +364,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                 List<SleepingHistoryData> timesData = DataUtils.getTimesData(sleepingHistory.getHistory(), timeList, date);
                 for (int j = 0; j < timesData.size(); j++) {
                     HistoryExportSleepingVOO pojo = new HistoryExportSleepingVOO();
-                    pojo.setSleepingState(String.valueOf(MonitorUtils.getSleepingState(timesData.get(j).getSleepState())))
+                    pojo.setSleepingState(SleepEnum.getName(timesData.get(j).getSleepState()))
                             .setHeartRate(String.valueOf(timesData.get(j).getHeartRate()))
                             .setRespiratoryRate(String.valueOf(timesData.get(j).getRespiratoryRate()))
                             .setBed(exportList.get(i).getBed())
