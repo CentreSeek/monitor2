@@ -22,6 +22,8 @@ public interface HospitalBedMapper extends MyMapper<HospitalBed> {
 //
 //    int updateByPrimaryKey(HospitalBedMapper record);
 
+    Integer deleteRoom(Integer roomId);
+
     /**
      * 获取无recordBase床位
      *
@@ -47,7 +49,7 @@ public interface HospitalBedMapper extends MyMapper<HospitalBed> {
      * @param end
      * @return
      */
-    int getBedCount(Integer departmentId,Integer start,Integer end);
+    int getBedCount(Integer departmentId, Integer start, Integer end);
 
     /**
      * 监控页面-筛选床位
@@ -56,4 +58,20 @@ public interface HospitalBedMapper extends MyMapper<HospitalBed> {
      * @return
      */
     List<ListVO> getMonitorBedList(Integer departmentId, Integer bedId);
+
+    /**
+     * 查询当前科室床位名称数量
+     *
+     * @param departmentId
+     * @param bedName
+     * @return
+     */
+    Integer getUsingBedCount(Integer departmentId, String bedName, Integer bedId);
+
+    /**
+     * 查询当前床位是否在使用中
+     * @param bedId
+     * @return
+     */
+    Integer getRecordBedCounts(Integer bedId);
 }

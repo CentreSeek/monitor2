@@ -11,13 +11,27 @@
     <sql id="Base_Column_List">
     bed_id, room_id, `name`, create_time, `status`
   </sql>
+    <update id="deleteRoom" parameterType="java.util.Map">
+        update hospital_room hr
+        left join hospital_bed hb on hb.room_id = hr.room_id
+        <set>
+            hr.department_id = 0,
+            hb.room_id = 0
+        </set>
+        <where>
+            <if test="roomId != null">
+                and hr.room_id = #{roomId, jdbcType=INTEGER}
+            </if>
+        </where>
+    </update>
     <select id="selectEmptyBeds" parameterType="java.util.Map" resultMap="BaseResultMap">
         SELECT zbi.bed_id,
                zbi.`name`
         FROM hospital_bed zbi
-                 LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
-                 LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
-        WHERE zdi.department_id = #{departmentId,jdbcType=INTEGER}
+                 LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id` and zri.status = 0
+                 LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id` and zdi.status = 0
+        WHERE zbi.status = 0
+          and zdi.department_id = #{departmentId,jdbcType=INTEGER}
           and zbi.`bed_id` NOT IN (SELECT bed_id
                                    FROM record_base
                                    WHERE `usage_status` = 0
@@ -28,9 +42,10 @@
         SELECT zbi.bed_id,
         zbi.`name`
         FROM hospital_bed zbi
-        LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
-        LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
-        WHERE zdi.department_id = #{departmentId,jdbcType=INTEGER}
+        LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id` and zri.status = 0
+        LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id` and zdi.status = 0
+        WHERE zbi.status = 0
+        and zdi.department_id = #{departmentId,jdbcType=INTEGER}
         and zbi.`bed_id` NOT IN (SELECT bed_id
         FROM record_base
         WHERE `usage_status` = 0
@@ -51,9 +66,11 @@
     <select id="getBedCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         SELECT count(*)
         FROM hospital_bed zbi
-        LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
-        LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
-        WHERE zdi.department_id = #{departmentId,jdbcType=INTEGER}
+        LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id` and zri.status = 0
+        LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id` and zdi.status = 0
+        WHERE
+        zbi.status = 0
+        and zdi.department_id = #{departmentId,jdbcType=INTEGER}
         <if test="start != null">
             and zbi.bed_id <![CDATA[>=]]> #{start,jdbcType=INTEGER}
         </if>
@@ -64,11 +81,40 @@
     <select id="getMonitorBedList" parameterType="java.util.Map" resultType="com.yjjk.monitor.entity.ListVO">
         SELECT zbi.bed_id as id, CONCAT(zri.`name`, zbi.`name`) as value
         FROM hospital_bed zbi
-        LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
-        LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
-        WHERE zdi.department_id = #{departmentId,jdbcType=INTEGER}
+        LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id` and zri.status = 0
+        LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id` and zdi.status = 0
+        WHERE zbi.status = 0
+        and zdi.department_id = #{departmentId,jdbcType=INTEGER}
         <if test="bedId != null">
             and zbi.bed_id <![CDATA[>]]> #{bedId,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <select id="getUsingBedCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM hospital_bed zbi
+        LEFT JOIN hospital_room zri ON zbi.`room_id` = zri.`room_id`
+        LEFT JOIN hospital_department zdi ON zdi.`department_id` = zri.`department_id`
+        WHERE
+        zbi.status = 0 and zri.status = 0 and zdi.status = 0
+        <if test="departmentId != null">
+            and zdi.department_id = #{departmentId,jdbcType=INTEGER}
+        </if>
+        <if test="bedName != null">
+            and zbi.name = #{bedName,jdbcType=VARCHAR}
+        </if>
+        <if test="bedId != null">
+            and zbi.bed_id <![CDATA[<>]]> #{bedId,jdbcType=INTEGER}
+        </if>
+    </select>
+    <select id="getRecordBedCounts" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM hospital_bed zbi
+        left join record_base rb on zbi.bed_id = rb.bed_id
+        WHERE
+        zbi.status = 0 and rb.usage_status = 0
+        <if test="bedId != null">
+            and zbi.bed_id = #{bedId,jdbcType=INTEGER}
         </if>
     </select>
 </mapper>

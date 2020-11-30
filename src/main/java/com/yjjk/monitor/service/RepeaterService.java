@@ -10,6 +10,9 @@
  */
 package com.yjjk.monitor.service;
 
+import com.yjjk.monitor.entity.BO.repeater.DistributionBO;
+import com.yjjk.monitor.entity.ListVO;
+import com.yjjk.monitor.entity.VO.repeater.RoomsRepeaterVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
 
@@ -22,6 +25,36 @@ import java.util.List;
  */
 public interface RepeaterService {
 
+    /**
+     * 设置路由关联状态
+     * @param list
+     * @return
+     */
+    List<ZsRepeaterInfo> setBandingStatus(List<ZsRepeaterInfo> list);
+
+    /**
+     * 获取未绑定路由
+     *
+     * @param departmentId
+     * @return
+     */
+    List<ListVO> getUnbindRepeaters(Integer departmentId);
+
+    /**
+     * 分配路由
+     *
+     * @param distributionBO
+     * @return
+     */
+    boolean distribution(DistributionBO distributionBO);
+
+    /**
+     * 分配路由-获取房间信息
+     *
+     * @param departmentId
+     * @return
+     */
+    RoomsRepeaterVO getRooms(Integer departmentId);
 
     /**
      * 新增路由

@@ -13,4 +13,13 @@ public class MachineConfig {
      */
     private String url;
     private String repeater;
+    private String address;
+
+    public String getUrl() {
+        return address + url;
+    }
+
+    public String getRepeater() {
+        return address + repeater;
+    }
 }

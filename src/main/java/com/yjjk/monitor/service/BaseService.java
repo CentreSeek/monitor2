@@ -49,19 +49,19 @@ import java.util.List;
 public class BaseService {
     protected static Logger logger = LoggerFactory.getLogger(BaseService.class);
     @Autowired
-    protected HospitalBedMapper HospitalBedMapper;
+    protected HospitalBedMapper hospitalBedMapper;
     @Autowired
-    protected HospitalDepartmentMapper HospitalDepartmentMapper;
+    protected HospitalDepartmentMapper hospitalDepartmentMapper;
     @Autowired
-    protected ZsMachineInfoMapper ZsMachineInfoMapper;
+    protected ZsMachineInfoMapper zsMachineInfoMapper;
     @Autowired
-    protected ManagerInfoMapper ManagerInfoMapper;
+    protected ManagerInfoMapper managerInfoMapper;
     @Autowired
-    protected PatientInfoMapper PatientInfoMapper;
+    protected PatientInfoMapper patientInfoMapper;
     @Autowired
-    protected ZsPatientRecordMapper ZsPatientRecordMapper;
+    protected ZsPatientRecordMapper zsPatientRecordMapper;
     @Autowired
-    protected HospitalRoomMapper HospitalRoomMapper;
+    protected HospitalRoomMapper hospitalRoomMapper;
     @Autowired
     protected ZsTemperatureInfoMapper zsTemperatureInfoMapper;
     @Autowired

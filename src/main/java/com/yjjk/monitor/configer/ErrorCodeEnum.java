@@ -38,6 +38,7 @@ public enum ErrorCodeEnum {
     MACHINE_NET_ERROR("342", "网络堵塞，设备绑定失败，请稍后再试"),
     MACHINE_USING_ERROR("343", "停用失败,设备正在使用中"),
     MACHINE_STOP_ERROR("344", "设备停用失败"),
+    MACHINE_UPDATE_USING_ERROR("345", "禁止修改使用中设备"),
     /********** ManagerController **********/
     MANAGER_EXIST_ERROR("350", "新增失败，该账户已存在"),
     MANAGER_INSERT_ERROR("351", "用户新增失败"),
@@ -50,8 +51,19 @@ public enum ErrorCodeEnum {
     /********** MonitorController **********/
     EXIST_RECORD("360", "该用户已在其他床位启用监护"),
     ERROR_MACHINE_TYPE("361", "设备类型有误"),
-    ERROR_CONNECT_DATA_SERVICE("363","数据服务器连接失败"),
+    ERROR_CONNECT_DATA_SERVICE_TIMEOUT("362", "数据服务器连接超时"),
+    ERROR_CONNECT_DATA_SERVICE("363", "数据服务器连接失败"),
     ERROR_MACHINE_STOP("364", "停用失败，设备类型错误"),
+    MONITOR_CANNOT_CHANGE_PATIENT("365", "无法更换病人"),
+    /********** HospitalController **********/
+    HOSPITAL_CANNOT_UPDATE_HOSPITAL_INFORMATION("370", "无法进行删除操作，请确认该科室已停用全部设备"),
+    HOSPITAL_DEPARTMENT_NAME("371", "科室名称重复"),
+    HOSPITAL_CANNOT_UPDATE_ROOM_INFORMATION("372", "无法进行删除操作，请确认该房间已停用全部设备"),
+    HOSPITAL_ROOM_NAME("373", "房间名称重复"),
+    HOSPITAL_BED_NAME("374", "床位名称重复,同科室床位名称不可重复"),
+    /********** HistoryController **********/
+    CANNOT_SELECT_ECG_PICTURE("380", "请确认查询范围为监测记录期间"),
+    CANNOT_FIND_ECG_PICTURE("381", "未找到心电记录文件"),
     UNKNOWN_ERROR("500", "系统繁忙...");
 
     private String code;

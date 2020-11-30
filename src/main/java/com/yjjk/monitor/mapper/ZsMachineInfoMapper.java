@@ -14,6 +14,37 @@ import java.util.Map;
 public interface ZsMachineInfoMapper extends MyMapper<ZsMachineInfo> {
 
     /**
+     * 解绑
+     *
+     * @param departmentId
+     * @param roomId
+     * @return
+     */
+    Integer unbind(Integer departmentId, Integer roomId);
+
+    /**
+     * 使用主键更新
+     *
+     * @param pojo
+     * @return
+     */
+    Integer updateByMachineId(ZsMachineInfo pojo);
+
+    /**
+     * 获取无科室设备列表
+     *
+     * @return
+     */
+    List<ListVO> getNullDepartmentMachines();
+
+    /**
+     * 获取使用中设备id list
+     *
+     * @return
+     */
+    List<Integer> getList();
+
+    /**
      * insert---批量插入设备
      * @param machineInfo
      * @return
@@ -48,14 +79,17 @@ public interface ZsMachineInfoMapper extends MyMapper<ZsMachineInfo> {
      * @param machineNum
      * @return
      */
-    int selectByMachineNum(String machineNum);
+    int selectByMachineNum(String machineNum, Integer machineId);
 
     /**
      * 使用设备编号查询设备数量
-     * @param machineNum
+     *
+     * @param machineNo
      * @return
      */
-    int selectCountByMachineNo(String machineNum);
+    int selectCountByMachineNo(String machineNo, Integer machineId);
+
+    int selectCountByMachineMac(String machineMac, Integer machineId);
 
     /**
      * 查询设备类型id
@@ -92,4 +126,13 @@ public interface ZsMachineInfoMapper extends MyMapper<ZsMachineInfo> {
      */
     int insertByMachineNum(ZsMachineInfo machineInfo);
     ZsMachineInfo getByMachineId(Integer machineId);
+
+    /**
+     * 获取使用中设备数量
+     *
+     * @param departmentId
+     * @param roomId
+     * @return
+     */
+    Integer getUsingMachinesCount(Integer departmentId, Integer roomId);
 }

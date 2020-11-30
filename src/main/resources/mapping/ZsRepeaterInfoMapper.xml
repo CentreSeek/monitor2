@@ -39,6 +39,7 @@
                 and zri.department_id = #{departmentId, jdbcType=INTEGER}
             </if>
         </where>
+        ORDER BY FIELD(zri.`department_id`,0) DESC, FIELD(zri.`room_id`,0) DESC, zri.`id`
         <if test="startLine != null and pageSize != null">
             limit #{startLine},#{pageSize}
         </if>
@@ -99,4 +100,70 @@
         where IP = #{ip, jdbcType=INTEGER}
     </select>
 
+    <update id="unbind" parameterType="java.util.Map">
+        update zs_repeater_info
+        <set>
+            <if test="departmentId != null">
+                department_id = 0,
+                room_id = 0,
+            </if>
+            <if test="roomId != null">
+                room_id = 0,
+            </if>
+        </set>
+        <where>
+            <if test="departmentId != null">
+                and department_id = #{departmentId, jdbcType=INTEGER}
+            </if>
+            <if test="roomId != null">
+                and room_id = #{roomId, jdbcType=INTEGER}
+            </if>
+        </where>
+    </update>
+
+    <select id="getRooms" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.VO.repeater.RoomsRepeaterVORooms">
+        SELECT
+        hr.room_id,
+        hr.name as roomName
+#         count(zri.id) as repeaterCount
+        FROM hospital_department hd
+        left join hospital_room hr on hr.department_id = hd.department_id
+#         left join zs_repeater_info zri on zri.department_id = hd.department_id and hr.room_id = zri.room_id
+        where hd.status = 0
+        and hr.status = 0
+#         and (zri.status = 0 OR zri.`id` IS NULL)
+        <if test="departmentId != null">
+            and hd.department_id = #{departmentId, jdbcType=INTEGER}
+        </if>
+        group by hr.room_id
+    </select>
+    <select id="getUnBindRepeaters" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.ListVO">
+        SELECT zri.id,
+               zri.IP as value
+        FROM zs_repeater_info zri
+        where zri.status = 0
+          and (zri.department_id = 0
+        <if test="departmentId != null">
+            or (department_id = #{departmentId, jdbcType=INTEGER} and  zri.room_id = 0)
+        </if>)
+    </select>
+
+    <update id="bindRepeater" parameterType="java.util.Map">
+        update zs_repeater_info
+        <set>
+            <if test="departmentId != null">
+                department_id = #{departmentId, jdbcType=INTEGER},
+            </if>
+            <if test="roomId != null">
+                room_id = #{roomId, jdbcType=INTEGER},
+            </if>
+        </set>
+        <where>
+            <if test="id != null">
+                and id = #{id, jdbcType=INTEGER}
+            </if>
+        </where>
+    </update>
 </mapper>

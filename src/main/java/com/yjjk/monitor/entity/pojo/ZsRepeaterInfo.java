@@ -1,9 +1,12 @@
 package com.yjjk.monitor.entity.pojo;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Table(name = "zs_repeater_info")
 @Data
@@ -79,4 +82,7 @@ public class ZsRepeaterInfo {
     private String repeaterNum;
     private String departmentName;
     private String roomName;
+    private Integer order;
+    @ApiModelProperty(value = "关联状态 0:已关联 1：未关联房间 2：未关联科室")
+    private Integer bindStatus;
 }

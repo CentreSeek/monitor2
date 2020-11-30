@@ -21,6 +21,42 @@
         machine_id, `name`, machine_model, machine_num, machine_no, department_id, usage_state, remark,
     create_time, `status`, machine_type_id
     </sql>
+    <update id="unbind" parameterType="java.util.Map">
+        update zs_machine_info zmi
+        left join hospital_room hr on hr.department_id = zmi.department_id
+        left join hospital_bed hb on hb.room_id = hr.room_id
+        <set>
+            zmi.department_id = 0
+        </set>
+        <where>
+            <if test="departmentId != null">
+                and zmi.department_id = #{departmentId, jdbcType=INTEGER}
+            </if>
+            <if test="roomId != null">
+                and hr.room_id = #{roomId, jdbcType=INTEGER}
+            </if>
+            <!--            <if test="bedId != null">-->
+            <!--                and hb.bed_id = #{bedId, jdbcType=INTEGER}-->
+            <!--            </if>-->
+        </where>
+    </update>
+    <select id="getNullDepartmentMachines" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.ListVO">
+        select
+        zmi.machine_id as id, zmi.machine_no as value
+        from zs_machine_info zmi
+        <where>
+            zmi.status = 0
+            and zmi.usage_state in (0,1)
+            and zmi.department_id = 0
+        </where>
+    </select>
+    <select id="getList" resultType="Integer">
+        SELECT machine_id
+        from zs_machine_info
+        where 1 = 1
+          and usage_state = 2
+    </select>
     <select id="selectMachineCount" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo"
             resultType="java.lang.Integer">
         select
@@ -52,11 +88,13 @@
             </if>
             and zmi.status = 0
         </where>
+        order by field(zmi.department_id,0) desc, zmi.machine_id
     </select>
     <select id="selectByUsageState" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo"
             resultType="com.yjjk.monitor.entity.pojo.ZsMachineInfo">
         select
         zmi.machine_id, mti2.`name` as machineName, mti.name as machineModel, zmi.machine_num, zmi.machine_no,
+        zmi.machine_mac,
         zmi.department_id,
         zmi.usage_state, zmi.remark,
         zmi.create_time, zmi.`status`, zdi.name as department_name
@@ -91,6 +129,7 @@
             </if>
             and zmi.status = 0
         </where>
+        order by field(zmi.department_id,0) desc, zmi.machine_id
         <if test="startLine != null and pageSize != null">
             limit #{startLine},#{pageSize}
         </if>
@@ -161,15 +200,29 @@
             and zmi.status = 0
         </where>
     </select>
-    <select id="selectByMachineNum" parameterType="java.lang.String" resultType="java.lang.Integer">
+    <select id="selectByMachineNum" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1)
         from zs_machine_info
         where machine_num = #{machineNum,jdbcType=VARCHAR}
+        <if test="machineId != null">
+            and machine_id <![CDATA[<>]]> #{machineId, jdbcType=INTEGER}
+        </if>
     </select>
-    <select id="selectCountByMachineNo" parameterType="java.lang.String" resultType="java.lang.Integer">
+    <select id="selectCountByMachineNo" parameterType="java.util.Map" resultType="java.lang.Integer">
         select count(1)
         from zs_machine_info
         where machine_no = #{machineNo,jdbcType=VARCHAR}
+        <if test="machineId != null">
+            and machine_id <![CDATA[<>]]> #{machineId, jdbcType=INTEGER}
+        </if>
+    </select>
+    <select id="selectCountByMachineMac" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1)
+        from zs_machine_info
+        where machine_mac = #{machineMac,jdbcType=VARCHAR}
+        <if test="machineId != null">
+            and machine_id <![CDATA[<>]]> #{machineId, jdbcType=INTEGER}
+        </if>
     </select>
 
     <select id="selectByMachineModelId" parameterType="java.lang.String" resultType="java.lang.Integer">
@@ -186,10 +239,10 @@
         <where>
             zmi.status = 0 and zdi.status = 0 and zmti.status = 0
             and usage_state in (0,2)
+            and zmi.status = 0
             <if test="departmentId != null">
                 and zmi.department_id = #{departmentId, jdbcType=INTEGER}
             </if>
-            and zmi.status = 0
             <if test="machineType != null">
                 and zmti.parent_id = #{machineType, jdbcType=INTEGER}
             </if>
@@ -362,4 +415,58 @@
             </if>
         </trim>
     </insert>
+    <update id="updateByMachineId" parameterType="com.yjjk.monitor.entity.pojo.ZsMachineInfo">
+        update zs_machine_info
+        <set>
+
+            <if test="departmentId != null">
+                department_id =#{departmentId,jdbcType=INTEGER},
+            </if>
+            <if test="usageState != null">
+                usage_state = #{usageState,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark=#{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time=#{createTime,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                `status`=#{status,jdbcType=INTEGER},
+            </if>
+            <if test="machineNo != null">
+                machine_no=#{machineNo,jdbcType=VARCHAR},
+            </if>
+            <if test="machineNum != null">
+                machine_num= #{machineNum,jdbcType=VARCHAR},
+            </if>
+            <if test="machineTypeId != null">
+                machine_type_id = #{machineTypeId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <where>
+            <if test="machineId != null">
+                machine_id = #{machineId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </update>
+
+    <select id="getUsingMachinesCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(*)
+        from zs_machine_info zmi
+#         left join hospital_department zdi on zmi.department_id = zdi.department_id
+        left join hospital_room hr on zmi.department_id = hr.department_id
+        <where>
+            zmi.status = 0 and hr.status = 0
+            and zmi.usage_state in (2)
+            <if test="departmentId != null">
+                and zmi.department_id = #{departmentId, jdbcType=INTEGER}
+            </if>
+            <if test="roomId != null">
+                and hr.room_id = #{roomId, jdbcType=INTEGER}
+            </if>
+            and zmi.status = 0
+        </where>
+    </select>
 </mapper>

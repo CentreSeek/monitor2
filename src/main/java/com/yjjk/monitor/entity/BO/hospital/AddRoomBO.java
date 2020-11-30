@@ -1,5 +1,6 @@
 package com.yjjk.monitor.entity.BO.hospital;
 
+import com.yjjk.monitor.entity.hospital.Room;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -11,5 +12,7 @@ import lombok.experimental.Accessors;
  **/
 @Data
 @Accessors(chain = true)
-public class UpdateHospital {
+public class AddRoomBO {
+    private Room room;
+    private Integer departmentId;
 }

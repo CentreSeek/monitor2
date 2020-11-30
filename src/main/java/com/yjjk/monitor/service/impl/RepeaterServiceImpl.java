@@ -10,11 +10,19 @@
  */
 package com.yjjk.monitor.service.impl;
 
+import com.yjjk.monitor.constant.HospitalConstant;
+import com.yjjk.monitor.constant.RepeaterEnum;
+import com.yjjk.monitor.entity.BO.repeater.DistributionBO;
+import com.yjjk.monitor.entity.BO.repeater.DistributionBORoom;
+import com.yjjk.monitor.entity.ListVO;
+import com.yjjk.monitor.entity.VO.repeater.RoomsRepeaterVO;
+import com.yjjk.monitor.entity.VO.repeater.RoomsRepeaterVORooms;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.RepeaterService;
 import com.yjjk.monitor.utility.NetUtils;
+import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -28,6 +36,56 @@ import java.util.Map;
  */
 @Service
 public class RepeaterServiceImpl extends BaseService implements RepeaterService {
+
+    @Override
+    public List<ZsRepeaterInfo> setBandingStatus(List<ZsRepeaterInfo> list) {
+        if (StringUtils.isNullorEmpty(list)) {
+            return list;
+        }
+        for (ZsRepeaterInfo temp : list) {
+            if (temp.getRoomId() == HospitalConstant.ID_DEFAULT_NULL) {
+                temp.setBindStatus(RepeaterEnum.UNBIND_ROOM.getType());
+            }
+            if (temp.getDepartmentId() == HospitalConstant.ID_DEFAULT_NULL) {
+                temp.setBindStatus(RepeaterEnum.UNBIND_DEPARTMENT.getType());
+            }
+            if (temp.getBindStatus() == null) {
+                temp.setBindStatus(RepeaterEnum.BIND.getType());
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<ListVO> getUnbindRepeaters(Integer departmentId) {
+        return zsRepeaterInfoMapper.getUnBindRepeaters(departmentId);
+    }
+
+    @Override
+    public boolean distribution(DistributionBO distributionBO) {
+        List<DistributionBORoom> list = distributionBO.getList();
+        for (DistributionBORoom distributionBORoom : list) {
+            List<Integer> repeaterIds = distributionBORoom.getRepeaterIds();
+            for (Integer repeaterId : repeaterIds) {
+                ZsRepeaterInfo pojo = new ZsRepeaterInfo();
+                pojo.setId(repeaterId)
+                        .setDepartmentId(distributionBO.getDepartmentId())
+                        .setRoomId(distributionBORoom.getRoomId());
+                zsRepeaterInfoMapper.bindRepeater(pojo);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public RoomsRepeaterVO getRooms(Integer departmentId) {
+        RoomsRepeaterVO result = new RoomsRepeaterVO();
+        List<RoomsRepeaterVORooms> rooms = zsRepeaterInfoMapper.getRooms(departmentId);
+//        List<ListVO> unBindRepeaters = zsRepeaterInfoMapper.getUnBindRepeaters(departmentId);
+        result.setRooms(rooms);
+//                .setCanBindRepeaterCount(unBindRepeaters.size());
+        return result;
+    }
 
     @Override
     public boolean addRepeater() throws Exception {
@@ -61,12 +119,12 @@ public class RepeaterServiceImpl extends BaseService implements RepeaterService 
         if (zsRepeaterInfo != null) {
             return 0;
         }
-        ZsRepeaterInfo pojo = new ZsRepeaterInfo();
-        pojo.setRoomId(repeater.getRoomId());
-        int existRepeater = super.zsRepeaterInfoMapper.isExistRepeater(pojo);
-        if (existRepeater > 0) {
-            return 0;
-        }
+//        ZsRepeaterInfo pojo = new ZsRepeaterInfo();
+//        pojo.setRoomId(repeater.getRoomId());
+//        int existRepeater = super.zsRepeaterInfoMapper.isExistRepeater(pojo);
+//        if (existRepeater > 0) {
+//            return 0;
+//        }
         return super.zsRepeaterInfoMapper.insertSelective(repeater);
     }
 

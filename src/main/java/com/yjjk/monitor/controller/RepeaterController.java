@@ -12,12 +12,19 @@ package com.yjjk.monitor.controller;
 
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
+import com.yjjk.monitor.entity.repeater.DistributionBO;
+import com.yjjk.monitor.entity.ListVO;
+import com.yjjk.monitor.entity.VO.repeater.RoomsRepeaterVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
 import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -142,8 +149,37 @@ public class RepeaterController extends BaseController {
         }
 
         List<ZsRepeaterInfo> list = super.repeaterService.selectRepeaters(repeaterInfo);
+        list = repeaterService.setBandingStatus(list);
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).setOrder(i + 1);
+        }
         map.put("list", list);
         return ResultUtil.returnSuccess(map);
+    }
+
+    @ApiOperation("page路由管理-分配路由：获取房间及路由统计信息")
+    @RequestMapping(value = {"/room"}, method = {RequestMethod.GET})
+    @Transactional(rollbackFor = Exception.class)
+    public CommonResult<RoomsRepeaterVO> getRooms(@ApiParam(value = "departmentId", required = true) @RequestParam(value = "departmentId") Integer departmentId) {
+        RoomsRepeaterVO rooms = repeaterService.getRooms(departmentId);
+        List<ListVO> list = repeaterService.getUnbindRepeaters(departmentId);
+        rooms.setUnBindRepeaterList(list);
+        return ResultUtil.returnSuccess(rooms);
+    }
+
+//    @ApiOperation("page路由管理-分配路由-list：获取未绑定路由")
+//    @RequestMapping(value = {"/unbindRepeaters"}, method = {RequestMethod.GET})
+//    @Transactional(rollbackFor = Exception.class)
+//    public CommonResult<List<ListVO>> updateRooms(@ApiParam(value = "departmentId", required = true) @RequestParam(value = "departmentId") Integer departmentId) {
+//        return ResultUtil.returnSuccess(list);
+//    }
+
+    @ApiOperation("page路由管理-分配路由：分配路由")
+    @RequestMapping(value = {"/room"}, method = {RequestMethod.PUT})
+    @Transactional(rollbackFor = Exception.class)
+    public CommonResult updateRooms(@RequestBody DistributionBO distributionBO) {
+        boolean distribution = repeaterService.distribution(distributionBO);
+        return ResultUtil.returnSuccess(distribution);
     }
 
 }

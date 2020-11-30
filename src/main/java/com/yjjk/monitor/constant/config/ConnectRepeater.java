@@ -18,4 +18,17 @@ public class ConnectRepeater {
     private String url;
     private String start;
     private String machine;
+    private String address;
+
+    public String getUrl() {
+        return address + url;
+    }
+
+    public String getStart() {
+        return address + start;
+    }
+
+    public String getMachine() {
+        return address + machine;
+    }
 }

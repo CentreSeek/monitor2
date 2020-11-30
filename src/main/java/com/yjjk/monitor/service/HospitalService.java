@@ -11,6 +11,8 @@
 package com.yjjk.monitor.service;
 
 import com.yjjk.monitor.entity.ListVO;
+import com.yjjk.monitor.entity.hospital.Bed;
+import com.yjjk.monitor.entity.hospital.Room;
 import com.yjjk.monitor.entity.pojo.HospitalBed;
 import com.yjjk.monitor.entity.pojo.HospitalDepartment;
 import com.yjjk.monitor.entity.pojo.HospitalRoom;
@@ -24,6 +26,48 @@ import java.util.Map;
  * @create 2019/7/18
  */
 public interface HospitalService {
+
+    String checkBedsName(Room room);
+
+    boolean checkBedName(Bed bed, Integer departmentId);
+
+    boolean updateDepartment(Integer departmentId, String name);
+
+    boolean addDepartment(String name);
+
+    /**
+     * 能否进操作
+     *
+     * @param departmentId
+     * @return
+     */
+    boolean canDeleteHospital(Integer departmentId);
+
+    boolean canDeleteRoom(Integer roomId);
+    boolean canDeleteRoom(Room room);
+
+    /**
+     * 删除
+     *
+     * @param departmentId
+     * @return
+     */
+    void deleteHospital(Integer departmentId);
+
+    /**
+     * 更新
+     *
+     * @param department
+     * @return
+     */
+//    boolean updateHospital(Department department);
+    boolean updateRoom(Room room);
+
+    String updateBeds(Room room);
+
+    boolean addRoom(Room room, Integer departmentId);
+
+    boolean deleteRoom(Integer roomId);
 
     /**
      * 获取医院名称

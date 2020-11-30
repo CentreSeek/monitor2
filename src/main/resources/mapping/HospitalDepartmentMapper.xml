@@ -33,10 +33,11 @@
         zbi.bed_id as bed_id, zbi.room_id as bed_room_id, zbi.name as bed_name, zbi.create_time as bed_create_time,
         zbi.status as bed_status, zhi.hospital_name
         from hospital_department zdi
-        left join hospital_room zri on zdi.department_id = zri.department_id
-        left join hospital_bed zbi on zri.room_id = zbi.room_id
+        left join hospital_room zri on zdi.department_id = zri.department_id AND zri.`status` = 0
+        left join hospital_bed zbi on zri.room_id = zbi.room_id AND zbi.status = 0
         join hospital_info zhi
         <where>
+            zdi.status = 0
             <if test="departmentId != null">
                 and zdi.department_id = #{departmentId,jdbcType=INTEGER}
             </if>
@@ -54,5 +55,18 @@
         select hospital_name
         from hospital_info
     </select>
+    <select id="getByPrimaryKey" parameterType="java.lang.Integer"
+            resultType="com.yjjk.monitor.entity.pojo.HospitalDepartment">
+        select *
+        from hospital_department
+        where department_id = #{departmentId,jdbcType=INTEGER}
+    </select>
 
+    <select id="checkDepartmentName" parameterType="java.util.Map"
+            resultType="java.lang.Integer">
+        select count(*)
+        from hospital_department
+        where name = #{name,jdbcType=INTEGER}
+          and status = 0
+    </select>
 </mapper>

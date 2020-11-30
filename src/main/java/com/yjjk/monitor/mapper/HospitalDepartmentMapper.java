@@ -25,4 +25,13 @@ public interface HospitalDepartmentMapper extends MyMapper<HospitalDepartment> {
      * @return
      */
     String getHospitalName();
+
+    HospitalDepartment getByPrimaryKey(Integer departmentId);
+
+    /**
+     * 科室名称是否可用
+     * @param name
+     * @return
+     */
+    Integer checkDepartmentName(String name);
 }
