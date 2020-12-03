@@ -21,7 +21,6 @@ import com.yjjk.monitor.configer.ErrorCodeEnum;
 
 /**
  * 公共响应结果成功失败的静态方法调用
- *
  */
 public class ResultUtil {
 
@@ -33,6 +32,7 @@ public class ResultUtil {
         result.setMessage(ErrorCodeEnum.SUCCESS.getDesc());
         return result;
     }
+
     /**
      * return success
      *
@@ -47,13 +47,14 @@ public class ResultUtil {
         result.setMessage(ErrorCodeEnum.SUCCESS.getDesc());
         return result;
     }
+
     /**
      * return success
      *
      * @param data
      * @return
      */
-    public static <T> CommonResult<T> returnSuccess(T data,String message) {
+    public static <T> CommonResult<T> returnSuccess(T data, String message) {
         CommonResult<T> result = new CommonResult();
         result.setCode(ErrorCodeEnum.SUCCESS.getCode());
         result.setSuccess(true);
@@ -86,6 +87,10 @@ public class ResultUtil {
      */
     public static CommonResult returnError(ErrorCodeEnum status) {
         return returnError(status.getCode(), status.getDesc());
+    }
+
+    public static CommonResult returnError(ErrorCodeEnum status, String message) {
+        return returnError(status.getCode(), message);
     }
 
     public static CommonResult returnError(String msg) {

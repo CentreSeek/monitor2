@@ -13,6 +13,7 @@ package com.yjjk.monitor.controller;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.MachineConstant;
+import com.yjjk.monitor.entity.BO.machine.UpdateDepartmentOfMachines;
 import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.VO.SearchMachineVOBase;
 import com.yjjk.monitor.entity.export.machine.MachineExportVO;
@@ -57,10 +58,63 @@ public class MachineController extends BaseController {
         /********************** 参数初始化 **********************/
         int count = super.machineService.selectByMachineNum(machineInfo.getMachineNum());
         int count2 = super.machineService.selectByMachineNo(machineInfo.getMachineNo());
-        if (count > 0 || count2 > 0) {
+        int count3 = 0;
+        if (!StringUtils.isNullorEmpty(machineInfo.getMachineMac())) {
+            count3 = super.machineService.selectByMachineMac(machineInfo.getMachineMac());
+        }
+        if (count > 0 || count2 > 0 || count3 > 0) {
             return ResultUtil.returnError(ErrorCodeEnum.MACHINE_EXIST_ERROR);
         }
         int i = super.machineService.insertByMachineNum(machineInfo);
+        if (i == 0) {
+            return ResultUtil.returnError(ErrorCodeEnum.MACHINE_INSERT_ERROR);
+        } else {
+            try {
+                boolean b = super.machineService.connectionService(machineInfo.getMachineNum());
+                if (!b) {
+                    return ResultUtil.returnError(ErrorCodeEnum.MACHINE_NET_ERROR);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultUtil.returnError(ErrorCodeEnum.MACHINE_NET_ERROR);
+            }
+        }
+        return ResultUtil.returnSuccess(i);
+    }
+
+    @ApiOperation(value = "page设备管理：更新设备")
+    @RequestMapping(value = "/machine", method = RequestMethod.PUT)
+    public CommonResult updateMachine(@RequestParam(value = "machineId") Integer machineId,
+                                      @RequestParam(value = "machineSn", required = false) String machineSn,
+                                      @RequestParam(value = "machineNo", required = false) String machineNo,
+                                      @RequestParam(value = "machineMac", required = false) String machineMac,
+                                      @RequestParam(value = "departmentId", required = false) Integer departmentId) {
+        ZsMachineInfo machineInfo1 = super.machineService.selectByPrimaryKey(machineId);
+        if (machineInfo1.getUsageState() == MachineConstant.USAGE_STATE_USED) {
+            return ResultUtil.returnError(ErrorCodeEnum.MACHINE_UPDATE_USING_ERROR);
+        }
+        ZsMachineInfo machineInfo = new ZsMachineInfo();
+        machineSn = machineSn.trim();
+        machineNo = machineNo.trim();
+        machineMac = machineMac.trim();
+        machineInfo.setMachineId(machineId).setMachineNum(machineSn).setMachineMac(machineMac).setMachineNo(machineNo).setDepartmentId(departmentId);
+//        int count2 = super.machineService.selectByMachineNo(machineInfo.getMachineNo());
+        int count = 0;
+        int count2 = 0;
+        int count3 = 0;
+        if (!StringUtils.isNullorEmpty(machineInfo.getMachineNum())) {
+            count = super.machineService.selectByMachineNum(machineInfo.getMachineNum(), machineId);
+        }
+        if (!StringUtils.isNullorEmpty(machineInfo.getMachineMac())) {
+            count3 = super.machineService.selectByMachineMac(machineInfo.getMachineMac(), machineId);
+        }
+        if (!StringUtils.isNullorEmpty(machineInfo.getMachineNo())) {
+            count2 = super.machineService.selectByMachineNo(machineInfo.getMachineNo(), machineId);
+        }
+        if (count > 0 || count2 > 0 || count3 > 0) {
+            return ResultUtil.returnError(ErrorCodeEnum.MACHINE_EXIST_ERROR);
+        }
+        int i = super.machineService.updateSelective(machineInfo);
         if (i == 0) {
             return ResultUtil.returnError(ErrorCodeEnum.MACHINE_INSERT_ERROR);
         } else {
@@ -112,8 +166,8 @@ public class MachineController extends BaseController {
     public CommonResult getMachine(@ApiParam(value = "0-未使用 1-已删除 2-使用+未使用") @RequestParam(value = "usageState", required = false) Integer usageState,
                                    @ApiParam(value = "machineTypeId") @RequestParam(value = "machineTypeId", required = false) Integer machineTypeId,
                                    @RequestParam(value = "departmentId", required = false) Integer departmentId,
-                                   @RequestParam(value = "machineNum(支持模糊查询)", required = false) String machineNum,
-                                   @RequestParam(value = "machineNo(支持模糊查询)", required = false) String machineNo,
+                                   @ApiParam(value = "machineNum(支持模糊查询)") @RequestParam(value = "machineNum", required = false) String machineNum,
+                                   @ApiParam(value = "machineNo(支持模糊查询)") @RequestParam(value = "machineNo", required = false) String machineNo,
                                    @RequestParam(value = "page", required = false) Integer currentPage,
                                    @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         /********************** 参数初始化 **********************/
@@ -243,6 +297,14 @@ public class MachineController extends BaseController {
         return ResultUtil.returnSuccess(list);
     }
 
+    @ApiOperation(value = "page设备管理-分配设备：获取所有设备")
+    @RequestMapping(value = "/distribution", method = RequestMethod.GET)
+    public CommonResult getNullDepartmentMachines() {
+        /********************** 参数初始化 **********************/
+        List<ListVO> list = super.machineService.getNullDepartmentMachines();
+        return ResultUtil.returnSuccess(list);
+    }
+
     @ApiOperation(value = "page设备管理：查找设备")
     @RequestMapping(value = "/searchMachine", method = RequestMethod.GET)
     public CommonResult<SearchMachineVOBase> searchMachine(@RequestParam Integer departmentId,
@@ -283,5 +345,14 @@ public class MachineController extends BaseController {
         List<MachineTypeInfo> list = super.machineService.getMachineModel(machineTypeId);
         return ResultUtil.returnSuccess(list);
     }
+
+    @ApiOperation(value = "page设备管理：分配设备")
+    @RequestMapping(value = "/updateDepartment", method = RequestMethod.POST)
+    public CommonResult updateDepartmentOfMachines(UpdateDepartmentOfMachines updateDepartmentOfMachines) {
+        /********************** 参数初始化 **********************/
+        boolean b = machineService.updateDepartmentOfMachines(updateDepartmentOfMachines.getDepartmentId(), updateDepartmentOfMachines.getMachineIds());
+        return ResultUtil.returnSuccess(b);
+    }
+
 
 }

@@ -14,7 +14,6 @@ import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.MachineConstant;
-import com.yjjk.monitor.constant.MachineEnum;
 import com.yjjk.monitor.constant.SearchMachineConstant;
 import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.VO.SearchMachineVO;
@@ -37,10 +36,11 @@ import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.NetUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import javax.annotation.Resource;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,11 +55,27 @@ import java.util.Map;
 @Service
 public class MachineServiceImpl extends BaseService implements MachineService {
 
+
+    @Override
+    public boolean updateDepartmentOfMachines(Integer departmentId, List<Integer> machineIds) {
+        for (int i = 0; i < machineIds.size(); i++) {
+            ZsMachineInfo pojo = new ZsMachineInfo();
+            pojo.setDepartmentId(departmentId).setMachineId(machineIds.get(i));
+            zsMachineInfoMapper.updateByMachineId(pojo);
+        }
+        return true;
+    }
+
+    @Override
+    public List<ListVO> getNullDepartmentMachines() {
+        return zsMachineInfoMapper.getNullDepartmentMachines();
+    }
+
     @Override
     public CommonResult startMachine(Integer machineId, String connectionType) throws Exception {
         // 连接设备
         BackgroundSend backgroundSend = new BackgroundSend();
-        ZsMachineInfo machineInfo = super.ZsMachineInfoMapper.getByMachineId(machineId);
+        ZsMachineInfo machineInfo = super.zsMachineInfoMapper.getByMachineId(machineId);
         backgroundSend.setDeviceId(machineInfo.getMachineNum());
         backgroundSend.setData(connectionType);
         String s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
@@ -74,14 +90,15 @@ public class MachineServiceImpl extends BaseService implements MachineService {
         return ResultUtil.returnSuccess();
     }
 
-    @Resource
+    @Autowired
+    @Lazy
     MonitorService monitorService;
 
     @Override
     public CommonResult changeMachine(Integer oldMachineId, Integer newMachineId) throws Exception {
         // 连接设备
         BackgroundSend backgroundSend = new BackgroundSend();
-        ZsMachineInfo machineInfo = super.ZsMachineInfoMapper.getByMachineId(oldMachineId);
+        ZsMachineInfo machineInfo = super.zsMachineInfoMapper.getByMachineId(oldMachineId);
         backgroundSend.setDeviceId(machineInfo.getMachineNum());
         backgroundSend.setData(BackgroundSend.DATA_LOSE_CONNECTION);
         String s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
@@ -94,7 +111,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
         monitorService.changeMachineState(oldMachineId, MachineConstant.USAGE_STATE_NORMAL);
 
         // 连接设备
-        ZsMachineInfo newMachineInfo = super.ZsMachineInfoMapper.getByMachineId(newMachineId);
+        ZsMachineInfo newMachineInfo = super.zsMachineInfoMapper.getByMachineId(newMachineId);
         backgroundSend.setDeviceId(newMachineInfo.getMachineNum());
         backgroundSend.setData(BackgroundSend.DATA_CONNECTION);
         s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
@@ -110,7 +127,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
     @Override
     public int insertSelective(ZsMachineInfo machineInfo) {
-        return super.ZsMachineInfoMapper.insertSelective(machineInfo);
+        return super.zsMachineInfoMapper.insertSelective(machineInfo);
     }
 
     @Override
@@ -119,27 +136,27 @@ public class MachineServiceImpl extends BaseService implements MachineService {
         machineInfo.setMachineId(machineId);
         machineInfo.setRemark(remark);
         machineInfo.setUsageState(1);
-        return super.ZsMachineInfoMapper.updateByPrimaryKeySelective(machineInfo);
+        return super.zsMachineInfoMapper.updateByPrimaryKeySelective(machineInfo);
     }
 
     @Override
     public int insertByMachineNums(ZsMachineInfo machineInfo) {
-        return super.ZsMachineInfoMapper.insertByMachineNums(machineInfo);
+        return super.zsMachineInfoMapper.insertByMachineNums(machineInfo);
     }
 
     @Override
     public int insertByMachineNum(ZsMachineInfo machineInfo) {
-        return this.ZsMachineInfoMapper.insertSelective(machineInfo);
+        return this.zsMachineInfoMapper.insertSelective(machineInfo);
     }
 
     @Override
     public int selectCount(ZsMachineInfo machineInfo) {
-        return super.ZsMachineInfoMapper.selectMachineCount(machineInfo);
+        return super.zsMachineInfoMapper.selectMachineCount(machineInfo);
     }
 
     @Override
     public List<ZsMachineInfo> selectByUsageState(ZsMachineInfo machineInfo) {
-        return super.ZsMachineInfoMapper.selectByUsageState(machineInfo);
+        return super.zsMachineInfoMapper.selectByUsageState(machineInfo);
     }
 
     @Override
@@ -149,18 +166,18 @@ public class MachineServiceImpl extends BaseService implements MachineService {
             name = StringUtils.getLikeName(name);
             paraMap.put("name", name);
         }
-        return super.ZsMachineInfoMapper.selectUsageListByTypeId(paraMap);
+        return super.zsMachineInfoMapper.selectUsageListByTypeId(paraMap);
     }
 
     @Override
     public List<ListVO> selectUsageListByTypeIdMachineModel(Map<String, Object> paraMap) {
-        return super.ZsMachineInfoMapper.selectUsageListByTypeIdMachineModel(paraMap);
+        return super.zsMachineInfoMapper.selectUsageListByTypeIdMachineModel(paraMap);
     }
 
 
     @Override
     public List<MachineExportVO> export(ZsMachineInfo machineInfo,Integer language) {
-        List<MachineExport> list = super.ZsMachineInfoMapper.export(machineInfo);
+        List<MachineExport> list = super.zsMachineInfoMapper.export(machineInfo);
         List<MachineExportVO> reqList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             reqList.add(list.get(i).transBean(list.get(i),language));
@@ -170,32 +187,52 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
     @Override
     public int updateByMachineId(ZsMachineInfo machineInfo) {
-        return super.ZsMachineInfoMapper.updateByPrimaryKeySelective(machineInfo);
+        return super.zsMachineInfoMapper.updateByPrimaryKeySelective(machineInfo);
     }
 
     @Override
     public ZsMachineInfo selectByPrimaryKey(Integer machineId) {
-        return super.ZsMachineInfoMapper.getByMachineId(machineId);
+        return super.zsMachineInfoMapper.getByMachineId(machineId);
+    }
+
+    @Override
+    public int selectByMachineNum(String machineNum, Integer machineId) {
+        return super.zsMachineInfoMapper.selectByMachineNum(machineNum, machineId);
     }
 
     @Override
     public int selectByMachineNum(String machineNum) {
-        return super.ZsMachineInfoMapper.selectByMachineNum(machineNum);
+        return selectByMachineNum(machineNum, null);
     }
 
     @Override
     public int selectByMachineNo(String machineNo) {
-        return super.ZsMachineInfoMapper.selectCountByMachineNo(machineNo);
+        return super.zsMachineInfoMapper.selectCountByMachineNo(machineNo, null);
+    }
+
+    @Override
+    public int selectByMachineNo(String machineNo, Integer machineId) {
+        return super.zsMachineInfoMapper.selectCountByMachineNo(machineNo, machineId);
+    }
+
+    @Override
+    public int selectByMachineMac(String machineMac) {
+        return super.zsMachineInfoMapper.selectCountByMachineMac(machineMac, null);
+    }
+
+    @Override
+    public int selectByMachineMac(String machineMac, Integer machineId) {
+        return super.zsMachineInfoMapper.selectCountByMachineMac(machineMac, machineId);
     }
 
     @Override
     public Integer selectByMachineModel(String machineModel) {
-        return super.ZsMachineInfoMapper.selectByMachineModelId(machineModel);
+        return super.zsMachineInfoMapper.selectByMachineModelId(machineModel);
     }
 
     @Override
     public List<ZsMachineInfo> selectAllMachines(Map<String, Object> map) {
-        return super.ZsMachineInfoMapper.selectAllMachines(map);
+        return super.zsMachineInfoMapper.selectAllMachines(map);
     }
 
     @Override
@@ -225,7 +262,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
     @Override
     public CommonResult searchMachine(Map<String, Object> map) {
-        List<SearchMachineVO> list = super.ZsMachineInfoMapper.searchRepeaterBaseInfo((Integer) map.get("departmentId"));
+        List<SearchMachineVO> list = super.zsMachineInfoMapper.searchRepeaterBaseInfo((Integer) map.get("departmentId"));
         Integer repeaterId = null;
         String createTIme = null;
         switch ((Integer) map.get("type")) {
@@ -312,6 +349,11 @@ public class MachineServiceImpl extends BaseService implements MachineService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int updateSelective(ZsMachineInfo zsMachineInfo) {
+        return super.zsMachineInfoMapper.updateByPrimaryKeySelective(zsMachineInfo);
     }
 
 

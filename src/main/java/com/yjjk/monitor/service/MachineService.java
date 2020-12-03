@@ -11,11 +11,13 @@
 package com.yjjk.monitor.service;
 
 import com.yjjk.monitor.configer.CommonResult;
+import com.yjjk.monitor.controller.BaseController;
 import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.export.machine.MachineExportVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,19 @@ import java.util.Map;
  * @create 2019/7/18
  */
 public interface MachineService {
+
+    /**
+     * 分配设备
+     * @param departmentId
+     * @param machineIds
+     * @return
+     */
+    boolean updateDepartmentOfMachines(Integer departmentId, List<Integer> machineIds);
+    /**
+     * 获取无科室设备列表
+     * @return
+     */
+    List<ListVO> getNullDepartmentMachines();
 
     /**
      * 启用设备-通知数据采集服务器
@@ -131,6 +146,8 @@ public interface MachineService {
      */
     int selectByMachineNum(String machineNum);
 
+    int selectByMachineNum(String machineNum, Integer machineId);
+
     /**
      * 使用设备编号查询设备数量
      *
@@ -138,6 +155,12 @@ public interface MachineService {
      * @return
      */
     int selectByMachineNo(String machineNo);
+
+    int selectByMachineNo(String machineNo, Integer machineId);
+
+    int selectByMachineMac(String machineMac);
+
+    int selectByMachineMac(String machineMac, Integer machineId);
 
     /**
      * 使用设备型号查询设备信息
@@ -193,6 +216,7 @@ public interface MachineService {
      */
     boolean connectionService(String machineNum) throws Exception;
 
+    int updateSelective(ZsMachineInfo zsMachineInfo);
 
 
 }

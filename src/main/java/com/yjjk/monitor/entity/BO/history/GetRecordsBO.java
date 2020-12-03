@@ -22,7 +22,7 @@ public class GetRecordsBO {
     @ApiModelProperty(value = "终止日期")
     private String endDate;
 
-    @ApiModelProperty(value = "病人姓名")
+    @ApiModelProperty(value = "病人姓名(支持模糊查询)")
     private String patientName;
 
     @ApiModelProperty(value = "设备类型： 0-体温 1-心电 2-血氧 3-离床感应", required = true)

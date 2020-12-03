@@ -29,27 +29,27 @@ public class ManagerServiceImpl extends BaseService implements ManagerService {
 
     @Override
     public int insertManager(ManagerInfo managerInfo) {
-        return super.ManagerInfoMapper.insertSelective(managerInfo);
+        return super.managerInfoMapper.insertSelective(managerInfo);
     }
 
     @Override
     public int updateManger(ManagerInfo managerInfo) {
-        return super.ManagerInfoMapper.updateByPrimaryKeySelective(managerInfo);
+        return super.managerInfoMapper.updateByPrimaryKeySelective(managerInfo);
     }
 
     @Override
     public ManagerInfo getManagerInfo(Integer managerId) {
-        return super.ManagerInfoMapper.selectByPrimaryKey(managerId);
+        return super.managerInfoMapper.selectByPrimaryKey(managerId);
     }
 
     @Override
     public List<ManagerInfo> selectNormalList(Map<String, Object> paramMap) {
-        return super.ManagerInfoMapper.selectNormalList(paramMap);
+        return super.managerInfoMapper.selectNormalList(paramMap);
     }
 
     @Override
     public int selectNormalListCount(Map<String, Object> paramMap) {
-        return super.ManagerInfoMapper.selectNormalListCount(paramMap);
+        return super.managerInfoMapper.selectNormalListCount(paramMap);
     }
 
     @Override
@@ -64,11 +64,11 @@ public class ManagerServiceImpl extends BaseService implements ManagerService {
 
     @Override
     public ManagerInfo selectByAccount(ManagerInfo managerInfo) {
-        return super.ManagerInfoMapper.selectByAccount(managerInfo);
+        return super.managerInfoMapper.selectByAccount(managerInfo);
     }
 
     @Override
     public ManagerInfo selectByToken(String token) {
-        return super.ManagerInfoMapper.selectByToken(token);
+        return super.managerInfoMapper.selectByToken(token);
     }
 }

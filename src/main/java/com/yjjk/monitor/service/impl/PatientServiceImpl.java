@@ -38,28 +38,28 @@ public class PatientServiceImpl extends BaseService implements PatientService {
 
     @Override
     public PatientInfo selectByCaseNum(String caseNum) {
-        return super.PatientInfoMapper.selectByCaseNum(caseNum);
+        return super.patientInfoMapper.selectByCaseNum(caseNum);
     }
 
     @Override
     public int updateName(PatientInfo record) {
-        return super.PatientInfoMapper.updateName(record);
+        return super.patientInfoMapper.updateName(record);
     }
 
     @Override
     public PatientInfo getByPrimaryKey(Integer patientId) {
-        return super.PatientInfoMapper.selectByPrimaryKey(patientId);
+        return super.patientInfoMapper.selectByPrimaryKey(patientId);
     }
 
     @Override
     public Integer checkPatient(String name, String caseNum, Integer bedId) {
-        PatientInfo zsPatientInfo = super.PatientInfoMapper.selectByCaseNum(caseNum);
+        PatientInfo zsPatientInfo = super.patientInfoMapper.selectByCaseNum(caseNum);
         if (zsPatientInfo == null) {
             // null：新增病人
             zsPatientInfo = new PatientInfo();
             zsPatientInfo.setName(name).setCaseNum(caseNum);
-            super.PatientInfoMapper.insertSelective(zsPatientInfo);
-            zsPatientInfo = super.PatientInfoMapper.selectByCaseNum(caseNum);
+            super.patientInfoMapper.insertSelective(zsPatientInfo);
+            zsPatientInfo = super.patientInfoMapper.selectByCaseNum(caseNum);
         } else {
             Example example = new Example(RecordBase.class);
             Example.Criteria criterion = example.createCriteria();
@@ -76,7 +76,7 @@ public class PatientServiceImpl extends BaseService implements PatientService {
             }
             // 更新患者姓名
             zsPatientInfo.setName(name);
-            super.PatientInfoMapper.updateByPrimaryKeySelective(zsPatientInfo);
+            super.patientInfoMapper.updateByPrimaryKeySelective(zsPatientInfo);
         }
         return zsPatientInfo.getPatientId();
     }
@@ -91,7 +91,7 @@ public class PatientServiceImpl extends BaseService implements PatientService {
         if (recordBase == null){
             return null;
         }
-        PatientInfo patientInfo = super.PatientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());
+        PatientInfo patientInfo = super.patientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());
         return patientInfo;
     }
 

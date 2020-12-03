@@ -12,7 +12,7 @@ package com.yjjk.monitor.controller;
 
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
-import com.yjjk.monitor.entity.repeater.DistributionBO;
+import com.yjjk.monitor.entity.BO.repeater.DistributionBO;
 import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.VO.repeater.RoomsRepeaterVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;

@@ -1,6 +1,7 @@
 package com.yjjk.monitor.mapper;
 
 import com.yjjk.monitor.entity.ListVO;
+import com.yjjk.monitor.entity.VO.repeater.RoomsRepeaterVORooms;
 import com.yjjk.monitor.entity.pojo.ZsRepeaterInfo;
 import com.yjjk.monitor.my.mapper.MyMapper;
 

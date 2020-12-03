@@ -107,9 +107,16 @@ public class WebSocketServer {
      * 实现服务器主动推送
      */
     public void sendMessage(String message) throws IOException {
-        this.session.getBasicRemote().sendText(message);
+        synchronized (this.getSession()) {
+            this.session.getBasicRemote().sendText(message);
+        }
     }
 
+    public void sendMessage(Session session, String message) throws IOException {
+        synchronized (session) {
+            this.session.getBasicRemote().sendText(message);
+        }
+    }
 
 //    /**
 //     * 群发自定义消息
@@ -150,7 +157,7 @@ public class WebSocketServer {
         WebSocketServer.webSocketSet = webSocketSet;
     }
 
-    public Integer getMachineId(){
+    public Integer getMachineId() {
         return machineId;
     }
 }

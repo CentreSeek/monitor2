@@ -135,7 +135,7 @@ public class HospitalController extends BaseController {
     public CommonResult updateRoom(@ApiParam(value = "房间信息：") @RequestBody Room room) {
         boolean b1 = super.hospitalService.canDeleteRoom(room);
         if (!b1) {
-            return ResultUtil.returnError(ErrorCodeEnum.HOSPITAL_CANNOT_UPDATE_ROOM_INFORMATION);
+            return ResultUtil.returnError(ErrorCodeEnum.HOSPITAL_CANNOT_DELETE_BED_INFORMATION);
         }
 //        department = super.hospitalService.deleteHospital(department);
         boolean b = super.hospitalService.updateRoom(room);

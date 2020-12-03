@@ -17,6 +17,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 
+
 /**
  * @author CentreS
  * @Description: 启用设备

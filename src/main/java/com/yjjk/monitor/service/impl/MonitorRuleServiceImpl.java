@@ -39,7 +39,7 @@ public class MonitorRuleServiceImpl extends BaseService implements MonitorRuleSe
 
     @Override
     public boolean setMonitorRule(List<MonitorRuleBO> list, String token) {
-        ManagerInfo managerInfo = super.ManagerInfoMapper.selectByToken(token);
+        ManagerInfo managerInfo = super.managerInfoMapper.selectByToken(token);
         for (int i = 0; i < list.size(); i++) {
             MonitorRule monitorRule = ReflectUtils.transformToBean(list.get(i), MonitorRule.class);
             monitorRule.setManagerId(managerInfo.getId())

@@ -61,6 +61,7 @@ public enum ErrorCodeEnum {
     HOSPITAL_CANNOT_UPDATE_ROOM_INFORMATION("372", "无法进行删除操作，请确认该房间已停用全部设备"),
     HOSPITAL_ROOM_NAME("373", "房间名称重复"),
     HOSPITAL_BED_NAME("374", "床位名称重复,同科室床位名称不可重复"),
+    HOSPITAL_CANNOT_DELETE_BED_INFORMATION("375", "无法进行删除操作，请确认该房间内的预删除的床位已停用设备"),
     /********** HistoryController **********/
     CANNOT_SELECT_ECG_PICTURE("380", "请确认查询范围为监测记录期间"),
     CANNOT_FIND_ECG_PICTURE("381", "未找到心电记录文件"),
@@ -87,5 +88,9 @@ public enum ErrorCodeEnum {
     @Override
     public String toString() {
         return "[" + this.code + "]" + this.desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }

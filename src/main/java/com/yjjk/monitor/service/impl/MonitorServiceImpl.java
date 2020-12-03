@@ -52,6 +52,7 @@ import com.yjjk.monitor.entity.pojo.ZsSleepingBeltInfo;
 import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
 import com.yjjk.monitor.entity.transaction.BackgroundResult;
 import com.yjjk.monitor.entity.transaction.BackgroundSend;
+import com.yjjk.monitor.mapper.ZsMachineInfoMapper;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.EcgService;
 import com.yjjk.monitor.service.MachineService;
@@ -499,7 +500,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         MonitorMachineListVO pojo1 = new MonitorMachineListVO();
         if (recordBase.getRecordTemperatureId() != -1) {
             RecordTemperature recordTemperature = super.recordTemperatureMapper.selectByPrimaryKey(recordBase.getRecordTemperatureId());
-            ZsMachineInfo byMachineId = super.ZsMachineInfoMapper.getByMachineId(recordTemperature.getMachineId());
+            ZsMachineInfo byMachineId = super.zsMachineInfoMapper.getByMachineId(recordTemperature.getMachineId());
             pojo1.setType(MachineEnum.TEMPERATURE.getType())
                     .setMachineId(byMachineId.getMachineId())
                     .setMachineNo(byMachineId.getMachineNo())
@@ -522,7 +523,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         MonitorMachineListVO pojo2 = new MonitorMachineListVO();
         if (recordBase.getRecordEcgId() != -1) {
             RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(recordBase.getRecordEcgId());
-            ZsMachineInfo byMachineId = super.ZsMachineInfoMapper.getByMachineId(recordEcg.getMachineId());
+            ZsMachineInfo byMachineId = super.zsMachineInfoMapper.getByMachineId(recordEcg.getMachineId());
             pojo2.setType(MachineEnum.ECG.getType())
                     .setMachineId(byMachineId.getMachineId())
                     .setMachineNo(byMachineId.getMachineNo())
@@ -546,7 +547,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         MonitorMachineListVO pojo3 = new MonitorMachineListVO();
         if (recordBase.getRecordBloodId() != -1) {
             RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(recordBase.getRecordBloodId());
-            ZsMachineInfo byMachineId = super.ZsMachineInfoMapper.getByMachineId(recordBlood.getMachineId());
+            ZsMachineInfo byMachineId = super.zsMachineInfoMapper.getByMachineId(recordBlood.getMachineId());
             pojo3.setType(MachineEnum.BLOOD.getType())
                     .setMachineId(byMachineId.getMachineId())
                     .setMachineNo(byMachineId.getMachineNo())
@@ -570,7 +571,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         MonitorMachineListVO pojo4 = new MonitorMachineListVO();
         if (recordBase.getRecordSleepingId() != -1) {
             RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(recordBase.getRecordSleepingId());
-            ZsMachineInfo byMachineId = super.ZsMachineInfoMapper.getByMachineId(recordSleeping.getMachineId());
+            ZsMachineInfo byMachineId = super.zsMachineInfoMapper.getByMachineId(recordSleeping.getMachineId());
             pojo4.setType(MachineEnum.SLEEPING.getType())
                     .setMachineId(byMachineId.getMachineId())
                     .setMachineNo(byMachineId.getMachineNo())
@@ -1096,7 +1097,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         ZsMachineInfo machineInfo = new ZsMachineInfo();
         machineInfo.setMachineId(machineId).setUsageState(usageState);
         // 修改设备使用状态
-        return ZsMachineInfoMapper.updateByPrimaryKeySelective(machineInfo);
+        return zsMachineInfoMapper.updateByPrimaryKeySelective(machineInfo);
     }
 
     @Override
