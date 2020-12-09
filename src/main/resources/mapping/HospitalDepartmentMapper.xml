@@ -42,6 +42,7 @@
                 and zdi.department_id = #{departmentId,jdbcType=INTEGER}
             </if>
         </where>
+        ORDER BY zdi.`department_id`,zri.`room_id`,zbi.`bed_id`
     </select>
 
     <select id="selectDepartments" resultType="com.yjjk.monitor.entity.pojo.HospitalDepartment">

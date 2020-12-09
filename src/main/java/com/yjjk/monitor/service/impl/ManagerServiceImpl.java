@@ -10,9 +10,15 @@
  */
 package com.yjjk.monitor.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.yjjk.monitor.constant.VivaConstant;
 import com.yjjk.monitor.entity.pojo.ManagerInfo;
+import com.yjjk.monitor.entity.viva.sso.request.Request;
+import com.yjjk.monitor.entity.viva.sso.response.Response;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.ManagerService;
+import com.yjjk.monitor.utility.DateUtil;
+import com.yjjk.monitor.utility.NetUtils;
 import com.yjjk.monitor.utility.PasswordUtils;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +32,17 @@ import java.util.Map;
  */
 @Service
 public class ManagerServiceImpl extends BaseService implements ManagerService {
+
+    @Override
+    public boolean loginViva(Integer managerId) {
+        ManagerInfo managerInfo = super.managerInfoMapper.selectByPrimaryKey(managerId);
+        Request r = new Request();
+        r.setCode(managerInfo.getAccount()).setFirst_name(managerInfo.getName()).setLast_name(managerInfo.getName()).setType(400);
+        String s = NetUtils.doPost(VivaConstant.ssoRequestUrl, JSON.toJSONString(r));
+        Response response = JSON.parseObject(s, Response.class);
+        VivaConstant.map.put(managerId, new String[]{response.getData().getToken().getToken(), DateUtil.getCurrentTimeLong().toString()});
+        return true;
+    }
 
     @Override
     public int insertManager(ManagerInfo managerInfo) {

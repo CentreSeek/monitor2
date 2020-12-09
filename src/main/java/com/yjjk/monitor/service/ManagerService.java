@@ -23,6 +23,12 @@ import java.util.Map;
 public interface ManagerService {
 
     /**
+     * 登录viva系统
+     * @param managerId
+     * @return
+     */
+    boolean loginViva(Integer managerId);
+    /**
      * 新增管理员
      *
      * @param managerInfo

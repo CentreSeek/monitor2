@@ -96,7 +96,9 @@ public class MachineController extends BaseController {
         ZsMachineInfo machineInfo = new ZsMachineInfo();
         machineSn = machineSn.trim();
         machineNo = machineNo.trim();
-        machineMac = machineMac.trim();
+        if (machineMac != null) {
+            machineMac = machineMac.trim();
+        }
         machineInfo.setMachineId(machineId).setMachineNum(machineSn).setMachineMac(machineMac).setMachineNo(machineNo).setDepartmentId(departmentId);
 //        int count2 = super.machineService.selectByMachineNo(machineInfo.getMachineNo());
         int count = 0;

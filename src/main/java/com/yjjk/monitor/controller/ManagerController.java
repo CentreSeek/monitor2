@@ -18,6 +18,7 @@ import com.yjjk.monitor.utility.PasswordUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -274,5 +275,15 @@ public class ManagerController extends BaseController {
         }
         managerInfo.setPassword(null);
         return ResultUtil.returnSuccess(managerInfo);
+    }
+
+    @ApiOperation("登录viva系统")
+    @RequestMapping(value = "/viva", method = RequestMethod.POST)
+    public CommonResult loginViva(Integer managerId) {
+        boolean b = managerService.loginViva(managerId);
+        if (!b) {
+            return ResultUtil.returnError(ErrorCodeEnum.MANAGER_LOGIN_VIVA_ERROR);
+        }
+        return ResultUtil.returnSuccess("");
     }
 }

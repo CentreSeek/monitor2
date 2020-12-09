@@ -48,6 +48,7 @@ public enum ErrorCodeEnum {
     MANAGER_PASSWORD_ERROR("356", "密码错误"),
     MANAGER_LOGIN_OUT_ERROR("357", "登出失败"),
     MANAGER_REFUSE("358", "权限验证失败"),
+    MANAGER_LOGIN_VIVA_ERROR("359", "viva系统验证失败"),
     /********** MonitorController **********/
     EXIST_RECORD("360", "该用户已在其他床位启用监护"),
     ERROR_MACHINE_TYPE("361", "设备类型有误"),
