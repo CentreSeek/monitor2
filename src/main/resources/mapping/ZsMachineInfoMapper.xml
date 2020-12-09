@@ -97,7 +97,9 @@
         zmi.machine_mac,
         zmi.department_id,
         zmi.usage_state, zmi.remark,
-        zmi.create_time, zmi.`status`, zdi.name as department_name
+        zmi.create_time, zmi.`status`, zdi.name as department_name,
+        mti2.type_code,
+        mti.id as machineTypeIdChild
         from zs_machine_info zmi
         left join hospital_department zdi on zmi.department_id = zdi.department_id
         left join machine_type_info mti on zmi.machine_type_id = mti.id
