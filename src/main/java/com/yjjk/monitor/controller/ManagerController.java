@@ -20,6 +20,7 @@ import com.yjjk.monitor.utility.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -279,11 +280,12 @@ public class ManagerController extends BaseController {
 
     @ApiOperation("登录viva系统")
     @RequestMapping(value = "/viva", method = RequestMethod.POST)
-    public CommonResult loginViva(Integer managerId) {
-        boolean b = managerService.loginViva(managerId);
+    public CommonResult loginViva(@RequestHeader(name = "token") String token) {
+        boolean b = managerService.loginViva(token);
         if (!b) {
             return ResultUtil.returnError(ErrorCodeEnum.MANAGER_LOGIN_VIVA_ERROR);
         }
-        return ResultUtil.returnSuccess("");
+        return ResultUtil.returnSuccess(b);
     }
+
 }

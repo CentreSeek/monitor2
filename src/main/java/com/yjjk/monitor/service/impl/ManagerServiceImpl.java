@@ -34,11 +34,12 @@ import java.util.Map;
 public class ManagerServiceImpl extends BaseService implements ManagerService {
 
     @Override
-    public boolean loginViva(Integer managerId) {
-        ManagerInfo managerInfo = super.managerInfoMapper.selectByPrimaryKey(managerId);
+    public boolean loginViva(String token) {
+        ManagerInfo managerInfo = super.managerInfoMapper.selectByToken(token);
+        Integer managerId = managerInfo.getId();
         Request r = new Request();
         r.setCode(managerInfo.getAccount()).setFirst_name(managerInfo.getName()).setLast_name(managerInfo.getName()).setType(400);
-        String s = NetUtils.doPost(VivaConstant.ssoRequestUrl, JSON.toJSONString(r));
+        String s = NetUtils.doVcPost(VivaConstant.ssoRequestUrl, JSON.toJSONString(r));
         Response response = JSON.parseObject(s, Response.class);
         VivaConstant.map.put(managerId, new String[]{response.getData().getToken().getToken(), DateUtil.getCurrentTimeLong().toString()});
         return true;

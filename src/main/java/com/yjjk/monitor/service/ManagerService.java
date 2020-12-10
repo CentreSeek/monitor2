@@ -24,10 +24,10 @@ public interface ManagerService {
 
     /**
      * 登录viva系统
-     * @param managerId
+     * @param token
      * @return
      */
-    boolean loginViva(Integer managerId);
+    boolean loginViva(String token);
     /**
      * 新增管理员
      *

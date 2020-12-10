@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,17 +61,17 @@ public class MonitorController extends BaseController {
         return ResultUtil.returnSuccess(patientInfo);
     }
 
-//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    //    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @ApiOperation(value = "启用设备")
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     public synchronized CommonResult startMachine(@Valid StartBO startBO, HttpServletRequest request) throws Exception {
 //        try {
-            // 获取患者id (检验、查询\新增)
-            Integer patientId = super.patientService.checkPatient(startBO.getPatientName(), startBO.getCaseNum(), startBO.getBedId());
-            if (patientId == null) {
-                return ResultUtil.returnError(ErrorCodeEnum.EXIST_RECORD);
-            }
-            return super.monitorService.startMachine(startBO.getType(), startBO.getMachineId(), startBO.getBedId(), patientId, request.getHeader("token"));
+        // 获取患者id (检验、查询\新增)
+        Integer patientId = super.patientService.checkPatient(startBO.getPatientName(), startBO.getCaseNum(), startBO.getBedId());
+        if (patientId == null) {
+            return ResultUtil.returnError(ErrorCodeEnum.EXIST_RECORD);
+        }
+        return super.monitorService.startMachine(startBO.getType(), startBO.getMachineId(), startBO.getBedId(), patientId, request.getHeader("token"));
 //        } catch (ConnectException c) {
 //            c.printStackTrace();
 //            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -163,16 +163,12 @@ public class MonitorController extends BaseController {
         List<MonitorRule> monitorRule = super.monitorRuleService.getMonitorRule(departmentId);
         return ResultUtil.returnSuccess(monitorRule);
     }
-//    @Autowired
-//    RecordTemperature recordTemperature;
-//    @RequestMapping(value = "/test", method = RequestMethod.GET)
-//    public CommonResult test() {
-//        /********************** 参数初始化 **********************/
-//        TemperatureHistory temperatureHistory = new TemperatureHistory();
-//
-//        recordTemperature.setHistory()
-//        return ResultUtil.returnSuccess(list);
-//    }
 
+    @ApiOperation("viva视频")
+    @RequestMapping(value = "/viva", method = RequestMethod.POST)
+    public CommonResult useViva(@RequestHeader(name = "token") String token, @RequestParam(value = "caseNum") String caseNum) {
+        String url = monitorService.redirectVivaUrl(token, caseNum);
+        return ResultUtil.returnSuccess(url);
+    }
 
 }

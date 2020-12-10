@@ -38,7 +38,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -172,5 +171,51 @@ public final class NetUtils {
         return doPost(url, JSON.toJSONString(data));
     }
 
+    public static String doVcPost(String url, String params) {
+
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(url);// 创建httpPost
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-Type", "application/json");
+        httpPost.setHeader("X-ApiKey", "02a3334e4a711277daad1c42623a50b6");
+        httpPost.setHeader("X-ApiSecret", "0768f3ad54fa444fa223f3099e6ded2e");
+        httpPost.setHeader("X-AccountCode", "vivalnk");
+        String charSet = "UTF-8";
+        StringEntity entity = new StringEntity(params, charSet);
+        httpPost.setEntity(entity);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(5000).setConnectionRequestTimeout(1000)
+                .setSocketTimeout(5000).build();
+        httpPost.setConfig(requestConfig);
+        CloseableHttpResponse response = null;
+
+        try {
+            response = httpclient.execute(httpPost);
+            StatusLine status = response.getStatusLine();
+            int state = status.getStatusCode();
+            if (state == HttpStatus.SC_OK) {
+                HttpEntity responseEntity = response.getEntity();
+                String jsonString = EntityUtils.toString(responseEntity);
+                return jsonString;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "500";
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                httpclient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "500";
+    }
 
 }

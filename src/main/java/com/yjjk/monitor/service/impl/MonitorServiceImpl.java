@@ -20,6 +20,7 @@ import com.yjjk.monitor.constant.MonitorConstant;
 import com.yjjk.monitor.constant.MonitorEnum;
 import com.yjjk.monitor.constant.MonitorRuleEnum;
 import com.yjjk.monitor.constant.RecordBaseEnum;
+import com.yjjk.monitor.constant.VivaConstant;
 import com.yjjk.monitor.entity.SleepingState;
 import com.yjjk.monitor.entity.VO.monitor.MachinesInfoVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
@@ -52,10 +53,10 @@ import com.yjjk.monitor.entity.pojo.ZsSleepingBeltInfo;
 import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
 import com.yjjk.monitor.entity.transaction.BackgroundResult;
 import com.yjjk.monitor.entity.transaction.BackgroundSend;
-import com.yjjk.monitor.mapper.ZsMachineInfoMapper;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.EcgService;
 import com.yjjk.monitor.service.MachineService;
+import com.yjjk.monitor.service.ManagerService;
 import com.yjjk.monitor.service.MonitorService;
 import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.MonitorUtils;
@@ -81,6 +82,20 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
 
     @Autowired
     MachineService machineService;
+    @Autowired
+    ManagerService managerService;
+
+    @Override
+    public String redirectVivaUrl(String token, String caseNum) {
+        ManagerInfo managerInfo = managerInfoMapper.selectByToken(token);
+        String[] param = VivaConstant.map.get(managerInfo.getId());
+        if (param == null || param.length == 0 || DateUtil.getCurrentTimeLong() - Long.valueOf(param[1]) > 6 * 24 * 60 * 60 * 1000) {
+            managerService.loginViva(token);
+            param = VivaConstant.map.get(managerInfo.getId());
+        }
+        String format = String.format(VivaConstant.vivaRequestUrlFormat, param[0], caseNum);
+        return format;
+    }
 
     @Override
     public Boolean isReady(Integer type, Integer recordId) {

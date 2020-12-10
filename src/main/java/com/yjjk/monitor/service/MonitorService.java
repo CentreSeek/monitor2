@@ -28,6 +28,7 @@ import java.util.List;
 @Service
 public interface MonitorService {
 
+    String redirectVivaUrl(String token,String caseNum);
     /**
      * 是否为预热中的状态
      * @param type
