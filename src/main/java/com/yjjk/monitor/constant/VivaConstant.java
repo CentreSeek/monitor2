@@ -11,7 +11,7 @@ import java.util.Map;
  **/
 public class VivaConstant {
     public static final String ssoRequestUrl = "https://api.vsee.me/api_v3/users/sso.json";
-    public static final String vivaRequestUrlFormat = "https://vivalnk.vsee.me/auth/sso_token=%s&next=/providers/patient/%s";
+    public static final String vivaRequestUrlFormat = "https://vivalnk.vsee.me/auth?sso_token=%s&next=/providers/patient/%s";
     public static final Map<Integer, String[]> map = new HashMap();
 
 }

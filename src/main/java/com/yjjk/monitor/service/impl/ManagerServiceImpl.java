@@ -38,7 +38,8 @@ public class ManagerServiceImpl extends BaseService implements ManagerService {
         ManagerInfo managerInfo = super.managerInfoMapper.selectByToken(token);
         Integer managerId = managerInfo.getId();
         Request r = new Request();
-        r.setCode(managerInfo.getAccount()).setFirst_name(managerInfo.getName()).setLast_name(managerInfo.getName()).setType(400);
+        r.setCode(managerInfo.getAccount());
+        r.setFirst_name(managerInfo.getName()).setType(400);
         String s = NetUtils.doVcPost(VivaConstant.ssoRequestUrl, JSON.toJSONString(r));
         Response response = JSON.parseObject(s, Response.class);
         VivaConstant.map.put(managerId, new String[]{response.getData().getToken().getToken(), DateUtil.getCurrentTimeLong().toString()});
@@ -73,11 +74,6 @@ public class ManagerServiceImpl extends BaseService implements ManagerService {
     @Override
     public boolean login(String password, String md5) {
         return PasswordUtils.verify(password, md5);
-    }
-
-    public static void main(String[] args) {
-        boolean verify = PasswordUtils.verify("123456", "d071D7009e01d7ce10eF94B989f73136703e3E39F23Ac746");
-        System.out.println(verify);
     }
 
     @Override
