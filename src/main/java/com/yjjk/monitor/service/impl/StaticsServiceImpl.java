@@ -63,6 +63,7 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
         start += " 00:00:00";
         end = DateUtil.modifyDateTime(end + " 00:00:00", Calendar.DATE, 1);
         List<HospitalDepartment> hospitalDepartments = super.hospitalDepartmentMapper.selectDepartments();
+
         Map<String, Integer> map = new LinkedHashMap<>();
         for (HospitalDepartment hospitalDepartment : hospitalDepartments) {
             map.put(hospitalDepartment.getName(), 0);

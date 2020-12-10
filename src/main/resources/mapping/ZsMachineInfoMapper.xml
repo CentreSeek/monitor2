@@ -454,25 +454,22 @@
     </update>
 
     <select id="getUsingMachinesCount" parameterType="java.util.Map" resultType="java.lang.Integer">
-        SELECT
-        count(*)
+        select
+        COUNT(*)
         FROM
-        record_base rb
-        LEFT JOIN record_ecg re ON re.`base_id` = rb.`id`
-        LEFT JOIN zs_machine_info zmi ON re.`machine_id` = zmi.`machine_id`
-        left join hospital_bed hb on rb.bed_id = hb.bed_id
+        hospital_bed hb
+        LEFT JOIN hospital_room hr ON hb.room_id = hr.room_id
+        LEFT JOIN hospital_department hd ON hr.department_id = hd.department_id
+        LEFT JOIN record_base rb ON hb.`bed_id` = rb.`bed_id`
         <where>
-            rb.status = 0 and rb.usage_status = 0
-            and re.status = 0 and re.record_status = 0
-            and zmi.status = 0
-            and zmi.usage_state in (2)
+            rb.status = 0 and hb.status = 0 and hr.status = 0 and hd.status = 0
+            and rb.usage_status = 0
             <if test="departmentId != null">
-                and zmi.department_id = #{departmentId, jdbcType=INTEGER}
+                and hd.department_id = #{departmentId, jdbcType=INTEGER}
             </if>
             <if test="roomId != null">
                 and hb.room_id = #{roomId, jdbcType=INTEGER}
             </if>
-            and zmi.status = 0
         </where>
     </select>
 </mapper>

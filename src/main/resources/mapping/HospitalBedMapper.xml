@@ -16,7 +16,9 @@
         left join hospital_bed hb on hb.room_id = hr.room_id
         <set>
             hr.department_id = 0,
-            hb.room_id = 0
+            hb.room_id = 0,
+            hr.status = 1,
+            hb.status = 1
         </set>
         <where>
             <if test="roomId != null">
