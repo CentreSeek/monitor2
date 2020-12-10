@@ -167,8 +167,7 @@ public class HospitalController extends BaseController {
     @Transactional(rollbackFor = Exception.class)
     public CommonResult addRoom(@ApiParam(value = "房间信息：") @RequestBody AddRoomBO addRoomBO) {
 //        department = super.hospitalService.deleteHospital(department);
-        addRoomBO.getRoom();
-        addRoomBO.setDepartmentId(addRoomBO.getDepartmentId());
+        addRoomBO.getRoom().setDepartmentId(addRoomBO.getDepartmentId());
         String beds = super.hospitalService.checkBedsName(addRoomBO.getRoom());
         if (beds != null) {
             return ResultUtil.returnError("374", beds);

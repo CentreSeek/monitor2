@@ -2,10 +2,10 @@ server:
   port: 8080
   servlet:
     context-path: /yjjk
-  ssl:
-    key-store: classpath:tonticn.cn.jks
-    key-store-password: pgu6w992l4evgt2
-    keyStoreType: JKS
+#  ssl:
+#    key-store: classpath:tonticn.cn.jks
+#    key-store-password: pgu6w992l4evgt2
+#    keyStoreType: JKS
 
 spring:
   datasource:
