@@ -182,8 +182,9 @@ public class HospitalController extends BaseController {
     @ApiOperation("page床位管理：新增科室")
     @RequestMapping(value = {"/department"}, method = {RequestMethod.POST})
     @Transactional(rollbackFor = Exception.class)
-    public CommonResult addDepartment(@ApiParam(value = "name", required = true) @RequestParam(value = "name") String name) {
-        boolean b = hospitalService.addDepartment(name);
+    public CommonResult addDepartment(@ApiParam(value = "name", required = true) @RequestParam(value = "name") String name,
+                                      @RequestParam(value = "managerId") Integer managerId) {
+        boolean b = hospitalService.addDepartment(name,managerId);
         if (!b) {
             return ResultUtil.returnError(ErrorCodeEnum.HOSPITAL_DEPARTMENT_NAME);
         }

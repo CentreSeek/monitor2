@@ -19,4 +19,12 @@ public interface MonitorRuleMapper extends MyMapper<MonitorRule> {
 
     int setRule(MonitorRule monitorRule);
 
+    /**
+     * 新增科室插入初始规则
+     *
+     * @param departmentId
+     * @param managerId
+     * @return
+     */
+    int insertRules(Integer departmentId, Integer managerId);
 }

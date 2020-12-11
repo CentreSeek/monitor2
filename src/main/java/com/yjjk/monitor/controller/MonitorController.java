@@ -73,16 +73,16 @@ public class MonitorController extends BaseController {
         }
         return super.monitorService.startMachine(startBO.getType(), startBO.getMachineId(), startBO.getBedId(), patientId, request.getHeader("token"));
 //        } catch (ConnectException c) {
-//            c.printStackTrace();
-//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//            logger.error("业务异常信息：[{}]", c.getMessage(), c);
-//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//            logger.error("业务异常信息：[{}]", e.getMessage(), e);
-//            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-//        }
+////            c.printStackTrace();
+////            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+////            logger.error("业务异常信息：[{}]", c.getMessage(), c);
+////            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+////        } catch (Exception e) {
+////            e.printStackTrace();
+////            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+////            logger.error("业务异常信息：[{}]", e.getMessage(), e);
+////            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
+////        }
     }
 
 

@@ -79,7 +79,7 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
     }
 
     @Override
-    public boolean addDepartment(String name) {
+    public boolean addDepartment(String name, Integer managerId) {
         Integer count = hospitalDepartmentMapper.checkDepartmentName(name);
         if (count != 0) {
             return false;
@@ -87,6 +87,7 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
         HospitalDepartment pojo = new HospitalDepartment();
         pojo.setName(name);
         hospitalDepartmentMapper.insertSelective(pojo);
+        monitorRuleMapper.insertRules(pojo.getDepartmentId(), managerId);
         return true;
     }
 

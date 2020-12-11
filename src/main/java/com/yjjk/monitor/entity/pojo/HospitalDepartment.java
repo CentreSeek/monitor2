@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.List;
@@ -17,6 +18,7 @@ public class HospitalDepartment {
      */
     @Id
     @Column(name = "department_id")
+    @GeneratedValue(generator = "JDBC")
     private Integer departmentId;
 
     /**

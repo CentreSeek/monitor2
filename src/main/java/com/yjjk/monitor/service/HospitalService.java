@@ -33,7 +33,7 @@ public interface HospitalService {
 
     boolean updateDepartment(Integer departmentId, String name);
 
-    boolean addDepartment(String name);
+    boolean addDepartment(String name, Integer managerId);
 
     /**
      * 能否进操作
@@ -44,6 +44,7 @@ public interface HospitalService {
     boolean canDeleteHospital(Integer departmentId);
 
     boolean canDeleteRoom(Integer roomId);
+
     boolean canDeleteRoom(Room room);
 
     /**
