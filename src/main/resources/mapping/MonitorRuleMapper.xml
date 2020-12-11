@@ -87,7 +87,7 @@
          high_alert,
          manager_id)
         values (#{departmentId,jdbcType=INTEGER},
-                0, 37.0, 33.9, 37.9, 0, 34.0, 37.0,
+                0, 37.0, 34.9, 37.9, 0, 35.0, 37.0,
                 #{managerId,jdbcType=INTEGER});
         insert into monitor_rule
         (department_id,
