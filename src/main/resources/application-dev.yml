@@ -11,8 +11,8 @@ spring:
   datasource:
     username: yjjk
     password: YJjk_2018
-    url: jdbc:mysql://192.168.31.84:3306/monitor2?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
-#    url: jdbc:mysql://192.168.31.229:3306/monitor2?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+#    url: jdbc:mysql://192.168.31.84:3306/monitor2?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    url: jdbc:mysql://192.168.31.229:3306/monitor2?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
     #    url: jdbc:mysql://192.168.31.185:3306/monitor2?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
   #  jackson:
@@ -59,15 +59,15 @@ web:
   upload-path: E:\YJJKProject\UploadImg
 
 machine:
-  address: http://192.168.31.185:8084
-#  address: http://192.168.31.229:8084
+#  address: http://192.168.31.185:8084
+  address: http://192.168.31.229:8084
   url: /web/getChargeInfo
   repeater: /web/getRepeaterChargeInfo
 
 connect:
   # Cassia
-  address: http://192.168.31.185:8084
-#  address: http://192.168.31.229:8084
+#  address: http://192.168.31.185:8084
+  address: http://192.168.31.229:8084
   url: /web/isCassiaConnectNotice
   start: /web/enableNotice
   machine: /web/getCassiaOnlineList
