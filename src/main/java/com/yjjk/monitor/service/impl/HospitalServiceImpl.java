@@ -101,7 +101,7 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
                 iterator.remove();
             }
         }
-        if (list.size() > 0) {
+        if (list.size() <= 1 ) {
             return false;
         }
         return true;
