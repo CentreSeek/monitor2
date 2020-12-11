@@ -140,10 +140,12 @@
         ON hr.`department_id` = hd.`department_id`
         WHERE record.status = 0
         and rb.status = 0
-        and hb.status = 0
-        and hr.status = 0
-        and hd.status = 0
-        and hd.department_id <![CDATA[<>]]> 0
+        # and hb.status = 0
+        # and hr.status = 0
+        <if test="departmentId == null">
+            and hd.status = 0
+            and hd.department_id <![CDATA[<>]]> 0
+        </if>
         <if test="departmentId != null">
             and hd.department_id = #{departmentId,jdbcType=INTEGER}
         </if>
