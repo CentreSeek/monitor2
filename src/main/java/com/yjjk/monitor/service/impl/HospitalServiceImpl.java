@@ -27,6 +27,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -92,13 +93,15 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
     }
 
     @Override
-    public boolean getDepartmentCount(Integer departmentId) {
-        Example example = new Example(HospitalDepartment.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("status", CommonConstant.STATUS_0);
-        criteria.andNotEqualTo("departmentId", 0);
-        List<HospitalDepartment> hd = hospitalDepartmentMapper.selectByExample(example);
-        if (hd.size() > 0) {
+    public boolean getDepartmentCount() {
+        List<HospitalDepartment> list = super.hospitalDepartmentMapper.selectDetail(null);
+        Iterator<HospitalDepartment> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getDepartmentId() == 0) {
+                iterator.remove();
+            }
+        }
+        if (list.size() > 0) {
             return false;
         }
         return true;

@@ -218,7 +218,7 @@ public class HospitalController extends BaseController {
     @RequestMapping(value = {"/department"}, method = {RequestMethod.DELETE})
     @Transactional(rollbackFor = Exception.class)
     public CommonResult deleteDepartment(@ApiParam(value = "departmentId", required = true) @RequestParam(value = "departmentId") Integer departmentId) {
-        boolean departmentCount = hospitalService.getDepartmentCount(departmentId);
+        boolean departmentCount = hospitalService.getDepartmentCount();
         if (!departmentCount){
             return ResultUtil.returnError(ErrorCodeEnum.HOSPITAL_CANNOT_DELETE_DEPARTMENT_AT_LEAST_ONE);
         }
