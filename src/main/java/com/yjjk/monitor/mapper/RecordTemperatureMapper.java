@@ -17,9 +17,10 @@ public interface RecordTemperatureMapper extends MyMapper<RecordTemperature> {
      * @param departmentId
      * @param start
      * @param end
+     * @param getDeleteDepartment
      * @return
      */
-    List<StaticsRecordVO> getRecordsPeriod(Integer departmentId, String start, String end);
+    List<StaticsRecordVO> getRecordsPeriod(Integer departmentId, String start, String end,String getDeleteDepartment);
     /**
      * 获取某设备的数据
      * @param machineId

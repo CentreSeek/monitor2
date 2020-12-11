@@ -146,6 +146,8 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
         zsMachineInfoMapper.unbind(departmentId, null);
         // 解绑路由
         zsRepeaterInfoMapper.unbind(departmentId, null);
+        // 删除管理员
+        managerInfoMapper.unbind(departmentId);
         int status = CommonConstant.STATUS_0;
         List<HospitalRoom> rooms = department.getRooms();
         if (rooms == null) {

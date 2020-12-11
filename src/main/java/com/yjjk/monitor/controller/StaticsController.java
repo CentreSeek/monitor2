@@ -44,7 +44,7 @@ public class StaticsController extends BaseController {
 
     @ApiOperation("使用设备数量")
     @RequestMapping(value = "/machine", method = RequestMethod.GET)
-    public CommonResult<String[][]> useMachines(@ApiParam(value = "科室id") @RequestParam(value = "departmentId", required = false) Integer departmentId,
+    public CommonResult<String[][]> useMachines(@ApiParam(value = "科室id") @RequestParam(value = "departmentId", required = true) Integer departmentId,
                                                 @ApiParam(value = "起始日期", example = "2020-08-05", required = true) @RequestParam(value = "start") String start,
                                                 @ApiParam(value = "终止日期", example = "2020-08-06", required = true) @RequestParam(value = "end") String end,
                                                 @NotNull @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应", required = true) @RequestParam(value = "type") Integer type) {
@@ -74,7 +74,7 @@ public class StaticsController extends BaseController {
 
     @ApiOperation("最近30天不同监测时长分布")
     @RequestMapping(value = "/monitor", method = RequestMethod.GET)
-    public CommonResult<String[][]> monitorPeriods(@ApiParam(value = "科室id") @RequestParam(value = "departmentId", required = false) Integer departmentId,
+    public CommonResult<String[][]> monitorPeriods(@ApiParam(value = "科室id") @RequestParam(value = "departmentId", required = true) Integer departmentId,
                                                    @NotNull @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应", required = true) @RequestParam(value = "type") Integer type) {
         Map<String, Integer> map = super.staticsService.monitorPeriods(departmentId, type);
         return ResultUtil.returnSuccess(DataUtils.map2Arr(map));

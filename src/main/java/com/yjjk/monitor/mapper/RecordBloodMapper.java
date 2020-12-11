@@ -15,19 +15,24 @@ import java.util.List;
 public interface RecordBloodMapper extends MyMapper<RecordBlood> {
     /**
      * 统计数据
+     *
      * @param departmentId
      * @param start
      * @param end
+     * @param getDeleteDepartment
      * @return
      */
-    List<StaticsRecordVO> getRecordsPeriod(Integer departmentId, String start, String end);
+    List<StaticsRecordVO> getRecordsPeriod(Integer departmentId, String start, String end, String getDeleteDepartment);
+
     /**
      * 获取导出records
+     *
      * @param departmentId
      * @param date
      * @return
      */
-    List<HistoryExportBloodVO> getExportList(Integer departmentId, String date,Integer recordId);
+    List<HistoryExportBloodVO> getExportList(Integer departmentId, String date, Integer recordId);
+
     /**
      * 获取某设备的数据
      *
@@ -38,6 +43,7 @@ public interface RecordBloodMapper extends MyMapper<RecordBlood> {
 
     /**
      * 获取血氧数据
+     *
      * @param machineId
      * @param recordId
      * @return
@@ -46,6 +52,7 @@ public interface RecordBloodMapper extends MyMapper<RecordBlood> {
 
     /**
      * 获取心率数据
+     *
      * @param machineId
      * @param recordId
      * @return
@@ -55,6 +62,7 @@ public interface RecordBloodMapper extends MyMapper<RecordBlood> {
 
     /**
      * records-体温历史记录
+     *
      * @param getRecordsBO
      * @return
      */

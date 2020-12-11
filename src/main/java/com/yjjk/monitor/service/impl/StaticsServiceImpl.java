@@ -40,16 +40,16 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
         Map<String, Integer> map = cutDate(start, end);
         List<StaticsRecordVO> recordsPeriod = new ArrayList<>();
         if (type.equals(MachineEnum.TEMPERATURE.getType())) {
-            recordsPeriod = super.recordTemperatureMapper.getRecordsPeriod(departmentId, start, end);
+            recordsPeriod = super.recordTemperatureMapper.getRecordsPeriod(departmentId, start, end, "get");
         }
         if (type.equals(MachineEnum.ECG.getType())) {
-            recordsPeriod = super.recordEcgMapper.getRecordsPeriod(departmentId, start, end);
+            recordsPeriod = super.recordEcgMapper.getRecordsPeriod(departmentId, start, end, "get");
         }
         if (type.equals(MachineEnum.BLOOD.getType())) {
-            recordsPeriod = super.recordBloodMapper.getRecordsPeriod(departmentId, start, end);
+            recordsPeriod = super.recordBloodMapper.getRecordsPeriod(departmentId, start, end, "get");
         }
         if (type.equals(MachineEnum.SLEEPING.getType())) {
-            recordsPeriod = super.recordSleepingMapper.getRecordsPeriod(departmentId, start, end);
+            recordsPeriod = super.recordSleepingMapper.getRecordsPeriod(departmentId, start, end, "get");
         }
         for (StaticsRecordVO staticsRecordVO : recordsPeriod) {
             String tempDate = parseDate(staticsRecordVO.getStartTime());
@@ -70,16 +70,16 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
         }
         List<StaticsRecordVO> recordsPeriod = new ArrayList<>();
         if (type.equals(MachineEnum.TEMPERATURE.getType())) {
-            recordsPeriod = super.recordTemperatureMapper.getRecordsPeriod(null, start, end);
+            recordsPeriod = super.recordTemperatureMapper.getRecordsPeriod(null, start, end, null);
         }
         if (type.equals(MachineEnum.ECG.getType())) {
-            recordsPeriod = super.recordEcgMapper.getRecordsPeriod(null, start, end);
+            recordsPeriod = super.recordEcgMapper.getRecordsPeriod(null, start, end, null);
         }
         if (type.equals(MachineEnum.BLOOD.getType())) {
-            recordsPeriod = super.recordBloodMapper.getRecordsPeriod(null, start, end);
+            recordsPeriod = super.recordBloodMapper.getRecordsPeriod(null, start, end, null);
         }
         if (type.equals(MachineEnum.SLEEPING.getType())) {
-            recordsPeriod = super.recordSleepingMapper.getRecordsPeriod(null, start, end);
+            recordsPeriod = super.recordSleepingMapper.getRecordsPeriod(null, start, end, null);
         }
         for (StaticsRecordVO staticsRecordVO : recordsPeriod) {
             String departmentName = staticsRecordVO.getDepartmentName();
@@ -96,16 +96,16 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
         Map<String, Integer> map = setMonitorPeriods();
         List<StaticsRecordVO> recordsPeriod = new ArrayList<>();
         if (type.equals(MachineEnum.TEMPERATURE.getType())) {
-            recordsPeriod = super.recordTemperatureMapper.getRecordsPeriod(departmentId, start, end);
+            recordsPeriod = super.recordTemperatureMapper.getRecordsPeriod(departmentId, start, end, "get");
         }
         if (type.equals(MachineEnum.ECG.getType())) {
-            recordsPeriod = super.recordEcgMapper.getRecordsPeriod(departmentId, start, end);
+            recordsPeriod = super.recordEcgMapper.getRecordsPeriod(departmentId, start, end, "get");
         }
         if (type.equals(MachineEnum.BLOOD.getType())) {
-            recordsPeriod = super.recordBloodMapper.getRecordsPeriod(departmentId, start, end);
+            recordsPeriod = super.recordBloodMapper.getRecordsPeriod(departmentId, start, end, "get");
         }
         if (type.equals(MachineEnum.SLEEPING.getType())) {
-            recordsPeriod = super.recordSleepingMapper.getRecordsPeriod(departmentId, start, end);
+            recordsPeriod = super.recordSleepingMapper.getRecordsPeriod(departmentId, start, end, "get");
         }
         for (StaticsRecordVO staticsRecordVO : recordsPeriod) {
             if (StringUtils.isNullorEmpty(staticsRecordVO.getEndTime())) {
@@ -168,5 +168,4 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
         map.put(">25天", 0);
         return map;
     }
-
 }

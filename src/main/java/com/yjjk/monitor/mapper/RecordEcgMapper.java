@@ -3,15 +3,12 @@ package com.yjjk.monitor.mapper;
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
 import com.yjjk.monitor.entity.VO.StaticsRecordVO;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
-import com.yjjk.monitor.entity.VO.monitor.MonitorRespiratoryRateVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorHeartRateVO;
+import com.yjjk.monitor.entity.VO.monitor.MonitorRespiratoryRateVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportEcgVO;
-import com.yjjk.monitor.entity.export.history.HistoryExportSleepingVO;
 import com.yjjk.monitor.entity.history.EcgHistoryData;
-import com.yjjk.monitor.entity.pojo.ZsHealthInfo;
-import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
-import com.yjjk.monitor.my.mapper.MyMapper;
 import com.yjjk.monitor.entity.pojo.RecordEcg;
+import com.yjjk.monitor.my.mapper.MyMapper;
 
 import java.util.List;
 
@@ -19,21 +16,27 @@ public interface RecordEcgMapper extends MyMapper<RecordEcg> {
 
     /**
      * 统计数据
+     *
      * @param departmentId
      * @param start
      * @param end
+     * @param getDeleteDepartment
      * @return
      */
-    List<StaticsRecordVO> getRecordsPeriod(Integer departmentId, String start, String end);
+    List<StaticsRecordVO> getRecordsPeriod(Integer departmentId, String start, String end, String getDeleteDepartment);
+
     /**
      * 获取导出records
+     *
      * @param departmentId
      * @param date
      * @return
      */
-    List<HistoryExportEcgVO> getExportList(Integer departmentId, String date,Integer recordId);
+    List<HistoryExportEcgVO> getExportList(Integer departmentId, String date, Integer recordId);
+
     /**
      * 获取某设备的数据
+     *
      * @param machineId
      * @return
      */
@@ -41,6 +44,7 @@ public interface RecordEcgMapper extends MyMapper<RecordEcg> {
 
     /**
      * 获取心率数据
+     *
      * @param machineId
      * @param recordId
      * @return
@@ -49,6 +53,7 @@ public interface RecordEcgMapper extends MyMapper<RecordEcg> {
 
     /**
      * 获取呼吸率数据
+     *
      * @param machineId
      * @param recordId
      * @return
@@ -58,6 +63,7 @@ public interface RecordEcgMapper extends MyMapper<RecordEcg> {
 
     /**
      * records-体温历史记录
+     *
      * @param getRecordsBO
      * @return
      */

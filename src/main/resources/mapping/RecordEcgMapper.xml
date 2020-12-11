@@ -172,7 +172,7 @@
         and rb.status = 0
         # and hb.status = 0
         # and hr.status = 0
-        <if test="departmentId == null">
+        <if test="getDeleteDepartment == null">
             and hd.status = 0
             and hd.department_id <![CDATA[<>]]> 0
         </if>
