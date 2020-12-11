@@ -152,6 +152,7 @@ public class MonitorController extends BaseController {
     @RequestMapping(value = "/setRule", method = RequestMethod.POST)
 //    @PostMapping("/setRule")
 //    @ResponseBody
+
     public CommonResult setMonitorRule(@RequestBody MonitorRuleBOData data, HttpServletRequest request) {
         super.monitorRuleService.setMonitorRule(data.getList(), request.getHeader("token"));
         return ResultUtil.returnSuccess("");

@@ -92,6 +92,19 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
     }
 
     @Override
+    public boolean getDepartmentCount(Integer departmentId) {
+        Example example = new Example(HospitalDepartment.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("status", CommonConstant.STATUS_0);
+        criteria.andNotEqualTo("departmentId", 0);
+        List<HospitalDepartment> hd = hospitalDepartmentMapper.selectByExample(example);
+        if (hd.size() > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public boolean canDeleteHospital(Integer departmentId) {
         boolean canDelete = true;
         Integer usingMachinesCount = super.zsMachineInfoMapper.getUsingMachinesCount(departmentId, null);

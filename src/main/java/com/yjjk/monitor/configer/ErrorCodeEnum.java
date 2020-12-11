@@ -57,12 +57,14 @@ public enum ErrorCodeEnum {
     ERROR_MACHINE_STOP("364", "停用失败，设备类型错误"),
     MONITOR_CANNOT_CHANGE_PATIENT("365", "无法更换病人"),
     /********** HospitalController **********/
+    /********** HospitalController **********/
     HOSPITAL_CANNOT_UPDATE_HOSPITAL_INFORMATION("370", "无法进行删除操作，请确认该科室已停用全部设备"),
     HOSPITAL_DEPARTMENT_NAME("371", "科室名称重复"),
     HOSPITAL_CANNOT_UPDATE_ROOM_INFORMATION("372", "无法进行删除操作，请确认该房间已停用全部设备"),
     HOSPITAL_ROOM_NAME("373", "房间名称重复"),
     HOSPITAL_BED_NAME("374", "床位名称重复,同科室床位名称不可重复"),
     HOSPITAL_CANNOT_DELETE_BED_INFORMATION("375", "无法进行删除操作，请确认该房间内的预删除的床位已停用设备"),
+    HOSPITAL_CANNOT_DELETE_DEPARTMENT_AT_LEAST_ONE("376", "删除失败,至少保留一个科室"),
     /********** HistoryController **********/
     CANNOT_SELECT_ECG_PICTURE("380", "请确认查询范围为监测记录期间"),
     CANNOT_FIND_ECG_PICTURE("381", "未找到心电记录文件"),

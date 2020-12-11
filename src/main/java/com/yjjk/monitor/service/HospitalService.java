@@ -41,6 +41,8 @@ public interface HospitalService {
      * @param departmentId
      * @return
      */
+    boolean getDepartmentCount(Integer departmentId);
+
     boolean canDeleteHospital(Integer departmentId);
 
     boolean canDeleteRoom(Integer roomId);
