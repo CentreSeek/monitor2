@@ -298,8 +298,8 @@ public class EcgServiceImpl extends BaseService implements EcgService {
     public BackgroundResult connectEcgMachine(Integer machineId, Integer bedId, String connectionType) throws Exception {
         // 连接心电设备
         BackgroundSend backgroundSend = new BackgroundSend();
-        Integer repeaterId = super.zsRepeaterInfoMapper.selectByBedId(bedId);
-        repeaterId = 1;
+//        Integer repeaterId = super.zsRepeaterInfoMapper.selectByBedId(bedId);
+        Integer repeaterId = 1;
         backgroundSend.setActionId(String.valueOf(repeaterId));
         if (StringUtils.isNullorEmpty(repeaterId)) {
             throw new ConnectException();
