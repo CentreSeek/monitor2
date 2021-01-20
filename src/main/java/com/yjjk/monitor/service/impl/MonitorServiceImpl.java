@@ -336,8 +336,8 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         monitorVO.setMonitorVOList(monitorVOList);
         return monitorVO;
     }
-
-    List<MonitorRule> getPatientRule(Integer patientId) {
+    @Override
+    public List<MonitorRule> getPatientRule(Integer patientId) {
         String patientRule = super.monitorRuleMapper.getPatientRule(patientId);
         List<MonitorRule> rules = JSON.parseArray(patientRule, MonitorRule.class);
         return rules;

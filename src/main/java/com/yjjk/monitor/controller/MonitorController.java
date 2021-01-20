@@ -158,19 +158,25 @@ public class MonitorController extends BaseController {
         return ResultUtil.returnSuccess("设置成功");
     }
 
-    @ApiOperation("设置病人监测规则（需传输完整规则）")
-    @RequestMapping(value = "/patientRule", method = RequestMethod.POST)
-    public CommonResult setPatientRule(@RequestBody MonitorPatientRuleBOData data) {
-        super.monitorRuleService.setPatientRule(data);
-        return ResultUtil.returnSuccess("设置成功");
-    }
-
     @ApiOperation("获取默认监测规则")
     @RequestMapping(value = "/rule", method = RequestMethod.GET)
     public CommonResult<List<MonitorRule>> getRule(@ApiParam(value = "科室id，值为-1获取默认规则", required = true) @RequestParam(value = "departmentId") Integer departmentId) {
         List<MonitorRule> monitorRule = super.monitorRuleService.getMonitorRule(departmentId);
         return ResultUtil.returnSuccess(monitorRule);
     }
+    @ApiOperation("设置病人监测规则（需传输完整规则）")
+    @RequestMapping(value = "/patientRule", method = RequestMethod.POST)
+    public CommonResult setPatientRule(@RequestBody MonitorPatientRuleBOData data) {
+        super.monitorRuleService.setPatientRule(data);
+        return ResultUtil.returnSuccess("设置成功");
+    }
+    @ApiOperation("获取病人监测规则")
+    @RequestMapping(value = "/patientRule", method = RequestMethod.GET)
+    public CommonResult<List<MonitorRule>> getPatientRule(@RequestParam(value = "patientId") Integer patientId) {
+        List<MonitorRule> rules = super.monitorService.getPatientRule(patientId);
+        return ResultUtil.returnSuccess(rules);
+    }
+
 
     @ApiOperation("viva视频")
     @RequestMapping(value = "/viva", method = RequestMethod.POST)

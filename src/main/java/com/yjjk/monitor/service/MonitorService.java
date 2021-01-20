@@ -57,7 +57,7 @@ public interface MonitorService {
      */
     MonitorVO setMonitorRule(MonitorVO monitorVO, Integer departmentId);
 
-//    List<MonitorRule> getPatientRule(Integer baseId);
+    List<MonitorRule> getPatientRule(Integer baseId);
 
 
     /**
