@@ -27,6 +27,7 @@
     <select id="getAllBaseRecords" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO">
         SELECT rb.`id` AS baseId,
+        pin.`patient_id`,
         pin.`name` AS patientName,
         pin.`case_num`,
         hb.`bed_id`,

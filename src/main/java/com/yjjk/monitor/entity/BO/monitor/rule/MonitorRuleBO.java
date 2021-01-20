@@ -1,4 +1,4 @@
-package com.yjjk.monitor.entity.BO.monitor;
+package com.yjjk.monitor.entity.BO.monitor.rule;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,13 +24,13 @@ public class MonitorRuleBO {
     @ApiModelProperty(value = "参数3")
     private Double paramThree;
 
-    @ApiModelProperty(value = "高低预警：0 开，1 关")
-    private Integer alertFlag;
-
-    @ApiModelProperty(value = "偏低预警阈值")
-    private Double lowAlert;
-
-    @ApiModelProperty(value = "偏高预警阈值")
-    private Double highAlert;
+//    @ApiModelProperty(value = "高低预警：0 开，1 关")
+//    private Integer alertFlag;
+//
+//    @ApiModelProperty(value = "偏低预警阈值")
+//    private Double lowAlert;
+//
+//    @ApiModelProperty(value = "偏高预警阈值")
+//    private Double highAlert;
 
 }

@@ -60,7 +60,7 @@ public class HospitalController extends BaseController {
      * @param departmentId
      */
     @RequestMapping(value = "/department", method = RequestMethod.GET)
-    public CommonResult selectDetail(@RequestParam(value = "departmentId", required = false) Integer departmentId,
+    public CommonResult<List<HospitalDepartment>> selectDetail(@RequestParam(value = "departmentId", required = false) Integer departmentId,
                                      @ApiParam(value = "是否需要查询  未关联  科室") @RequestParam(value = "flag", required = false, defaultValue = "false") Boolean flag) {
         /********************** 参数初始化 **********************/
         List<HospitalDepartment> list = super.hospitalService.selectDetail(departmentId);

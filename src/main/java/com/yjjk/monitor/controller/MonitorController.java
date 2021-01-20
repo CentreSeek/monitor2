@@ -12,8 +12,9 @@ package com.yjjk.monitor.controller;
 
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
-import com.yjjk.monitor.entity.BO.monitor.MonitorRuleBOData;
 import com.yjjk.monitor.entity.BO.monitor.StartBO;
+import com.yjjk.monitor.entity.BO.monitor.patientRule.MonitorPatientRuleBOData;
+import com.yjjk.monitor.entity.BO.monitor.rule.MonitorRuleBOData;
 import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
@@ -152,10 +153,16 @@ public class MonitorController extends BaseController {
     @RequestMapping(value = "/setRule", method = RequestMethod.POST)
 //    @PostMapping("/setRule")
 //    @ResponseBody
-
     public CommonResult setMonitorRule(@RequestBody MonitorRuleBOData data, HttpServletRequest request) {
         super.monitorRuleService.setMonitorRule(data.getList(), request.getHeader("token"));
-        return ResultUtil.returnSuccess("");
+        return ResultUtil.returnSuccess("设置成功");
+    }
+
+    @ApiOperation("设置病人监测规则（需传输完整规则）")
+    @RequestMapping(value = "/patientRule", method = RequestMethod.POST)
+    public CommonResult setPatientRule(@RequestBody MonitorPatientRuleBOData data) {
+        super.monitorRuleService.setPatientRule(data);
+        return ResultUtil.returnSuccess("设置成功");
     }
 
     @ApiOperation("获取默认监测规则")

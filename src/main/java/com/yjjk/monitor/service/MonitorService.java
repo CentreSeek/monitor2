@@ -15,6 +15,7 @@ import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorMachineListVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
 import com.yjjk.monitor.entity.log.ManageLog;
+import com.yjjk.monitor.entity.pojo.MonitorRule;
 import com.yjjk.monitor.entity.pojo.RecordBase;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +29,11 @@ import java.util.List;
 @Service
 public interface MonitorService {
 
-    String redirectVivaUrl(String token,String caseNum);
+    String redirectVivaUrl(String token, String caseNum);
+
     /**
      * 是否为预热中的状态
+     *
      * @param type
      * @param recordId
      * @return
@@ -53,6 +56,9 @@ public interface MonitorService {
      * @return
      */
     MonitorVO setMonitorRule(MonitorVO monitorVO, Integer departmentId);
+
+//    List<MonitorRule> getPatientRule(Integer baseId);
+
 
     /**
      * 实时监控信息
@@ -86,7 +92,7 @@ public interface MonitorService {
      */
     CommonResult stopMachine(Integer baseId, Integer type, String token) throws Exception;
 
-    CommonResult  stopTemperatureMachine(Integer recordId) throws Exception;
+    CommonResult stopTemperatureMachine(Integer recordId) throws Exception;
 
     CommonResult stopEcgMachine(Integer recordId, Integer bedId) throws Exception;
 

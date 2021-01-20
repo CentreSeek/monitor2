@@ -10,14 +10,38 @@
         <result column="param_one" property="paramOne" jdbcType="DOUBLE"/>
         <result column="param_two" property="paramTwo" jdbcType="DOUBLE"/>
         <result column="param_three" property="paramThree" jdbcType="DOUBLE"/>
-        <result column="alert_flag" property="alertFlag" jdbcType="INTEGER"/>
-        <result column="low_alert" property="lowAlert" jdbcType="DOUBLE"/>
-        <result column="high_alert" property="highAlert" jdbcType="DOUBLE"/>
+        <!--        <result column="alert_flag" property="alertFlag" jdbcType="INTEGER"/>-->
+        <!--        <result column="low_alert" property="lowAlert" jdbcType="DOUBLE"/>-->
+        <!--        <result column="high_alert" property="highAlert" jdbcType="DOUBLE"/>-->
         <result column="manager_id" property="managerId" jdbcType="INTEGER"/>
         <result column="change_time" property="changeTime" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
     </resultMap>
-
+    <select id="getPatientRule" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT
+        pti.`monitor_rule`
+        FROM
+        patient_info pti
+        <where>
+            <if test="patientId != null">
+                and pti.patient_id = #{patientId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <update id="setPatientRule" parameterType="java.util.Map">
+        update
+        patient_info
+        <set>
+            <if test="rules != null">
+                monitor_rule = #{rules,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <where>
+            <if test="patientId != null">
+                and `patient_id` = #{patientId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </update>
     <select id="getRule" parameterType="java.util.Map" resultMap="BaseResultMap">
         select
         *
@@ -28,9 +52,6 @@
             </if>
             <if test="type != null">
                 and type = #{type,jdbcType=INTEGER}
-            </if>
-            <if test="alertFlag != null">
-                and alert_flag = #{alertFlag,jdbcType=INTEGER}
             </if>
         </where>
     </select>
@@ -48,15 +69,15 @@
             <if test="paramThree != null">
                 param_three = #{paramThree,jdbcType=DECIMAL},
             </if>
-            <if test="alertFlag != null">
-                alert_flag = #{alertFlag,jdbcType=INTEGER},
-            </if>
-            <if test="lowAlert != null">
-                low_alert = #{lowAlert,jdbcType=DECIMAL},
-            </if>
-            <if test="highAlert != null">
-                high_alert = #{highAlert,jdbcType=DECIMAL},
-            </if>
+            <!--            <if test="alertFlag != null">-->
+            <!--                alert_flag = #{alertFlag,jdbcType=INTEGER},-->
+            <!--            </if>-->
+            <!--            <if test="lowAlert != null">-->
+            <!--                low_alert = #{lowAlert,jdbcType=DECIMAL},-->
+            <!--            </if>-->
+            <!--            <if test="highAlert != null">-->
+            <!--                high_alert = #{highAlert,jdbcType=DECIMAL},-->
+            <!--            </if>-->
             <if test="managerId != null">
                 manager_id = #{managerId,jdbcType=INTEGER},
             </if>
@@ -82,12 +103,12 @@
          param_one,
          param_two,
          param_three,
-         alert_flag,
-         low_alert,
-         high_alert,
+#          alert_flag,
+#          low_alert,
+#          high_alert,
          manager_id)
         values (#{departmentId,jdbcType=INTEGER},
-                0, 37.0, 34.9, 37.9, 0, 35.0, 37.0,
+                0, 37.0, 34.9, 37.9,
                 #{managerId,jdbcType=INTEGER});
         insert into monitor_rule
         (department_id,
@@ -95,12 +116,12 @@
          param_one,
          param_two,
          param_three,
-         alert_flag,
-         low_alert,
-         high_alert,
+#          alert_flag,
+#          low_alert,
+#          high_alert,
          manager_id)
         values (#{departmentId,jdbcType=INTEGER},
-                1, 100.0, 59.0, 129.0, 0, 60.0, 100.0,
+                1, 100.0, 59.0, 129.0,
                 #{managerId,jdbcType=INTEGER});
         insert into monitor_rule
         (department_id,
@@ -108,23 +129,23 @@
          param_one,
          param_two,
          param_three,
-         alert_flag,
-         low_alert,
-         high_alert,
+#          alert_flag,
+#          low_alert,
+#          high_alert,
          manager_id)
         values (#{departmentId,jdbcType=INTEGER},
-                2, 25.0, 11.0, 29.0, 0, 12.0, 25.0,
+                2, 25.0, 11.0, 29.0,
                 #{managerId,jdbcType=INTEGER});
         insert into monitor_rule
         (department_id,
          type,
          param_one,
          param_two,
-         alert_flag,
-         low_alert,
+#          alert_flag,
+#          low_alert,
          manager_id)
         values (#{departmentId,jdbcType=INTEGER},
-                3, 90.0, 80.0, 0, 90.0,
+                3, 90.0, 80.0,
                 #{managerId,jdbcType=INTEGER});
     </insert>
 </mapper>

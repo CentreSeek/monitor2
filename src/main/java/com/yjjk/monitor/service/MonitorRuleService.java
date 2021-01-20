@@ -10,7 +10,9 @@
  */
 package com.yjjk.monitor.service;
 
-import com.yjjk.monitor.entity.BO.monitor.MonitorRuleBO;
+import com.yjjk.monitor.entity.BO.monitor.patientRule.MonitorPatientRuleBO;
+import com.yjjk.monitor.entity.BO.monitor.patientRule.MonitorPatientRuleBOData;
+import com.yjjk.monitor.entity.BO.monitor.rule.MonitorRuleBO;
 import com.yjjk.monitor.entity.pojo.MonitorRule;
 
 import java.util.List;
@@ -36,4 +38,5 @@ public interface MonitorRuleService {
      * @return
      */
     boolean setMonitorRule(List<MonitorRuleBO> list,String token);
+    boolean setPatientRule(MonitorPatientRuleBOData data);
 }

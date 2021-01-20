@@ -44,20 +44,20 @@ public class MonitorRule {
     /**
      * 高低预警：0 开，1 关
      */
-    @Column(name = "alert_flag")
-    private Integer alertFlag;
+//    @Column(name = "alert_flag")
+//    private Integer alertFlag;
 
     /**
      * 偏低预警阈值
      */
-    @Column(name = "low_alert")
-    private Double lowAlert;
+//    @Column(name = "low_alert")
+//    private Double lowAlert;
 
     /**
      * 偏高预警阈值
      */
-    @Column(name = "high_alert")
-    private Double highAlert;
+//    @Column(name = "high_alert")
+//    private Double highAlert;
 
     /**
      * 修改人id

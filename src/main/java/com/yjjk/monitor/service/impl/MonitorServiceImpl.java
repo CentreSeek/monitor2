@@ -198,32 +198,39 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public MonitorVO setMonitorRule(MonitorVO monitorVO, Integer departmentId) {
-        List<MonitorRule> rule = super.monitorRuleMapper.getRule(departmentId, null, null);
+        List<MonitorRule> rules = super.monitorRuleMapper.getRule(departmentId, null);
         List<MonitorBaseVO> monitorVOList = monitorVO.getMonitorVOList();
-        MonitorRule tRule = null;
-        MonitorRule hRule = null;
-        MonitorRule rRule = null;
-        MonitorRule bRule = null;
-        for (int i = 0; i < rule.size(); i++) {
-            if (rule.get(i).getType().equals(MonitorEnum.TEMPERATURE.getType())) {
-                tRule = rule.get(i);
-                continue;
-            }
-            if (rule.get(i).getType().equals(MonitorEnum.HEART_RATE.getType())) {
-                hRule = rule.get(i);
-                continue;
-            }
-            if (rule.get(i).getType().equals(MonitorEnum.RESPIRATORY_RATE.getType())) {
-                rRule = rule.get(i);
-                continue;
-            }
-            if (rule.get(i).getType().equals(MonitorEnum.BLOOD_OXYGEN.getType())) {
-                bRule = rule.get(i);
-                continue;
-            }
-        }
-
         for (int i = 0; i < monitorVOList.size(); i++) {
+            // 获取个人规则
+            List<MonitorRule> patientRule = getPatientRule(monitorVOList.get(i).getPatientId());
+            if (!StringUtils.isNullorEmpty(patientRule)) {
+                rules = patientRule;
+            }
+            // 获取规则
+            MonitorRule tRule = null;
+            MonitorRule hRule = null;
+            MonitorRule rRule = null;
+            MonitorRule bRule = null;
+            for (int j = 0; j < rules.size(); j++) {
+                if (rules.get(j).getType().equals(MonitorEnum.TEMPERATURE.getType())) {
+                    tRule = rules.get(j);
+                    continue;
+                }
+                if (rules.get(j).getType().equals(MonitorEnum.HEART_RATE.getType())) {
+                    hRule = rules.get(j);
+                    continue;
+                }
+                if (rules.get(j).getType().equals(MonitorEnum.RESPIRATORY_RATE.getType())) {
+                    rRule = rules.get(j);
+                    continue;
+                }
+                if (rules.get(j).getType().equals(MonitorEnum.BLOOD_OXYGEN.getType())) {
+                    bRule = rules.get(j);
+                    continue;
+                }
+            }
+
+
             int errorStatus = 1;
             // 启用并且有数据
             if (tRule != null
@@ -234,11 +241,13 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 if ((temperature <= tRule.getParamTwo() && temperature > MonitorRuleEnum.TEMPERATURE_ALERT_L.getType())
                         || (temperature > tRule.getParamOne() && temperature <= tRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
+                    monitorVOList.get(i).getMonitorTemperatureVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                     if (errorStatus < 3) {
                         errorStatus = 2;
                     }
                 } else if (temperature > tRule.getParamThree() && temperature < MonitorRuleEnum.TEMPERATURE_ALERT_H.getType()) {
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_RED.getType());
+                    monitorVOList.get(i).getMonitorTemperatureVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                     errorStatus = 3;
                 } else {
                     if (temperature <= MonitorRuleEnum.TEMPERATURE_ALERT_L.getType()) {
@@ -247,11 +256,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                         monitorVOList.get(i).getMonitorTemperatureVO().setTemperature(MonitorRuleEnum.TEMPERATURE_ALERT_H.getName());
                     }
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_WHITE.getType());
-                }
-                if (tRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType())
-                        && (temperature < tRule.getLowAlert() || temperature > tRule.getHighAlert())) {
-                    monitorVOList.get(i).getMonitorTemperatureVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
-                } else {
                     monitorVOList.get(i).getMonitorTemperatureVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
                 }
             }
@@ -263,11 +267,13 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 if ((heart <= hRule.getParamTwo() && heart > MonitorRuleEnum.HEART_ALERT_L.getType())
                         || (heart > hRule.getParamOne() && heart <= hRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
+                    monitorVOList.get(i).getMonitorHeartRateVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                     if (errorStatus < 3) {
                         errorStatus = 2;
                     }
                 } else if (heart >= hRule.getParamThree() && heart < MonitorRuleEnum.HEART_ALERT_H.getType()) {
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_RED.getType());
+                    monitorVOList.get(i).getMonitorHeartRateVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                     errorStatus = 3;
                 } else {
                     if (heart <= MonitorRuleEnum.HEART_ALERT_L.getType()) {
@@ -276,11 +282,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                         monitorVOList.get(i).getMonitorHeartRateVO().setHeart(MonitorRuleEnum.HEART_ALERT_H.getName());
                     }
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_WHITE.getType());
-                }
-                if (hRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType())
-                        && (heart < hRule.getLowAlert() || heart > hRule.getHighAlert())) {
-                    monitorVOList.get(i).getMonitorHeartRateVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
-                } else {
                     monitorVOList.get(i).getMonitorHeartRateVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
                 }
             }
@@ -292,11 +293,13 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 if ((respiratoryRate <= rRule.getParamTwo() && respiratoryRate > MonitorRuleEnum.RESPIRATORY_ALERT_L.getType())
                         || (respiratoryRate > rRule.getParamOne() && respiratoryRate <= rRule.getParamThree())) {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
+                    monitorVOList.get(i).getMonitorRespiratoryRateVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                     if (errorStatus < 3) {
                         errorStatus = 2;
                     }
                 } else if (respiratoryRate >= rRule.getParamThree() && respiratoryRate < MonitorRuleEnum.RESPIRATORY_ALERT_H.getType()) {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_RED.getType());
+                    monitorVOList.get(i).getMonitorRespiratoryRateVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                     errorStatus = 3;
                 } else {
                     if (respiratoryRate <= MonitorRuleEnum.RESPIRATORY_ALERT_L.getType()) {
@@ -305,11 +308,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                         monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratory(MonitorRuleEnum.RESPIRATORY_ALERT_H.getName());
                     }
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_WHITE.getType());
-                }
-                if (rRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType())
-                        && (respiratoryRate < rRule.getLowAlert() || respiratoryRate > rRule.getHighAlert())) {
-                    monitorVOList.get(i).getMonitorRespiratoryRateVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
-                } else {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
                 }
             }
@@ -320,18 +318,16 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 Integer blood = Integer.parseInt(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen());
                 if (blood < bRule.getParamOne() && (blood >= bRule.getParamTwo())) {
                     monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
+                    monitorVOList.get(i).getMonitorBloodVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                     if (errorStatus < 3) {
                         errorStatus = 2;
                     }
                 } else if (blood < bRule.getParamTwo()) {
                     monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_RED.getType());
+                    monitorVOList.get(i).getMonitorBloodVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                     errorStatus = 3;
                 } else {
                     monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_WHITE.getType());
-                }
-                if (bRule.getAlertFlag().equals(MonitorRuleEnum.OPEN.getType()) && blood != 0 && blood < bRule.getLowAlert()) {
-                    monitorVOList.get(i).getMonitorBloodVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
-                } else {
                     monitorVOList.get(i).getMonitorBloodVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
                 }
             }
@@ -339,6 +335,12 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         }
         monitorVO.setMonitorVOList(monitorVOList);
         return monitorVO;
+    }
+
+    List<MonitorRule> getPatientRule(Integer patientId) {
+        String patientRule = super.monitorRuleMapper.getPatientRule(patientId);
+        List<MonitorRule> rules = JSON.parseArray(patientRule, MonitorRule.class);
+        return rules;
     }
 
     @Override

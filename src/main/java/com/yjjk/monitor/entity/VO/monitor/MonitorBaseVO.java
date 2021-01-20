@@ -29,6 +29,8 @@ public class MonitorBaseVO {
     /**
      * patientInfo
      */
+    @ApiModelProperty(value = "patientInfo:病人id")
+    private Integer patientId;
     @ApiModelProperty(value = "patientInfo:病人名")
     private String patientName;
     @ApiModelProperty(value = "patientInfo:病历号")
