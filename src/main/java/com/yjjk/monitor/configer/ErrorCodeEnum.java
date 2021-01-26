@@ -56,6 +56,7 @@ public enum ErrorCodeEnum {
     ERROR_CONNECT_DATA_SERVICE("363", "数据服务器连接失败"),
     ERROR_MACHINE_STOP("364", "停用失败，设备类型错误"),
     MONITOR_CANNOT_CHANGE_PATIENT("365", "无法更换病人"),
+    MONITOR_RULE_PARAM_ERROR("366", "参数错误，请输入科室或病人id"),
     /********** HospitalController **********/
     /********** HospitalController **********/
     HOSPITAL_CANNOT_UPDATE_HOSPITAL_INFORMATION("370", "无法进行删除操作，请确认该科室已停用全部设备"),

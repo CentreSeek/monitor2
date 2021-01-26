@@ -7,10 +7,8 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@ApiModel("设置规则")
+@ApiModel("设置规则：数据")
 public class MonitorRuleBO {
-    @ApiModelProperty(value = "科室id：默认规则为-1")
-    private Integer departmentId;
 
     @ApiModelProperty(value = "0：体温 1：心率 2：呼吸率 3：血氧")
     private Integer type;

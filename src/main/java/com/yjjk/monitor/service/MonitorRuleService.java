@@ -10,22 +10,21 @@
  */
 package com.yjjk.monitor.service;
 
-import com.yjjk.monitor.entity.BO.monitor.patientRule.MonitorPatientRuleBO;
-import com.yjjk.monitor.entity.BO.monitor.patientRule.MonitorPatientRuleBOData;
 import com.yjjk.monitor.entity.BO.monitor.rule.MonitorRuleBO;
 import com.yjjk.monitor.entity.pojo.MonitorRule;
 
 import java.util.List;
 
 /**
- * @Description: 体温预警规则
  * @author CentreS
+ * @Description: 体温预警规则
  * @create 2019/9/24
  */
 public interface MonitorRuleService {
 
     /**
      * 获取科室规则
+     *
      * @param departmentId
      * @return
      */
@@ -33,10 +32,12 @@ public interface MonitorRuleService {
 
     /**
      * 设置规则
+     *
      * @param list
      * @param token
      * @return
      */
-    boolean setMonitorRule(List<MonitorRuleBO> list,String token);
-    boolean setPatientRule(MonitorPatientRuleBOData data);
+    boolean setMonitorRule(List<MonitorRuleBO> list, String token,Integer departmentId);
+
+    boolean setPatientRule(List<MonitorRuleBO> list, Integer patientId);
 }

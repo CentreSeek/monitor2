@@ -13,7 +13,6 @@ package com.yjjk.monitor.controller;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.entity.BO.monitor.StartBO;
-import com.yjjk.monitor.entity.BO.monitor.patientRule.MonitorPatientRuleBOData;
 import com.yjjk.monitor.entity.BO.monitor.rule.MonitorRuleBOData;
 import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
@@ -22,6 +21,7 @@ import com.yjjk.monitor.entity.pojo.MonitorRule;
 import com.yjjk.monitor.entity.pojo.PatientInfo;
 import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.ResultUtil;
+import com.yjjk.monitor.utility.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -151,31 +151,45 @@ public class MonitorController extends BaseController {
 
     @ApiOperation("设置监测规则")
     @RequestMapping(value = "/setRule", method = RequestMethod.POST)
-//    @PostMapping("/setRule")
-//    @ResponseBody
     public CommonResult setMonitorRule(@RequestBody MonitorRuleBOData data, HttpServletRequest request) {
-        super.monitorRuleService.setMonitorRule(data.getList(), request.getHeader("token"));
-        return ResultUtil.returnSuccess("设置成功");
+        if (!StringUtils.isNullorEmpty(data.getPatientId())) {
+            super.monitorRuleService.setPatientRule(data.getList(), data.getPatientId());
+            return ResultUtil.returnSuccess("患者监控规则设置成功");
+        }
+        if (!StringUtils.isNullorEmpty(data.getDepartmentId())) {
+            super.monitorRuleService.setMonitorRule(data.getList(), request.getHeader("token"), data.getDepartmentId());
+            return ResultUtil.returnSuccess("科室监控规则设置成功");
+        }
+        return ResultUtil.returnError(ErrorCodeEnum.MONITOR_RULE_PARAM_ERROR);
     }
 
-    @ApiOperation("获取默认监测规则")
+    @ApiOperation("获取监测规则")
     @RequestMapping(value = "/rule", method = RequestMethod.GET)
-    public CommonResult<List<MonitorRule>> getRule(@ApiParam(value = "科室id，值为-1获取默认规则", required = true) @RequestParam(value = "departmentId") Integer departmentId) {
-        List<MonitorRule> monitorRule = super.monitorRuleService.getMonitorRule(departmentId);
-        return ResultUtil.returnSuccess(monitorRule);
-    }
-    @ApiOperation("设置病人监测规则（需传输完整规则）")
-    @RequestMapping(value = "/patientRule", method = RequestMethod.POST)
-    public CommonResult setPatientRule(@RequestBody MonitorPatientRuleBOData data) {
-        super.monitorRuleService.setPatientRule(data);
-        return ResultUtil.returnSuccess("设置成功");
-    }
-    @ApiOperation("获取病人监测规则")
-    @RequestMapping(value = "/patientRule", method = RequestMethod.GET)
-    public CommonResult<List<MonitorRule>> getPatientRule(@RequestParam(value = "patientId") Integer patientId) {
-        List<MonitorRule> rules = super.monitorService.getPatientRule(patientId);
+    public CommonResult<List<MonitorRule>> getRule(@ApiParam(value = "科室id，值为-1获取默认规则", required = true) @RequestParam(value = "departmentId") Integer departmentId,
+                                                   @RequestParam(value = "patientId", required = false) Integer patientId) {
+        List<MonitorRule> rules = null;
+        if (!StringUtils.isNullorEmpty(patientId)) {
+            rules = super.monitorService.getPatientRule(patientId);
+        }
+        if (StringUtils.isNullorEmpty(rules)) {
+            rules = super.monitorRuleService.getMonitorRule(departmentId);
+        }
         return ResultUtil.returnSuccess(rules);
     }
+
+//    @ApiOperation("设置病人监测规则（需传输完整规则）")
+//    @RequestMapping(value = "/patientRule", method = RequestMethod.POST)
+//    public CommonResult setPatientRule(@RequestBody MonitorPatientRuleBOData data) {
+//        super.monitorRuleService.setPatientRule(data);
+//        return ResultUtil.returnSuccess("设置成功");
+//    }
+
+//    @ApiOperation("获取病人监测规则")
+//    @RequestMapping(value = "/patientRule", method = RequestMethod.GET)
+//    public CommonResult<List<MonitorRule>> getPatientRule(@RequestParam(value = "patientId") Integer patientId) {
+//        List<MonitorRule> rules = super.monitorService.getPatientRule(patientId);
+//        return ResultUtil.returnSuccess(rules);
+//    }
 
 
     @ApiOperation("viva视频")

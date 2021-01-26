@@ -11,7 +11,6 @@
 package com.yjjk.monitor.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.yjjk.monitor.entity.BO.monitor.patientRule.MonitorPatientRuleBOData;
 import com.yjjk.monitor.entity.BO.monitor.rule.MonitorRuleBO;
 import com.yjjk.monitor.entity.pojo.ManagerInfo;
 import com.yjjk.monitor.entity.pojo.MonitorRule;
@@ -40,21 +39,22 @@ public class MonitorRuleServiceImpl extends BaseService implements MonitorRuleSe
     }
 
     @Override
-    public boolean setMonitorRule(List<MonitorRuleBO> list, String token) {
+    public boolean setMonitorRule(List<MonitorRuleBO> list, String token, Integer departmentId) {
         ManagerInfo managerInfo = super.managerInfoMapper.selectByToken(token);
         for (int i = 0; i < list.size(); i++) {
             MonitorRule monitorRule = ReflectUtils.transformToBean(list.get(i), MonitorRule.class);
             monitorRule.setManagerId(managerInfo.getId())
-                    .setChangeTime(DateUtil.getCurrentTime());
+                    .setChangeTime(DateUtil.getCurrentTime())
+                    .setDepartmentId(departmentId);
             super.monitorRuleMapper.setRule(monitorRule);
         }
         return true;
     }
 
     @Override
-    public boolean setPatientRule(MonitorPatientRuleBOData data) {
-        String s = JSON.toJSONString(data.getList());
-        super.monitorRuleMapper.setPatientRule(data.getPatientId(), s);
+    public boolean setPatientRule(List<MonitorRuleBO> list, Integer patientId) {
+        String s = JSON.toJSONString(list);
+        super.monitorRuleMapper.setPatientRule(patientId, s);
         return true;
     }
 
