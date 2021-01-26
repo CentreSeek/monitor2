@@ -155,8 +155,7 @@ public class MonitorController extends BaseController {
         if (!StringUtils.isNullorEmpty(data.getPatientId())) {
             super.monitorRuleService.setPatientRule(data.getList(), data.getPatientId());
             return ResultUtil.returnSuccess("患者监控规则设置成功");
-        }
-        if (!StringUtils.isNullorEmpty(data.getDepartmentId())) {
+        }else if (!StringUtils.isNullorEmpty(data.getDepartmentId())) {
             super.monitorRuleService.setMonitorRule(data.getList(), request.getHeader("token"), data.getDepartmentId());
             return ResultUtil.returnSuccess("科室监控规则设置成功");
         }
