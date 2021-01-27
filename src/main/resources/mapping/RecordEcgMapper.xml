@@ -68,9 +68,12 @@
         zmi.battery,
         zmi.`box_battery`,
         zhi.respiratory_rate as respiratory,
-        CONCAT(TIMESTAMPDIFF(MINUTE, re.start_time, CONCAT(CURDATE(),' ',CURTIME())) div 1440, 'D-',
-        TIMESTAMPDIFF(MINUTE, re.start_time, CONCAT(CURDATE(),' ',CURTIME())) mod 1440 div 60,'H-',TIMESTAMPDIFF(MINUTE,
-        re.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'M') as useTimes
+#         CONCAT(TIMESTAMPDIFF(MINUTE, re.start_time, CONCAT(CURDATE(),' ',CURTIME())) div 1440, 'D-',
+#         TIMESTAMPDIFF(MINUTE, re.start_time, CONCAT(CURDATE(),' ',CURTIME())) mod 1440 div 60,'H-',TIMESTAMPDIFF(MINUTE,
+#         re.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60,'M') as useTimes
+        TIMESTAMPDIFF(MINUTE, re.start_time, CONCAT(CURDATE(),' ',CURTIME())) div 1440 as timeDays,
+        TIMESTAMPDIFF(MINUTE, re.start_time, CONCAT(CURDATE(),' ',CURTIME())) mod 1440 div 60 as timeHours,
+        TIMESTAMPDIFF(MINUTE, re.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60 as timeMinutes
         FROM
         record_ecg re
         LEFT JOIN zs_machine_info zmi
