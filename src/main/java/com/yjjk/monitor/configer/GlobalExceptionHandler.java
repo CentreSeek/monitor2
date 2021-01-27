@@ -13,12 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.UnexpectedTypeException;
 import java.net.ConnectException;
 import java.text.ParseException;
 import java.util.List;
@@ -107,5 +109,16 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public CommonResult handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        logger.error(e.getMessage(), e);
+        return ResultUtil.returnError("302", e.getBindingResult().getFieldError().getDefaultMessage());
+    }
+
+    @ExceptionHandler(UnexpectedTypeException.class)
+    public CommonResult handleMethodArgumentNotValidException(UnexpectedTypeException e) {
+        logger.error(e.getMessage(), e);
+        return ResultUtil.returnError("302", e.getMessage());
+    }
 
 }

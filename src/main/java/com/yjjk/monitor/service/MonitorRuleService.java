@@ -11,6 +11,7 @@
 package com.yjjk.monitor.service;
 
 import com.yjjk.monitor.entity.BO.monitor.rule.MonitorRuleBO;
+import com.yjjk.monitor.entity.BO.monitor.rule.MonitorRuleBOData;
 import com.yjjk.monitor.entity.pojo.MonitorRule;
 
 import java.util.List;
@@ -40,4 +41,11 @@ public interface MonitorRuleService {
     boolean setMonitorRule(List<MonitorRuleBO> list, String token,Integer departmentId);
 
     boolean setPatientRule(List<MonitorRuleBO> list, Integer patientId);
+
+    /**
+     * 规则参数效验
+     * @param data
+     * @return
+     */
+    boolean checkParam(MonitorRuleBOData data);
 }

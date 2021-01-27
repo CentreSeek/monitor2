@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -151,11 +152,15 @@ public class MonitorController extends BaseController {
 
     @ApiOperation("设置监测规则")
     @RequestMapping(value = "/setRule", method = RequestMethod.POST)
-    public CommonResult setMonitorRule(@RequestBody MonitorRuleBOData data, HttpServletRequest request) {
+    public CommonResult setMonitorRule(@RequestBody @Validated MonitorRuleBOData data, HttpServletRequest request) {
+        boolean b = monitorRuleService.checkParam(data);
+        if (!b) {
+            return ResultUtil.returnError(ErrorCodeEnum.PARAM_ERROR);
+        }
         if (!StringUtils.isNullorEmpty(data.getPatientId())) {
             super.monitorRuleService.setPatientRule(data.getList(), data.getPatientId());
             return ResultUtil.returnSuccess("患者监控规则设置成功");
-        }else if (!StringUtils.isNullorEmpty(data.getDepartmentId())) {
+        } else if (!StringUtils.isNullorEmpty(data.getDepartmentId())) {
             super.monitorRuleService.setMonitorRule(data.getList(), request.getHeader("token"), data.getDepartmentId());
             return ResultUtil.returnSuccess("科室监控规则设置成功");
         }

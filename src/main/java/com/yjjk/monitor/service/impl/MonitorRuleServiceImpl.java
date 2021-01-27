@@ -12,6 +12,7 @@ package com.yjjk.monitor.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.entity.BO.monitor.rule.MonitorRuleBO;
+import com.yjjk.monitor.entity.BO.monitor.rule.MonitorRuleBOData;
 import com.yjjk.monitor.entity.pojo.ManagerInfo;
 import com.yjjk.monitor.entity.pojo.MonitorRule;
 import com.yjjk.monitor.service.BaseService;
@@ -55,6 +56,59 @@ public class MonitorRuleServiceImpl extends BaseService implements MonitorRuleSe
     public boolean setPatientRule(List<MonitorRuleBO> list, Integer patientId) {
         String s = JSON.toJSONString(list);
         super.monitorRuleMapper.setPatientRule(patientId, s);
+        return true;
+    }
+
+    @Override
+    public boolean checkParam(MonitorRuleBOData data) {
+        List<MonitorRuleBO> list = data.getList();
+        for (MonitorRuleBO monitorRuleBO : list) {
+            switch (monitorRuleBO.getType()) {
+                case 0:
+                    if (monitorRuleBO.getParamOne() < 32.0 || monitorRuleBO.getParamOne() > 42.0) {
+                        return false;
+                    }
+                    if (monitorRuleBO.getParamTwo() < 32.0 || monitorRuleBO.getParamOne() > 42.0) {
+                        return false;
+                    }
+                    if (monitorRuleBO.getParamThree() < 32.0 || monitorRuleBO.getParamOne() > 42.0) {
+                        return false;
+                    }
+                    break;
+                case 1:
+                    if (monitorRuleBO.getParamOne() < 40.0 || monitorRuleBO.getParamOne() > 140.0) {
+                        return false;
+                    }
+                    if (monitorRuleBO.getParamTwo() < 40.0 || monitorRuleBO.getParamOne() > 140.0) {
+                        return false;
+                    }
+                    if (monitorRuleBO.getParamThree() < 40.0 || monitorRuleBO.getParamOne() > 140.0) {
+                        return false;
+                    }
+                    break;
+                case 2:
+                    if (monitorRuleBO.getParamOne() < 10.0 || monitorRuleBO.getParamOne() > 60.0) {
+                        return false;
+                    }
+                    if (monitorRuleBO.getParamTwo() < 10.0 || monitorRuleBO.getParamOne() > 60.0) {
+                        return false;
+                    }
+                    if (monitorRuleBO.getParamThree() < 10.0 || monitorRuleBO.getParamOne() > 60.0) {
+                        return false;
+                    }
+                    break;
+                case 3:
+                    if (monitorRuleBO.getParamOne() < 50.0 || monitorRuleBO.getParamOne() > 110.0) {
+                        return false;
+                    }
+                    if (monitorRuleBO.getParamTwo() < 50.0 || monitorRuleBO.getParamOne() > 110.0) {
+                        return false;
+                    }
+                    break;
+                default:
+                    return true;
+            }
+        }
         return true;
     }
 
