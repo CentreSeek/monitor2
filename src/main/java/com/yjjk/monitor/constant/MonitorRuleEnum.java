@@ -25,7 +25,7 @@ public enum MonitorRuleEnum {
     HEART_ALERT_L(40, "L"),
     HEART_ALERT_H(300, "H"),
     RESPIRATORY_ALERT_L(5, "L"),
-    RESPIRATORY_ALERT_H(35, "H");
+    RESPIRATORY_ALERT_H(61, "H");
 
     private Integer type;
 
