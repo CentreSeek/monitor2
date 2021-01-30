@@ -239,7 +239,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorTemperatureVO().getTemperature()) != 0) {
                 Double temperature = Double.parseDouble(monitorVOList.get(i).getMonitorTemperatureVO().getTemperature());
                 if (temperature <= tRule.getParamTwo() || (temperature > tRule.getParamOne() && temperature <= tRule.getParamThree())) {
-                    if (temperature <= MonitorRuleEnum.TEMPERATURE_ALERT_L.getType()) {
+                    if (temperature < MonitorRuleEnum.TEMPERATURE_ALERT_L.getType()) {
                         monitorVOList.get(i).getMonitorTemperatureVO().setTemperature(MonitorRuleEnum.TEMPERATURE_ALERT_L.getName());
                     }
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
@@ -248,7 +248,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                         errorStatus = 2;
                     }
                 } else if (temperature > tRule.getParamThree()) {
-                    if (temperature >= MonitorRuleEnum.TEMPERATURE_ALERT_H.getType()) {
+                    if (temperature > MonitorRuleEnum.TEMPERATURE_ALERT_H.getType()) {
                         monitorVOList.get(i).getMonitorTemperatureVO().setTemperature(MonitorRuleEnum.TEMPERATURE_ALERT_H.getName());
                     }
                     monitorVOList.get(i).getMonitorTemperatureVO().setTemperatureAlert(MonitorRuleEnum.ALERT_RED.getType());
@@ -265,7 +265,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorHeartRateVO().getHeart()) != 0) {
                 Integer heart = Integer.parseInt(monitorVOList.get(i).getMonitorHeartRateVO().getHeart());
                 if (heart <= hRule.getParamTwo() || (heart > hRule.getParamOne() && heart <= hRule.getParamThree())) {
-                    if (heart <= MonitorRuleEnum.HEART_ALERT_L.getType()) {
+                    if (heart < MonitorRuleEnum.HEART_ALERT_L.getType()) {
                         monitorVOList.get(i).getMonitorHeartRateVO().setHeart(MonitorRuleEnum.HEART_ALERT_L.getName());
                     }
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
@@ -274,7 +274,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                         errorStatus = 2;
                     }
                 } else if (heart >= hRule.getParamThree()) {
-                    if (heart >= MonitorRuleEnum.HEART_ALERT_H.getType()) {
+                    if (heart > MonitorRuleEnum.HEART_ALERT_H.getType()) {
                         monitorVOList.get(i).getMonitorHeartRateVO().setHeart(MonitorRuleEnum.HEART_ALERT_H.getName());
                     }
                     monitorVOList.get(i).getMonitorHeartRateVO().setHeartAlert(MonitorRuleEnum.ALERT_RED.getType());
@@ -291,7 +291,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory()) != 0) {
                 Integer respiratoryRate = Integer.parseInt(monitorVOList.get(i).getMonitorRespiratoryRateVO().getRespiratory());
                 if (respiratoryRate <= rRule.getParamTwo()|| (respiratoryRate > rRule.getParamOne() && respiratoryRate <= rRule.getParamThree())) {
-                    if (respiratoryRate <= MonitorRuleEnum.RESPIRATORY_ALERT_L.getType()) {
+                    if (respiratoryRate < MonitorRuleEnum.RESPIRATORY_ALERT_L.getType()) {
                         monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratory(MonitorRuleEnum.RESPIRATORY_ALERT_L.getName());
                     }
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
@@ -300,7 +300,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                         errorStatus = 2;
                     }
                 } else if (respiratoryRate >= rRule.getParamThree()) {
-                    if (respiratoryRate >= MonitorRuleEnum.RESPIRATORY_ALERT_H.getType()) {
+                    if (respiratoryRate > MonitorRuleEnum.RESPIRATORY_ALERT_H.getType()) {
                         monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratory(MonitorRuleEnum.RESPIRATORY_ALERT_H.getName());
                     }
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratoryAlert(MonitorRuleEnum.ALERT_RED.getType());
