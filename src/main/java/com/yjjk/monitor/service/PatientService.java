@@ -49,10 +49,11 @@ public interface PatientService {
      *
      * @param name
      * @param caseNum
+     * @param levelOfNursing
      * @param bedId
      * @return
      */
-    Integer checkPatient(String name, String caseNum, Integer bedId);
+    Integer checkPatient(String name, String caseNum,Integer levelOfNursing, Integer bedId);
 
     /**
      * 获取当前床位病人信息

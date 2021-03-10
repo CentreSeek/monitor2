@@ -58,7 +58,7 @@ public class MonitorController extends BaseController {
     /****************************** 启用设备 ******************************/
     @ApiOperation(value = "获取病人信息")
     @RequestMapping(value = "/patient", method = RequestMethod.GET)
-    public synchronized CommonResult checkPatient(@ApiParam(value = "床位号", required = true) @RequestParam("bedId") Integer bedId) {
+    public synchronized CommonResult<PatientInfo> checkPatient(@ApiParam(value = "床位号", required = true) @RequestParam("bedId") Integer bedId) {
         PatientInfo patientInfo = super.patientService.getPatientInfo(bedId);
         return ResultUtil.returnSuccess(patientInfo);
     }
@@ -69,7 +69,7 @@ public class MonitorController extends BaseController {
     public synchronized CommonResult startMachine(@Valid StartBO startBO, HttpServletRequest request) throws Exception {
 //        try {
         // 获取患者id (检验、查询\新增)
-        Integer patientId = super.patientService.checkPatient(startBO.getPatientName(), startBO.getCaseNum(), startBO.getBedId());
+        Integer patientId = super.patientService.checkPatient(startBO.getPatientName(), startBO.getCaseNum(), startBO.getLevelOfNursing(), startBO.getBedId());
         if (patientId == null) {
             return ResultUtil.returnError(ErrorCodeEnum.EXIST_RECORD);
         }

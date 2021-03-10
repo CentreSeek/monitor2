@@ -18,7 +18,6 @@ import com.yjjk.monitor.service.PatientRecordService;
 import com.yjjk.monitor.service.PatientService;
 import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -52,12 +51,12 @@ public class PatientServiceImpl extends BaseService implements PatientService {
     }
 
     @Override
-    public Integer checkPatient(String name, String caseNum, Integer bedId) {
+    public Integer checkPatient(String name, String caseNum, Integer levelOfNursing, Integer bedId) {
         PatientInfo zsPatientInfo = super.patientInfoMapper.selectByCaseNum(caseNum);
         if (zsPatientInfo == null) {
             // null：新增病人
             zsPatientInfo = new PatientInfo();
-            zsPatientInfo.setName(name).setCaseNum(caseNum);
+            zsPatientInfo.setName(name).setCaseNum(caseNum).setLevelOfNursing(levelOfNursing);
             super.patientInfoMapper.insertSelective(zsPatientInfo);
             zsPatientInfo = super.patientInfoMapper.selectByCaseNum(caseNum);
         } else {
@@ -75,20 +74,20 @@ public class PatientServiceImpl extends BaseService implements PatientService {
                 }
             }
             // 更新患者姓名
-            zsPatientInfo.setName(name);
+            zsPatientInfo.setName(name).setLevelOfNursing(levelOfNursing);
             super.patientInfoMapper.updateByPrimaryKeySelective(zsPatientInfo);
         }
         return zsPatientInfo.getPatientId();
     }
 
     @Override
-    public PatientInfo getPatientInfo( Integer bedId) {
+    public PatientInfo getPatientInfo(Integer bedId) {
         Example example = new Example(RecordBase.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("bedId", bedId);
         criteria.andEqualTo("usageStatus", RecordBaseEnum.USAGE_STATE_USE.getType());
         RecordBase recordBase = super.recordBaseMapper.selectOneByExample(example);
-        if (recordBase == null){
+        if (recordBase == null) {
             return null;
         }
         PatientInfo patientInfo = super.patientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());

@@ -35,6 +35,8 @@ public class MonitorBaseVO {
     private String patientName;
     @ApiModelProperty(value = "patientInfo:病历号")
     private String caseNum;
+    @ApiModelProperty(value = "patientInfo:护理级别 特级-0 一级-1 二级-2 三级-3")
+    private Integer levelOfNursing;
 
     /**
      * 病房信息

@@ -30,6 +30,7 @@
         pin.`patient_id`,
         pin.`name` AS patientName,
         pin.`case_num`,
+        pin.level_of_nursing,
         hb.`bed_id`,
         hb.`name` AS bedName
         FROM record_base rb
