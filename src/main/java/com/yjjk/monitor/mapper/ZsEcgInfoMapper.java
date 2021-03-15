@@ -12,6 +12,14 @@ import java.util.Map;
 
 public interface ZsEcgInfoMapper extends MyMapper<ZsEcgInfo> {
 
+    /**
+     * 清理心电数据
+     * @param timestamp
+     * @param machineId
+     * @return
+     */
+    int deleteEcgData(Long timestamp, Integer machineId);
+
     List<ZsEcgInfo> getEcgs(Integer machineId, String startTime, String endTime);
     /**
      * 获取心电贴最新心电数据

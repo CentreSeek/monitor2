@@ -16,13 +16,10 @@ import com.yjjk.monitor.entity.transaction.BackgroundSend;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.EcgService;
 import com.yjjk.monitor.utility.DateUtil;
-import com.yjjk.monitor.utility.FileNameUtils;
-import com.yjjk.monitor.utility.FileUtils;
 import com.yjjk.monitor.utility.NetUtils;
 import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.net.ConnectException;
 
 /**
@@ -272,26 +269,30 @@ public class EcgServiceImpl extends BaseService implements EcgService {
 //        return true;
 //    }
 
+    //    @Override
+//    public int cleanEcgExport() {
+//        String path = FileUtils.getRootPath() + "\\ExportData\\EcgExport";
+//        File file = new File(path);
+//        String[] list = file.list();
+//        Long sevenDaysAgo = Long.valueOf(DateUtil.getCurrentTimeLong().longValue() - 30*24*60*60*1000L);
+//        int count = 0;
+//        try {
+//            for (String s : list) {
+//                String fileDate = FileNameUtils.getPrefix(s);
+//                if (sevenDaysAgo.longValue() > Long.valueOf(fileDate).longValue()) {
+//                    File tempFile = new File(path + "\\\\" + s);
+//                    FileUtils.delFile(tempFile);
+//                    count++;
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return count;
+//    }
     @Override
     public int cleanEcgExport() {
-        String path = FileUtils.getRootPath() + "\\ExportData\\EcgExport";
-        File file = new File(path);
-        String[] list = file.list();
-        Long sevenDaysAgo = Long.valueOf(DateUtil.getCurrentTimeLong().longValue() - 604800000L);
-        int count = 0;
-        try {
-            for (String s : list) {
-                String fileDate = FileNameUtils.getPrefix(s);
-                if (sevenDaysAgo.longValue() > Long.valueOf(fileDate).longValue()) {
-                    File tempFile = new File(path + "\\\\" + s);
-                    FileUtils.delFile(tempFile);
-                    count++;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return count;
+        return zsEcgInfoMapper.deleteEcgData(DateUtil.getCurrentTimeLong() - 30 * 24 * 60 * 60 * 1000, null);
     }
 
     @Override

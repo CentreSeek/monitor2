@@ -17,6 +17,20 @@
     <sql id="Blob_Column_List">
         ecg
     </sql>
+
+    <delete id="deleteEcgData" parameterType="java.util.Map">
+        delete
+        from zs_ecg_info
+        <where>
+            <if test="machineId != null">
+                and machine_id = #{machineId, jdbcType = INTEGER}
+            </if>
+            <if test="timestamp != null">
+                and timestamp <![CDATA[<]]> #{timestamp, jdbcType = BIGINT}
+            </if>
+        </where>
+    </delete>
+
     <select id="getEcgs" parameterType="java.util.Map" resultType="com.yjjk.monitor.entity.pojo.ZsEcgInfo">
         SELECT zei.`timestamp`,
                zei.ecg
