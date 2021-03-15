@@ -10,22 +10,31 @@
  */
 package com.yjjk.monitor.constant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * @Description: 心电心率
  * @author CentreS
+ * @Description: 心电心率
  * @create 2019/11/13
  */
 public class EcgConstant {
 
-    /** time */
-    public static final long FIVE_MINUTES_LONG = 1000*60*5;
+    /**
+     * time
+     */
+    public static final long FIVE_MINUTES_LONG = 1000 * 60 * 5;
 
-    /** heart rate */
+    /**
+     * heart rate
+     */
     public static final int HEART_RATE_LOW = 50;
     public static final int HEART_RATE_HEIGHT = 100;
-    /** breath rate */
+    /**
+     * breath rate
+     */
     public static final double RESPIRATORY_RATE_LOW = 12;
     public static final double RESPIRATORY_RATE_HEIGHT = 24;
-
+    public static final List<Integer> ECG_NULL_DATA = new ArrayList<>(128);
 
 }

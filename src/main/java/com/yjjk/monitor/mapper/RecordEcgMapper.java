@@ -68,6 +68,11 @@ public interface RecordEcgMapper extends MyMapper<RecordEcg> {
      * @return
      */
     List<RecordsHistory> getHistoryRecords(GetRecordsBO getRecordsBO);
-
+    /**
+     * 主键查询（无历史记录）
+     * @param id
+     * @return
+     */
+    RecordEcg selectByPrimaryKeyNoneHistory(Integer id);
 
 }

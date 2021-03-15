@@ -11,6 +11,7 @@
 package com.yjjk.monitor.utility;
 
 
+import javax.xml.bind.SchemaOutputResolver;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -346,4 +347,27 @@ public class DateUtil {
         return "";
     }
 
+    /**
+     * 将yyyy-MM-dd HH:mm:ss时间戳格式化为其他格式
+     * @param time yyyy-MM-dd HH:mm:ss
+     * @param pattern
+     * @return
+     */
+    public static String format(String time,String pattern) {
+        try {
+            String timePattern = "yyyy-MM-dd HH:mm:ss";
+            SimpleDateFormat ft = new SimpleDateFormat(pattern);
+            SimpleDateFormat ftPaset = new SimpleDateFormat(timePattern);
+            Date date = ftPaset.parse(time);
+            ft.format(date);
+            return ft.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+//    public static void main(String[] args) {
+//        System.out.println(format("2020-05-29 15:24:17","yyyyMMdd_HHmmss"));
+//    }
 }

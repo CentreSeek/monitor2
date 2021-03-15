@@ -16,7 +16,21 @@
         <result column="updated_time" property="updatedTime" jdbcType="VARCHAR"/>
         <result column="history" property="history" jdbcType="LONGVARCHAR"/>
     </resultMap>
-
+    <select id="selectByPrimaryKeyNoneHistory" parameterType="java.lang.Integer"
+            resultType="com.yjjk.monitor.entity.pojo.RecordEcg">
+        SELECT id,
+               base_id,
+               machine_id,
+               record_status,
+               start_time,
+               end_time,
+               status,
+               created_time,
+               updated_time
+        FROM record_ecg
+        WHERE id = #{id,jdbcType=INTEGER}
+    </select>
+    
     <select id="getHistories" parameterType="java.util.Map" resultType="com.yjjk.monitor.entity.history.EcgHistoryData">
         select
         heart_rate,respiratory_rate,timestamp

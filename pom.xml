@@ -180,6 +180,11 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.sun.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.0.9</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
         <!--        <dependency>-->
         <!--            <groupId>org.springframework.boot</groupId>-->

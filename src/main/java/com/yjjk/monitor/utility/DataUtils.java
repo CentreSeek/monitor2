@@ -1,18 +1,17 @@
 package com.yjjk.monitor.utility;
 
 
+import com.alibaba.fastjson.JSON;
+import com.yjjk.monitor.constant.EcgConstant;
 import com.yjjk.monitor.entity.history.BaseData;
-import org.apache.poi.ss.formula.functions.Count;
-import org.apache.poi.ss.formula.functions.T;
+import com.yjjk.monitor.entity.pojo.ZsEcgInfo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @program: monitor2
@@ -21,6 +20,41 @@ import java.util.Set;
  * @create: 2020-05-22 14:22:53
  **/
 public class DataUtils {
+
+    public static int[] parseData(List<ZsEcgInfo> data) {
+        if (StringUtils.isNullorEmpty(data)) {
+            return new int[0];
+        }
+        Integer count = Math.toIntExact(data.get(data.size() - 1).getTimestamp() - data.get(0).getTimestamp()) / 1000;
+        List<Integer> result = new ArrayList<>(count);
+        Long startTime = data.get(0).getTimestamp();
+        Integer dataIndex = 0;
+        for (int i = 0; i < count; i++) {
+            Long endTime = startTime + 1000;
+            if (data.get(dataIndex).getTimestamp() >= startTime && data.get(dataIndex).getTimestamp() < endTime) {
+                result.addAll(transDoubleArrToIntegerArr(data.get(dataIndex).getEcg()));
+                dataIndex++;
+            } else {
+                result.addAll(EcgConstant.ECG_NULL_DATA);
+            }
+            startTime += 1000;
+        }
+        result.toArray(new Integer[result.size()]);
+        return result.stream().mapToInt(Integer::valueOf).toArray();
+    }
+
+    static List<Integer> transDoubleArrToIntegerArr(String data) {
+        List<Double> dataArr = JSON.parseArray(data, Double.class);
+        return transDoubleArrToIntegerArr(dataArr);
+    }
+
+    static List<Integer> transDoubleArrToIntegerArr(List<Double> data) {
+        List<Integer> result = new ArrayList<>(data.size());
+        for (Double datum : data) {
+            result.add(datum.intValue());
+        }
+        return result;
+    }
 
     public static <T extends BaseData> List<T> getTimesData(List<List<T>> data, List<String> time, String date) {
         List<T> list = concatList(data);
@@ -121,14 +155,16 @@ public class DataUtils {
         }
         return para;
     }
+
     public static Double transFahrenheit(Double temperature) {
         BigDecimal a = new BigDecimal(temperature);
         BigDecimal add = a.multiply(new BigDecimal(9)).divide(new BigDecimal(5)).add(new BigDecimal(32));
-        return add.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+        return add.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     /**
      * 将map转化为二维数组
+     *
      * @return
      */
     public static String[][] map2Arr(Map<String, Integer> map) {

@@ -12,6 +12,7 @@ package com.yjjk.monitor.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.vivalnk.sdk.Mit16Util;
 import com.yjjk.monitor.constant.ExportExcelConstant;
 import com.yjjk.monitor.constant.MachineConstant;
 import com.yjjk.monitor.constant.MonitorConstant;
@@ -37,18 +38,20 @@ import com.yjjk.monitor.entity.history.SleepingHistory;
 import com.yjjk.monitor.entity.history.SleepingHistoryData;
 import com.yjjk.monitor.entity.history.TemperatureHistory;
 import com.yjjk.monitor.entity.history.TemperatureHistoryData;
+import com.yjjk.monitor.entity.pojo.PatientInfo;
 import com.yjjk.monitor.entity.pojo.RecordBase;
 import com.yjjk.monitor.entity.pojo.RecordBlood;
 import com.yjjk.monitor.entity.pojo.RecordEcg;
 import com.yjjk.monitor.entity.pojo.RecordSleeping;
 import com.yjjk.monitor.entity.pojo.RecordTemperature;
+import com.yjjk.monitor.entity.pojo.ZsEcgInfo;
+import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.HistoryService;
 import com.yjjk.monitor.utility.DataUtils;
 import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.ExcelUtils;
 import com.yjjk.monitor.utility.FileNameUtils;
-import com.yjjk.monitor.utility.MonitorUtils;
 import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -65,6 +68,19 @@ import java.util.List;
  */
 @Service
 public class HistoryServiceImpl extends BaseService implements HistoryService {
+
+    @Override
+    public String ecgExport(String timestamp, Integer baseId) {
+        RecordBase recordBase = recordBaseMapper.selectByPrimaryKey(baseId);
+        RecordEcg recordEcg = recordEcgMapper.selectByPrimaryKeyNoneHistory(recordBase.getRecordEcgId());
+        ZsMachineInfo machineInfo = zsMachineInfoMapper.getByMachineId(recordEcg.getMachineId());
+        PatientInfo patientInfo = patientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());
+        List<ZsEcgInfo> ecgs = zsEcgInfoMapper.getEcgs(machineInfo.getMachineId(), timestamp + " 00:00:00", timestamp + " 24:00:00");
+        if (!StringUtils.isNullorEmpty(ecgs)) {
+            return Mit16Util.writeMit16File(patientInfo.getCaseNum(),ecgs.get(0).getTimestamp(), DataUtils.parseData(ecgs));
+        }
+        return "";
+    }
 
     @Override
     public TemperatureHistory filterTemperatureData(TemperatureHistory dataList, Double temperature) {

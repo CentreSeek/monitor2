@@ -18,6 +18,7 @@ import com.yjjk.monitor.entity.VO.PagedGridResult;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.history.BaseData;
 import com.yjjk.monitor.entity.history.TemperatureHistory;
+import com.yjjk.monitor.utility.CompressDownloadUtil;
 import com.yjjk.monitor.utility.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -62,7 +63,7 @@ public class HistoryController extends BaseController {
         /********************** 参数初始化 **********************/
         Object monitorHistory = null;
         if (recordId != -1) {
-            monitorHistory = super.historyService.getHistoryData(type, recordId,temType);
+            monitorHistory = super.historyService.getHistoryData(type, recordId, temType);
         }
         return ResultUtil.returnSuccess(monitorHistory);
     }
@@ -73,7 +74,7 @@ public class HistoryController extends BaseController {
                                               @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType", required = false, defaultValue = "0") Integer temType,
                                               @RequestParam(value = "baseId") Integer baseId) {
         /********************** 参数初始化 **********************/
-        List<BaseData> list = super.historyService.getMonitorData(type, baseId,temType);
+        List<BaseData> list = super.historyService.getMonitorData(type, baseId, temType);
         Collections.sort(list);
         return ResultUtil.returnSuccess(list);
     }
@@ -107,10 +108,18 @@ public class HistoryController extends BaseController {
         super.historyService.export(response, type, privateExportHistoryList, language, temType);
     }
 
-    @ApiOperation("page历史记录：心电报告")
+    @ApiOperation("page历史记录：导出心电")
     @RequestMapping(value = "/ecgExport", method = RequestMethod.GET)
-    public void ecgExport(@ApiParam(value = "筛选规则，筛选大于该摄氏度的体温") @RequestParam(value = "temperature", required = false) Double temperature) {
-
+    public void ecgExport(@RequestParam(value = "baseId") Integer baseId,
+                          @ApiParam(value = "日期<yyyy-MM-dd>") @RequestParam(value = "timestamp") String timestamp,
+                          HttpServletResponse response) {
+        String download = historyService.ecgExport(timestamp, baseId);
+//        FileUtils.download(download,response);
+        try {
+            CompressDownloadUtil.compressEcgAsZip(download, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

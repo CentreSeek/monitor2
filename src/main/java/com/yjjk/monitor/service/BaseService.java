@@ -29,6 +29,7 @@ import com.yjjk.monitor.mapper.RecordEcgMapper;
 import com.yjjk.monitor.mapper.RecordSleepingMapper;
 import com.yjjk.monitor.mapper.RecordTemperatureMapper;
 import com.yjjk.monitor.mapper.ZsBloodOxygenInfoMapper;
+import com.yjjk.monitor.mapper.ZsEcgInfoMapper;
 import com.yjjk.monitor.mapper.ZsHealthInfoMapper;
 import com.yjjk.monitor.mapper.ZsMachineInfoMapper;
 import com.yjjk.monitor.mapper.ZsPatientRecordMapper;
@@ -88,6 +89,8 @@ public class BaseService {
     protected RecordTemperatureMapper recordTemperatureMapper;
     @Autowired
     protected MonitorRuleMapper monitorRuleMapper;
+    @Autowired
+    protected ZsEcgInfoMapper zsEcgInfoMapper;
 
     @Autowired
     protected MachineConfig machineConfig;

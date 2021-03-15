@@ -10,18 +10,12 @@
  */
 package com.yjjk.monitor.service;
 
-import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.entity.BO.PageBO;
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
 import com.yjjk.monitor.entity.VO.PagedGridResult;
-import com.yjjk.monitor.entity.VO.history.RecordsHistory;
-import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
-import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
 import com.yjjk.monitor.entity.export.history.export.HistoryExportTemperatureVOO;
 import com.yjjk.monitor.entity.history.BaseData;
 import com.yjjk.monitor.entity.history.TemperatureHistory;
-import com.yjjk.monitor.entity.history.TemperatureHistoryData;
-import com.yjjk.monitor.entity.log.ManageLog;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -37,14 +31,24 @@ import java.util.List;
 public interface HistoryService {
 
     /**
+     * mit16心电文件导出
+     *
+     * @param timestamp
+     */
+    String ecgExport(String timestamp,Integer baseId);
+
+    /**
      * 单人导出过滤体温数据
+     *
      * @param dataList
      * @param temperature
      * @return
      */
-    TemperatureHistory filterTemperatureData(TemperatureHistory dataList,Double temperature) ;
+    TemperatureHistory filterTemperatureData(TemperatureHistory dataList, Double temperature);
+
     /**
      * 批量导出
+     *
      * @param response
      * @param type
      * @param dataList
@@ -52,9 +56,11 @@ public interface HistoryService {
      * @param temType
      * @throws IOException
      */
-    void export(HttpServletResponse response,Integer type, List dataList, Integer language,Integer temType) throws IOException;
+    void export(HttpServletResponse response, Integer type, List dataList, Integer language, Integer temType) throws IOException;
+
     /**
      * records-获取历史记录
+     *
      * @param pageBO
      * @param bo
      * @return
@@ -69,32 +75,36 @@ public interface HistoryService {
      * @param temType
      * @return
      */
-    Object getHistoryData(Integer type, Integer recordId,Integer temType);
+    Object getHistoryData(Integer type, Integer recordId, Integer temType);
+
     Object getHistoryData(Integer type, Integer recordId);
 
     /**
      * 获取实时历史数据
+     *
      * @param type
      * @param baseId
      * @param temType
      * @return
      */
-    List<BaseData> getMonitorData(Integer type, Integer baseId,Integer temType);
+    List<BaseData> getMonitorData(Integer type, Integer baseId, Integer temType);
 
     /**
      * 获取导出数据
+     *
      * @param type
      * @param departmentId
      * @param date
      * @param timeList
      * @return
      */
-    List getExportHistoryList(Integer type, Integer departmentId,String date,List<String> timeList);
+    List getExportHistoryList(Integer type, Integer departmentId, String date, List<String> timeList);
 
-    List getPrivateExportHistoryList(Integer type,Integer recordId,Object data);
+    List getPrivateExportHistoryList(Integer type, Integer recordId, Object data);
 
     /**
      * 转换华氏度
+     *
      * @param data
      * @return
      */

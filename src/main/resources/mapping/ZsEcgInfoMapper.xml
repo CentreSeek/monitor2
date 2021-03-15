@@ -17,6 +17,16 @@
     <sql id="Blob_Column_List">
         ecg
     </sql>
+    <select id="getEcgs" parameterType="java.util.Map" resultType="com.yjjk.monitor.entity.pojo.ZsEcgInfo">
+        SELECT zei.`timestamp`,
+               zei.ecg
+        FROM `zs_ecg_info` zei
+        WHERE zei.machine_id = #{machineId,jdbcType=INTEGER}
+          and zei.create_time <![CDATA[>=]]> #{startTime,jdbcType=VARCHAR}
+          and zei.create_time <![CDATA[<=]]> #{endTime,jdbcType=VARCHAR}
+        ORDER BY zei.TIMESTAMP
+    </select>
+
     <select id="getNewEcg" parameterType="java.util.Map" resultType="com.yjjk.monitor.entity.pojo.ZsEcgInfo">
         SELECT zei.temperature_id,
                zei.machine_id,
@@ -27,9 +37,9 @@
                              re.start_time, zei.create_time) as useTimeMinutes
         FROM `zs_ecg_info` zei
                  left join record_ecg re on zei.machine_id = re.machine_id
-        WHERE
-              re.status = 0 and re.record_status = 0
-              and zei.machine_id = #{machineId,jdbcType=INTEGER}
+        WHERE re.status = 0
+          and re.record_status = 0
+          and zei.machine_id = #{machineId,jdbcType=INTEGER}
           and zei.timestamp <![CDATA[>]]> #{timestamp,jdbcType=BIGINT}
         ORDER BY zei.TIMESTAMP
         limit 0,5;
