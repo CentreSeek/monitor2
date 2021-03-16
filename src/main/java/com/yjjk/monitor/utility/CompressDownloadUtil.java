@@ -57,6 +57,8 @@ public class CompressDownloadUtil {
         para.add(dat);
         para.add(hea);
         response.setHeader("Content-Disposition", "attachment;fileName*=UTF-8''" + fileName + ".zip");
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+        response.setContentType("application/octet-stream");
         compressZip(para, response.getOutputStream());
         deleteFile(dat);
         deleteFile(hea);

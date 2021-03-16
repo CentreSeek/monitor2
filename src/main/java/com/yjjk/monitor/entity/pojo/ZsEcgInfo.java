@@ -39,6 +39,6 @@ public class ZsEcgInfo {
      */
     private String ecg;
 
-    private Integer useTimeMinutes;
+//    private Integer useTimeMinutes;
 
 }

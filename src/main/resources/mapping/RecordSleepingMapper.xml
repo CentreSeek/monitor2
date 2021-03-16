@@ -125,6 +125,7 @@
     <select id="getHistoryRecords" parameterType="com.yjjk.monitor.entity.BO.history.GetRecordsBO"
             resultType="com.yjjk.monitor.entity.VO.history.RecordsHistory">
         SELECT record.`id` as recordId,
+        base_id,
         pai.`name` as patientName ,pai.`case_num` as patientCaseNum,hd.`name` as
         departmentName,CONCAT(hr.`name`,hb.`name`) as roomAndBed ,
         record.`start_time` as startTime,record.`end_time` as endTime,record.record_status as recordStatus,

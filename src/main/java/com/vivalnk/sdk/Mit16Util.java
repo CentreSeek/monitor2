@@ -1,9 +1,6 @@
 package com.vivalnk.sdk;
 
 import com.vivalnk.sdk.utils.DateFormat;
-import com.yjjk.monitor.utility.ZipUtils;
-
-import java.io.IOException;
 
 import static com.vivalnk.sdk.core.WfdbUtils.close;
 import static com.vivalnk.sdk.core.WfdbUtils.doSample;
@@ -21,7 +18,7 @@ import static com.vivalnk.sdk.core.WfdbUtils.setBaseTime;
  **/
 public class Mit16Util {
     public static String writeMit16File(String caseNum, Long timestamp, int[] data) {
-        String fileTimestamp = DateFormat.format(timestamp, "yyyyMMdd");
+        String fileTimestamp = DateFormat.format(timestamp, "yyMMdd");
         String fileName = caseNum + "-" + fileTimestamp;
 //        String fileName = "t";
         /**

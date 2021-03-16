@@ -56,10 +56,14 @@ import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.plaf.metal.MetalIconFactory;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author CentreS
@@ -76,8 +80,9 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
         ZsMachineInfo machineInfo = zsMachineInfoMapper.getByMachineId(recordEcg.getMachineId());
         PatientInfo patientInfo = patientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());
         List<ZsEcgInfo> ecgs = zsEcgInfoMapper.getEcgs(machineInfo.getMachineId(), timestamp + " 00:00:00", timestamp + " 24:00:00");
+        int[] ints = DataUtils.parseData(ecgs);
         if (!StringUtils.isNullorEmpty(ecgs)) {
-            return Mit16Util.writeMit16File(patientInfo.getCaseNum(),ecgs.get(0).getTimestamp(), DataUtils.parseData(ecgs));
+            return Mit16Util.writeMit16File(patientInfo.getCaseNum(), ecgs.get(0).getTimestamp(), ints);
         }
         return "";
     }

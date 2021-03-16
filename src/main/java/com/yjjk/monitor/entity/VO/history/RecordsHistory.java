@@ -27,6 +27,7 @@ public class RecordsHistory {
 
     @ApiModelProperty(value = "id")
     private Integer recordId;
+    private Integer baseId;
     private String patientName;
     private String patientCaseNum;
     private String departmentName;

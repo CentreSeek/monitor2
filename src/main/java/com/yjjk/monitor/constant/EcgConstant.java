@@ -10,7 +10,8 @@
  */
 package com.yjjk.monitor.constant;
 
-import java.util.ArrayList;
+import com.google.common.primitives.Ints;
+
 import java.util.List;
 
 /**
@@ -19,6 +20,11 @@ import java.util.List;
  * @create 2019/11/13
  */
 public class EcgConstant {
+    static {
+//    if (ECG_NULL_DATA == null){
+//
+//    }
+    }
 
     /**
      * time
@@ -35,6 +41,5 @@ public class EcgConstant {
      */
     public static final double RESPIRATORY_RATE_LOW = 12;
     public static final double RESPIRATORY_RATE_HEIGHT = 24;
-    public static final List<Integer> ECG_NULL_DATA = new ArrayList<>(128);
-
+    public static final List<Integer> ECG_NULL_DATA = Ints.asList(new int[128]);
 }
