@@ -35,7 +35,7 @@ public class DataUtils {
                 result.addAll(transDoubleArrToIntegerArr(data.get(dataIndex).getEcg()));
                 dataIndex++;
             } else {
-                result.addAll(EcgConstant.ECG_NULL_DATA);
+                result.addAll(EcgConstant.getECG_NULL_DATA());
             }
             startTime += 1000;
         }
