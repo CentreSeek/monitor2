@@ -51,7 +51,7 @@ public class Mit16Util {
          * 打开文件
          */
         open();
-        String time = DateFormat.format(timestamp, "HH:mm:ss yyyy/MM/dd");
+        String time = DateFormat.format(timestamp, "HH:mm:ss dd/MM/yyyy");
         /**
          * 设置采样起点数据时间
          */

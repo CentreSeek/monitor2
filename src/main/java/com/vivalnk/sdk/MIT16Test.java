@@ -54,7 +54,8 @@ public class MIT16Test {
 
         System.out.println("openFile!!!");
 
-        String time = DateFormat.format(System.currentTimeMillis(), "HH:mm:ss yyyy/MM/dd");
+//        String time = DateFormat.format(System.currentTimeMillis(), "HH:mm:ss yyyy/MM/dd");
+        String time = DateFormat.format(System.currentTimeMillis(), "HH:mm:ss dd/MM/yyyy");
         /**
          * 设置采样起点数据时间
          */

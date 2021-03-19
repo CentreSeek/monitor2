@@ -59,14 +59,14 @@ web:
   upload-path: E:\YJJKProject\UploadImg
 
 machine:
-  address: http://192.168.31.165:8084
+  address: http://192.168.31.84:8084
 #  address: http://192.168.31.229:8084
   url: /web/getChargeInfo
   repeater: /web/getRepeaterChargeInfo
 
 connect:
   # Cassia
-  address: http://192.168.31.165:8084
+  address: http://192.168.31.84:8084
 #  address: http://192.168.31.229:8084
   url: /web/isCassiaConnectNotice
   start: /web/enableNotice
