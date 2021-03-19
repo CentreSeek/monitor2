@@ -17,10 +17,11 @@ import java.util.List;
 @Accessors(chain = true)
 @ApiModel("监控页面")
 public class MonitorBaseVO {
-    private MonitorBloodVO monitorBloodVO;
-    private MonitorRespiratoryRateVO monitorRespiratoryRateVO;
-    private MonitorHeartRateVO monitorHeartRateVO;
     private MonitorTemperatureVO monitorTemperatureVO;
+    private MonitorHeartRateVO monitorHeartRateVO;
+    private MonitorRespiratoryRateVO monitorRespiratoryRateVO;
+    private MonitorBloodVO monitorBloodVO;
+    private MonitorBloodPressureVO monitorBloodPressureVO;
 
     private List<MonitorMachineListVO> machineList;
 
@@ -58,6 +59,7 @@ public class MonitorBaseVO {
     private Integer recordEcgId;
     private Integer recordBloodId;
     private Integer recordSleepingId;
+    private Integer recordBloodPressureId;
 
 
 }

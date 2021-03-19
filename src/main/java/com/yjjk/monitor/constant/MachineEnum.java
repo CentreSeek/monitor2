@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * @program: YjjkErp
- * @description: 备案进度
+ * @description: 设备进度
  * @author: CentreS
  * @create: 2019-11-25 20:56:45
  **/
@@ -20,6 +20,7 @@ public enum MachineEnum {
     BLOOD(2, "血氧仪"),
     SLEEPING(3, "离床感应"),
     TEMPERATURE_BOX(4, "体温盒"),
+    BLOOD_PRESSURE(5, "血压"),
     ;
 
     private Integer type;

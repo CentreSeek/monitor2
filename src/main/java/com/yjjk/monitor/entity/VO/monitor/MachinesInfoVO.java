@@ -18,7 +18,7 @@ import java.util.List;
 @ApiModel("设备概况")
 public class MachinesInfoVO {
 
-    @ApiModelProperty(value = "设备概况：设备类型 0：体温贴 1：心电贴 2：血氧 3：离床 4：体温盒")
+    @ApiModelProperty(value = "设备概况：设备类型 0：体温贴 1：心电贴 2：血氧 3：离床 4：体温盒 5:血压")
     private Integer machineType;
 //    @ApiModelProperty(value = "设备概况：名称")
 //    private String machineTypeName;

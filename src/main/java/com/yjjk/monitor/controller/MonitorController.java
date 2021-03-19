@@ -93,7 +93,7 @@ public class MonitorController extends BaseController {
     @ApiOperation("更换设备")
     @RequestMapping(value = "/changeMachine", method = RequestMethod.PUT)
     public CommonResult changeTemperatureMachine(@RequestParam(value = "baseId") Integer baseId,
-                                                 @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") Integer type,
+                                                 @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam(value = "type") Integer type,
                                                  @ApiParam(value = "新设备id") @RequestParam(value = "machineId") Integer machineId, HttpServletRequest request) {
         try {
             return super.monitorService.changeMachine(baseId, type, machineId, request.getHeader("token"));
@@ -119,7 +119,7 @@ public class MonitorController extends BaseController {
     @ApiOperation("停止监测")
     @RequestMapping(value = "/record", method = RequestMethod.PUT)
     public CommonResult stopRecord(@RequestParam(value = "baseId") Integer baseId,
-                                   @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type, HttpServletRequest request) throws Exception {
+                                   @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam(value = "type") Integer type, HttpServletRequest request) throws Exception {
         /********************** 参数初始化 **********************/
         return super.monitorService.stopMachine(baseId, type, request.getHeader("token"));
     }

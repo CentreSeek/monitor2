@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yjjk.monitor.mapper.RecordBloodPressureMapper">
+    <resultMap id="BaseResultMap" type="com.yjjk.monitor.entity.pojo.RecordBloodPressure">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="base_id" property="baseId" jdbcType="INTEGER"/>
+        <result column="machine_id" property="machineId" jdbcType="INTEGER"/>
+        <result column="record_status" property="recordStatus" jdbcType="INTEGER"/>
+        <result column="start_time" property="startTime" jdbcType="VARCHAR"/>
+        <result column="end_time" property="endTime" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
+        <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP"/>
+        <result column="history" property="history" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <select id="getHistories" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.history.BloodPressureHistoryData">
+        select
+        blood_pressure,timestamp
+        from zs_blood_pressure_info
+        <where>
+            <if test="machineId != null">
+                and `machine_id` = #{machineId,jdbcType=INTEGER}
+            </if>
+        </where>
+        ORDER BY timestamp
+    </select>
+
+    <select id="getBloodPressure" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.VO.monitor.MonitorBloodPressureVO">
+        SELECT
+        rbp.`id` as recordId,
+        zbpr.blood_pressure,
+        zbpr.update_time as timestamp
+        FROM
+        record_blood_pressure rbp
+        LEFT JOIN
+        zs_blood_pressure_real zbpr
+        on
+        rbp.machine_id = zbpr.`machine_id`
+        <where>
+            <if test="recordId != null">
+                and rbp.id = #{recordId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <select id="getBattery" parameterType="java.util.Map"
+            resultType="java.lang.Integer">
+        SELECT
+        zmi.battery
+        FROM
+        record_blood_pressure record
+        LEFT JOIN zs_machine_info zmi
+        ON record.`machine_id` = zmi.`machine_id`
+        <where>
+            <if test="recordId != null">
+                record.`id` = #{recordId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+</mapper>

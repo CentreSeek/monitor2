@@ -76,6 +76,8 @@ public interface MonitorService {
 
     MonitorBaseVO getBloodOxygen(MonitorBaseVO monitorBaseVO, Integer recordId);
 
+    MonitorBaseVO getBloodPressure(MonitorBaseVO monitorBaseVO, Integer recordId);
+
     List<MonitorBaseVO> getSleeping(List<MonitorBaseVO> list);
 
     List<MonitorMachineListVO> getMachinesInfo(RecordBase recordBase);
@@ -99,6 +101,8 @@ public interface MonitorService {
     CommonResult stopBloodMachine(Integer recordId) throws Exception;
 
     CommonResult stopSleepingMachine(Integer recordId) throws Exception;
+
+    CommonResult stopBloodPressureMachine(Integer recordId) throws Exception;
 
     /**
      * 更换床位
@@ -129,6 +133,8 @@ public interface MonitorService {
 
     CommonResult changeSleepingMachine(Integer baseId, Integer machineId) throws Exception;
 
+    CommonResult changeBloodPressureMachine(Integer baseId, Integer machineId) throws Exception;
+
     /**
      * 启用设备
      *
@@ -148,6 +154,8 @@ public interface MonitorService {
     CommonResult startBloodMachine(Integer baseId, Integer machineId) throws Exception;
 
     CommonResult startSleepingMachine(Integer baseId, Integer machineId) throws Exception;
+
+    CommonResult startBloodPressureMachine(Integer baseId, Integer machineId) throws Exception;
 
     /**
      * 持久化监测数据

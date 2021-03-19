@@ -34,5 +34,6 @@ public class MachineConstant {
     public static final int ECG = 1;
     public static final int BLOOD = 2;
     public static final int SLEEPING = 3;
+    public static final int BLOOD_PRESSURE = 4;
 
 }

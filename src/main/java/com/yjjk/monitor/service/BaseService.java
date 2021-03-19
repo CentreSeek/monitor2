@@ -12,9 +12,9 @@ package com.yjjk.monitor.service;
 
 
 import com.github.pagehelper.PageInfo;
-import com.yjjk.monitor.entity.VO.PagedGridResult;
 import com.yjjk.monitor.constant.config.ConnectRepeater;
 import com.yjjk.monitor.constant.config.MachineConfig;
+import com.yjjk.monitor.entity.VO.PagedGridResult;
 import com.yjjk.monitor.mapper.HospitalBedMapper;
 import com.yjjk.monitor.mapper.HospitalDepartmentMapper;
 import com.yjjk.monitor.mapper.HospitalRoomMapper;
@@ -25,10 +25,13 @@ import com.yjjk.monitor.mapper.MonitorRuleMapper;
 import com.yjjk.monitor.mapper.PatientInfoMapper;
 import com.yjjk.monitor.mapper.RecordBaseMapper;
 import com.yjjk.monitor.mapper.RecordBloodMapper;
+import com.yjjk.monitor.mapper.RecordBloodPressureMapper;
 import com.yjjk.monitor.mapper.RecordEcgMapper;
 import com.yjjk.monitor.mapper.RecordSleepingMapper;
 import com.yjjk.monitor.mapper.RecordTemperatureMapper;
 import com.yjjk.monitor.mapper.ZsBloodOxygenInfoMapper;
+import com.yjjk.monitor.mapper.ZsBloodPressureInfoMapper;
+import com.yjjk.monitor.mapper.ZsBloodPressureRealMapper;
 import com.yjjk.monitor.mapper.ZsEcgInfoMapper;
 import com.yjjk.monitor.mapper.ZsHealthInfoMapper;
 import com.yjjk.monitor.mapper.ZsMachineInfoMapper;
@@ -72,6 +75,10 @@ public class BaseService {
     @Autowired
     protected ZsSleepingBeltInfoMapper zsSleepingBeltInfoMapper;
     @Autowired
+    protected ZsBloodPressureInfoMapper zsBloodPressureInfoMapper;
+    @Autowired
+    protected ZsBloodPressureRealMapper zsBloodPressureRealMapper;
+    @Autowired
     protected LoginStateMapper loginStateMapper;
     @Autowired
     protected MachineTypeInfoMapper machineTypeInfoMapper;
@@ -88,6 +95,8 @@ public class BaseService {
     @Autowired
     protected RecordTemperatureMapper recordTemperatureMapper;
     @Autowired
+    protected RecordBloodPressureMapper recordBloodPressureMapper;
+    @Autowired
     protected MonitorRuleMapper monitorRuleMapper;
     @Autowired
     protected ZsEcgInfoMapper zsEcgInfoMapper;
@@ -100,6 +109,7 @@ public class BaseService {
     protected PagedGridResult setterPagedGrid(List<?> list, Integer page) {
         return setterPagedGrid(list, page, null);
     }
+
     protected PagedGridResult setterPagedGrid(List<?> list, Integer page, Integer count) {
         PageInfo<?> pageList = new PageInfo<>(list);
         PagedGridResult grid = new PagedGridResult();

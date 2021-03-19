@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
 
 @Data
 @Accessors(chain = true)
@@ -18,7 +17,7 @@ public class RecordBase {
      * id
      */
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**
@@ -70,6 +69,11 @@ public class RecordBase {
     private Integer recordSleepingId;
 
     /**
+     * (record_blood_pressure)
+     */
+    @Column(name = "record_blood_pressure_id")
+    private Integer recordBloodPressureId;
+    /**
      * 0：使用中 1：未使用
      */
     @Column(name = "usage_status")
@@ -98,6 +102,12 @@ public class RecordBase {
      */
     @Column(name = "machine_sleeping_state")
     private Integer machineSleepingState;
+
+    /**
+     * 设备使用状态 0-未使用 1-使用中
+     */
+    @Column(name = "machine_blood_pressure_state")
+    private Integer machineBloodPressureState;
 
     /**
      * 状态 0：正常 1：删除

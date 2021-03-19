@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 @ApiModel("启用设备")
 public class StartBO {
     @NotNull
-    @ApiModelProperty(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应", required = true)
+    @ApiModelProperty(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压", required = true)
     private Integer type;
     @NotNull
     @ApiModelProperty(value = "设备id", required = true)
