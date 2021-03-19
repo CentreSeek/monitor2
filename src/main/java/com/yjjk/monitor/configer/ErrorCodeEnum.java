@@ -69,6 +69,7 @@ public enum ErrorCodeEnum {
     /********** HistoryController **********/
     CANNOT_SELECT_ECG_PICTURE("380", "请确认查询范围为监测记录期间"),
     CANNOT_FIND_ECG_PICTURE("381", "未找到心电记录文件"),
+    MIT_EXPORT_EXCEPTION("382", "MIT16导出错误"),
     UNKNOWN_ERROR("500", "系统繁忙...");
 
     private String code;

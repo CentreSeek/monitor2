@@ -11,6 +11,7 @@
 package com.yjjk.monitor.controller;
 
 import com.yjjk.monitor.configer.CommonResult;
+import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.MachineConstant;
 import com.yjjk.monitor.entity.BO.PageBO;
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
@@ -110,15 +111,17 @@ public class HistoryController extends BaseController {
 
     @ApiOperation("page历史记录：导出心电")
     @RequestMapping(value = "/ecgExport", method = RequestMethod.GET)
-    public void ecgExport(@RequestParam(value = "baseId") Integer baseId,
-                          @ApiParam(value = "日期<yyyy-MM-dd>") @RequestParam(value = "timestamp") String timestamp,
+    public CommonResult ecgExport(@RequestParam(value = "baseId") Integer baseId,
+                          @ApiParam(value = "日期yyyy-MM-dd") @RequestParam(value = "timestamp") String timestamp,
                           HttpServletResponse response) {
         String download = historyService.ecgExport(timestamp, baseId);
 //        FileUtils.download(download,response);
         try {
             CompressDownloadUtil.compressEcgAsZip(download, response);
-        } catch (IOException e) {
+            return null;
+        } catch (Exception e) {
             e.printStackTrace();
+            return ResultUtil.returnError(ErrorCodeEnum.MIT_EXPORT_EXCEPTION);
         }
     }
 
