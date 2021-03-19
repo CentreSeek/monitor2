@@ -19,7 +19,7 @@ import static com.vivalnk.sdk.core.WfdbUtils.setBaseTime;
 public class Mit16Util {
     public static String writeMit16File(String caseNum, Long timestamp, int[] data) {
         String fileTimestamp = DateFormat.format(timestamp, "yyMMdd");
-        String fileName = caseNum + "-" + fileTimestamp;
+        String fileName = caseNum + "_" + fileTimestamp;
 //        String fileName = "t";
         /**
          * data  wfdb 数据文件名，调用者自己定义
