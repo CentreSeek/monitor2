@@ -16,4 +16,14 @@
     <result column="repeaterId" property="repeaterid" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="INTEGER" />
   </resultMap>
+
+  <select id="getByMachineId" resultType="com.yjjk.monitor.entity.pojo.ZsBloodPressureReal"
+          parameterType="java.lang.Integer">
+    SELECT zbpr.*
+    FROM zs_blood_pressure_real zbpr
+    WHERE zbpr.machine_id = #{machineId,jdbcType=INTEGER}
+      AND zbpr.repeaterId IS NOT NULL
+    ORDER BY zbpr.create_time DESC
+    LIMIT 1
+  </select>
 </mapper>

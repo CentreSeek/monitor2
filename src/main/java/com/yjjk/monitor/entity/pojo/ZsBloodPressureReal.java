@@ -26,13 +26,13 @@ public class ZsBloodPressureReal {
      * 更新心电时间
      */
     @Column(name = "update_time")
-    private Date updateTime;
+    private String updateTime;
 
     /**
      * 记录时间
      */
     @Column(name = "create_time")
-    private Date createTime;
+    private String createTime;
 
     /**
      * 设备时间戳
@@ -43,7 +43,7 @@ public class ZsBloodPressureReal {
      * 路由器ID
      */
     @Column(name = "repeaterId")
-    private Integer repeaterid;
+    private Integer repeaterId;
 
     /**
      * 设备状态

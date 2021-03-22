@@ -311,7 +311,7 @@ public class MachineController extends BaseController {
     @RequestMapping(value = "/searchMachine", method = RequestMethod.GET)
     public CommonResult<SearchMachineVOBase> searchMachine(@RequestParam Integer departmentId,
                                                            @ApiParam(value = "设备id", required = true) @RequestParam Integer machineId,
-                                                           @ApiParam(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type) {
+                                                           @ApiParam(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam(value = "type") Integer type) {
         /********************** 参数初始化 **********************/
         Map<String, Object> paraMap = new HashMap<>();
         paraMap.put("departmentId", departmentId);

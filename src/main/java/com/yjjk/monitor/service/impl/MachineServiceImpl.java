@@ -23,6 +23,7 @@ import com.yjjk.monitor.entity.export.machine.MachineExport;
 import com.yjjk.monitor.entity.export.machine.MachineExportVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsBloodOxygenInfo;
+import com.yjjk.monitor.entity.pojo.ZsBloodPressureReal;
 import com.yjjk.monitor.entity.pojo.ZsHealthInfo;
 import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
 import com.yjjk.monitor.entity.pojo.ZsSleepingBeltInfo;
@@ -176,11 +177,11 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
 
     @Override
-    public List<MachineExportVO> export(ZsMachineInfo machineInfo,Integer language) {
+    public List<MachineExportVO> export(ZsMachineInfo machineInfo, Integer language) {
         List<MachineExport> list = super.zsMachineInfoMapper.export(machineInfo);
         List<MachineExportVO> reqList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            reqList.add(list.get(i).transBean(list.get(i),language));
+            reqList.add(list.get(i).transBean(list.get(i), language));
         }
         return reqList;
     }
@@ -294,6 +295,15 @@ public class MachineServiceImpl extends BaseService implements MachineService {
                     createTIme = zsSleepingBeltInfo.getCreateTime();
                 }
                 break;
+            case MachineConstant.BLOOD_PRESSURE:
+                ZsBloodPressureReal zsBloodPressureReal = super.zsBloodPressureRealMapper.getByMachineId((Integer) map.get("machineId"));
+                if (zsBloodPressureReal != null) {
+                    repeaterId = zsBloodPressureReal.getRepeaterId();
+                    createTIme = zsBloodPressureReal.getCreateTime();
+                } else {
+                    zsBloodPressureReal = new ZsBloodPressureReal();
+                }
+                break;
             default:
                 return ResultUtil.returnError(ErrorCodeEnum.ERROR_MACHINE_TYPE);
         }
@@ -308,7 +318,7 @@ public class MachineServiceImpl extends BaseService implements MachineService {
             }
         }
         boolean flag = false;
-        if (repeaterId == null || createTIme == null) {
+        if (repeaterId == null || repeaterId == -1 || createTIme == null) {
             searchMachineVOBase.setStatus(2);
             return ResultUtil.returnSuccess(searchMachineVOBase, "没有搜索到设备");
         } else {
