@@ -20,7 +20,7 @@
     <select id="getHistories" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.history.BloodPressureHistoryData">
         select
-        blood_pressure,timestamp
+        sys,dia,timestamp
         from zs_blood_pressure_info
         <where>
             <if test="machineId != null">
@@ -34,7 +34,8 @@
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorBloodPressureVO">
         SELECT
         rbp.`id` as recordId,
-        zbpr.blood_pressure,
+        zbpr.sys,
+        zbpr.dia,
         zbpr.update_time as timestamp
         FROM
         record_blood_pressure rbp
@@ -43,6 +44,7 @@
         on
         rbp.machine_id = zbpr.`machine_id`
         <where>
+            zbpr.update_time <![CDATA[>=]]> rbp.start_time
             <if test="recordId != null">
                 and rbp.id = #{recordId,jdbcType=INTEGER}
             </if>

@@ -85,6 +85,12 @@ public class StringUtils {
         return false;
     }
 
+    public static boolean isNullOrZero(Integer param) {
+        if (param != null && param != 0) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * 除字符串中的空格、回车、换行符、制表符

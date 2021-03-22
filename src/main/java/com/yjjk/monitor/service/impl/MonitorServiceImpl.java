@@ -11,6 +11,7 @@
 package com.yjjk.monitor.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.BatteryConstant;
@@ -59,7 +60,6 @@ import com.yjjk.monitor.entity.pojo.ZsSleepingBeltInfo;
 import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
 import com.yjjk.monitor.entity.transaction.BackgroundResult;
 import com.yjjk.monitor.entity.transaction.BackgroundSend;
-import com.yjjk.monitor.mapper.ZsBloodPressureInfoMapper;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.EcgService;
 import com.yjjk.monitor.service.MachineService;
@@ -501,8 +501,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordBloodPressure recordBloodPressure = super.recordBloodPressureMapper.selectByPrimaryKey(recordId);
         if (recordId != -1 && recordBloodPressure.getRecordStatus().equals(MonitorEnum.CHILDREN_RECORD_USED.getType())) {
             data = super.recordBloodPressureMapper.getBloodPressure(recordBloodPressure.getMachineId(), recordId);
+            if (data == null) {
+                data.setTimestamp(DateUtil.getCurrentTime()).setSys(0).setDia(0);
+            }
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType())
-            .setTimestamp(DateUtil.format(data.getTimestamp(),"MM/dd, HH:mm:ss"));
+                    .setTimestamp(DateUtil.format(data.getTimestamp(), "MM/dd, HH:mm:ss"));
         }
         if (StringUtils.isNullorEmpty(data.getRecordState())) {
             data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
@@ -645,7 +648,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         }
         list.add(pojo4);
         // bloodPressure
-        MonitorMachineListVO pojo5= new MonitorMachineListVO();
+        MonitorMachineListVO pojo5 = new MonitorMachineListVO();
         if (recordBase.getRecordBloodPressureId() != -1) {
             RecordBloodPressure recordBloodPressure = super.recordBloodPressureMapper.selectByPrimaryKey(recordBase.getRecordBloodPressureId());
             ZsMachineInfo byMachineId = super.zsMachineInfoMapper.getByMachineId(recordBloodPressure.getMachineId());
@@ -1175,6 +1178,15 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     @Override
     public CommonResult startBloodPressureMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
+        // 连接心电设备
+        BackgroundResult backgroundResult = null;
+        ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+        backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
+        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+        }
+
         if (recordBase.getRecordSleepingId().equals(RecordBaseEnum.MACHINE_UN_USE.getType())) {
             // 未启用过则新建record
             RecordBloodPressure recordBloodPressure = new RecordBloodPressure();

@@ -25,7 +25,9 @@ import lombok.experimental.Accessors;
 @ApiModel(description = "血压历史数据")
 public class BloodPressureHistoryData extends BaseData {
 
-    @ApiModelProperty(value = "血压")
-    private Integer bloodPressure;
+    @ApiModelProperty(value = "舒张压")
+    private Integer dia;
+    @ApiModelProperty(value = "收缩压")
+    private Integer sys;
 
 }

@@ -51,8 +51,18 @@ public class ZsBloodPressureReal {
     private Integer status;
 
     /**
-     * 血压
+     * 心率
      */
-    @Column(name = "blood_pressure")
-    private String bloodPressure;
+    @Column(name = "hr")
+    private Integer hr;
+    /**
+     * 收缩压
+     */
+    @Column(name = "sys")
+    private Integer sys;
+    /**
+     * 舒张压
+     */
+    @Column(name = "dia")
+    private Integer dia;
 }

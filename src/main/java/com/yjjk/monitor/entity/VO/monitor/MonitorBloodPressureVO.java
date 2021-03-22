@@ -28,8 +28,10 @@ public class MonitorBloodPressureVO {
     /**
      * param
      */
-    @ApiModelProperty(value = "param：血氧")
-    private String bloodPressure;
+    @ApiModelProperty(value = "param：收缩压")
+    private Integer sys;
+    @ApiModelProperty(value = "param：扩张压")
+    private Integer dia;
     @ApiModelProperty(value = "param：时间戳")
     private String timestamp;
 }

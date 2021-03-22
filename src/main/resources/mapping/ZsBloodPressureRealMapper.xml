@@ -7,11 +7,13 @@
     -->
     <result column="id" property="id" jdbcType="INTEGER" />
     <result column="machine_id" property="machineId" jdbcType="VARCHAR" />
+    <result column="hr" property="hr" jdbcType="INTEGER" />
+    <result column="sys" property="sys" jdbcType="INTEGER" />
+    <result column="dia" property="dia" jdbcType="INTEGER" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="timestamp" property="timestamp" jdbcType="BIGINT" />
     <result column="repeaterId" property="repeaterid" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="blood_pressure" property="bloodPressure" jdbcType="LONGVARCHAR" />
   </resultMap>
 </mapper>
