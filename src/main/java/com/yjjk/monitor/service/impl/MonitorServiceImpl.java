@@ -11,7 +11,6 @@
 package com.yjjk.monitor.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.BatteryConstant;
@@ -501,8 +500,16 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordBloodPressure recordBloodPressure = super.recordBloodPressureMapper.selectByPrimaryKey(recordId);
         if (recordId != -1 && recordBloodPressure.getRecordStatus().equals(MonitorEnum.CHILDREN_RECORD_USED.getType())) {
             data = super.recordBloodPressureMapper.getBloodPressure(recordBloodPressure.getMachineId(), recordId);
+            // 无数据
             if (data == null) {
-                data.setTimestamp(DateUtil.getCurrentTime()).setSys(0).setDia(0);
+                data = new MonitorBloodPressureVO();
+                data.setTimestamp(DateUtil.getCurrentTime()).setBloodPressure("!").setDia(0).setSys(0);
+            }
+            // 空值
+            if (StringUtils.isNullOrZero(data.getDia()) && StringUtils.isNullOrZero(data.getSys())) {
+                data.setBloodPressure("!");
+            } else {
+                data.setBloodPressure(data.getSys().toString() + "/" + data.getDia().toString());
             }
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType())
                     .setTimestamp(DateUtil.format(data.getTimestamp(), "MM/dd, HH:mm:ss"));
