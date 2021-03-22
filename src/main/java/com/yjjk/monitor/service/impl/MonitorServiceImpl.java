@@ -504,10 +504,6 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             if (data == null) {
                 data = new MonitorBloodPressureVO();
                 data.setTimestamp(DateUtil.getCurrentTime()).setBloodPressure("!").setDia(0).setSys(0);
-            }
-            // 空值
-            if (StringUtils.isNullOrZero(data.getDia()) && StringUtils.isNullOrZero(data.getSys())) {
-                data.setBloodPressure("!");
             } else {
                 data.setBloodPressure(data.getSys().toString() + "/" + data.getDia().toString());
             }
