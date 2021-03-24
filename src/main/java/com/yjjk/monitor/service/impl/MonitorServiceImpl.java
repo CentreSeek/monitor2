@@ -503,7 +503,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             // 无数据
             if (data == null) {
                 data = new MonitorBloodPressureVO();
-                data.setTimestamp(DateUtil.getCurrentTime()).setBloodPressure("!").setDia(0).setSys(0);
+                data.setTimestamp(DateUtil.getCurrentTime()).setBloodPressure("").setDia(0).setSys(0);
             } else {
                 data.setBloodPressure(data.getSys().toString() + "/" + data.getDia().toString());
             }
