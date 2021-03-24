@@ -1,5 +1,6 @@
 package com.yjjk.monitor.mapper;
 
+import com.yjjk.monitor.entity.VO.StaticsRecordVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBloodPressureVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBloodVO;
 import com.yjjk.monitor.entity.history.BloodPressureHistoryData;
@@ -10,6 +11,18 @@ import com.yjjk.monitor.my.mapper.MyMapper;
 import java.util.List;
 
 public interface RecordBloodPressureMapper extends MyMapper<RecordBloodPressure> {
+
+    /**
+     * 统计数据
+     *
+     * @param departmentId
+     * @param start
+     * @param end
+     * @param getDeleteDepartment
+     * @return
+     */
+    List<StaticsRecordVO> getRecordsPeriod(Integer departmentId, String start, String end, String getDeleteDepartment);
+
     /**
      * 获取某设备的数据
      *

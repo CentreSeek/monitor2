@@ -28,7 +28,7 @@ public class MonitorMachineListVO {
     private Integer machineTypeId;
     @ApiModelProperty(value = "设备类型id：level-1")
     private Integer machineTypeIdChild;
-    @ApiModelProperty(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应")
+    @ApiModelProperty(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压")
     private Integer type;
 //    @ApiModelProperty(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应")
 //    private String typeName;

@@ -51,6 +51,9 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
         if (type.equals(MachineEnum.SLEEPING.getType())) {
             recordsPeriod = super.recordSleepingMapper.getRecordsPeriod(departmentId, start, end, "get");
         }
+        if (type.equals(MachineEnum.BLOOD_PRESSURE.getType())) {
+            recordsPeriod = super.recordBloodPressureMapper.getRecordsPeriod(departmentId, start, end, "get");
+        }
         for (StaticsRecordVO staticsRecordVO : recordsPeriod) {
             String tempDate = parseDate(staticsRecordVO.getStartTime());
             map.put(tempDate, map.get(tempDate) + 1);

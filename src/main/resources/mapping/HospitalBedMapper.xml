@@ -63,7 +63,10 @@
         </if>
         <if test="type == 3">
             and machine_sleeping_state <![CDATA[<>]]> 0
-        </if>)
+        </if>
+        <if test="type == 4">
+            and machine_blood_pressure_state <![CDATA[<>]]> 0
+        </if>))
     </select>
     <select id="getBedCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         SELECT count(*)

@@ -47,7 +47,7 @@ public class StaticsController extends BaseController {
     public CommonResult<String[][]> useMachines(@ApiParam(value = "科室id") @RequestParam(value = "departmentId", required = false) Integer departmentId,
                                                 @ApiParam(value = "起始日期", example = "2020-08-05", required = true) @RequestParam(value = "start") String start,
                                                 @ApiParam(value = "终止日期", example = "2020-08-06", required = true) @RequestParam(value = "end") String end,
-                                                @NotNull @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应", required = true) @RequestParam(value = "type") Integer type) {
+                                                @NotNull @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压", required = true) @RequestParam(value = "type") Integer type) {
         Map<String, Integer> machineStatics = super.staticsService.getMachineStatics(departmentId, type, start, end);
         return ResultUtil.returnSuccess(DataUtils.map2Arr(machineStatics));
     }

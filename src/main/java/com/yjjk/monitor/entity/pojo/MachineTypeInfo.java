@@ -45,7 +45,7 @@ public class MachineTypeInfo {
     private String createTime;
 
     private Integer status;
-    @ApiModelProperty(value = "0-体温 1-心电 2-血氧 3-离床感应")
+    @ApiModelProperty(value = "0-体温 1-心电 2-血氧 3-离床感应 4-血压")
     @Column(name = "type_code")
     private Integer typeCode;
 

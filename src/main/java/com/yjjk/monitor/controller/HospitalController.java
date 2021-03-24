@@ -116,7 +116,7 @@ public class HospitalController extends BaseController {
     @ApiOperation("获取未启用某设备的空床位")
     @RequestMapping(value = {"/monitorEmptyBeds"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     public CommonResult<List<HospitalBed>> getMonitorEmptyBeds(@RequestParam("departmentId") Integer departmentId,
-                                                               @ApiParam(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam("type") Integer type) {
+                                                               @ApiParam(value = "类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam("type") Integer type) {
         List<HospitalBed> HospitalBeds = this.hospitalService.selectMonitorEmptyBeds(departmentId, type);
         return ResultUtil.returnSuccess(HospitalBeds);
     }
