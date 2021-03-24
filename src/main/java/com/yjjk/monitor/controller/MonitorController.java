@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -50,6 +51,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("monitor")
+@Validated
 @Api(tags = {"监控模块"})
 public class MonitorController extends BaseController {
 
@@ -58,7 +60,7 @@ public class MonitorController extends BaseController {
     /****************************** 启用设备 ******************************/
     @ApiOperation(value = "获取病人信息")
     @RequestMapping(value = "/patient", method = RequestMethod.GET)
-    public synchronized CommonResult<PatientInfo> checkPatient(@ApiParam(value = "床位号", required = true) @RequestParam("bedId") Integer bedId) {
+    public synchronized CommonResult<PatientInfo> checkPatient(@ApiParam(value = "床位号", required = true) @RequestParam("bedId") @NotNull Integer bedId) {
         PatientInfo patientInfo = super.patientService.getPatientInfo(bedId);
         return ResultUtil.returnSuccess(patientInfo);
     }
@@ -92,9 +94,9 @@ public class MonitorController extends BaseController {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @ApiOperation("更换设备")
     @RequestMapping(value = "/changeMachine", method = RequestMethod.PUT)
-    public CommonResult changeTemperatureMachine(@RequestParam(value = "baseId") Integer baseId,
-                                                 @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam(value = "type") Integer type,
-                                                 @ApiParam(value = "新设备id") @RequestParam(value = "machineId") Integer machineId, HttpServletRequest request) {
+    public CommonResult changeTemperatureMachine(@RequestParam(value = "baseId") @NotNull Integer baseId,
+                                                 @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam(value = "type") @NotNull Integer type,
+                                                 @ApiParam(value = "新设备id") @RequestParam(value = "machineId") @NotNull Integer machineId, HttpServletRequest request) {
         try {
             return super.monitorService.changeMachine(baseId, type, machineId, request.getHeader("token"));
         } catch (Exception e) {
@@ -109,8 +111,8 @@ public class MonitorController extends BaseController {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @ApiOperation("更换床位")
     @RequestMapping(value = {"/bed"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT})
-    public synchronized CommonResult changeBed(@ApiParam(value = "新床位号", required = true) @RequestParam("newBedId") Integer newBedId,
-                                               @ApiParam(value = "现床位号", required = true) @RequestParam("currentBedId") Integer currentBedId, HttpServletRequest request) {
+    public synchronized CommonResult changeBed(@ApiParam(value = "新床位号", required = true) @RequestParam("newBedId") @NotNull Integer newBedId,
+                                               @ApiParam(value = "现床位号", required = true) @RequestParam("currentBedId") @NotNull Integer currentBedId, HttpServletRequest request) {
         return super.monitorService.changeBed(currentBedId, newBedId, request.getHeader("token"));
     }
 
@@ -118,8 +120,8 @@ public class MonitorController extends BaseController {
 //    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @ApiOperation("停止监测")
     @RequestMapping(value = "/record", method = RequestMethod.PUT)
-    public CommonResult stopRecord(@RequestParam(value = "baseId") Integer baseId,
-                                   @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam(value = "type") Integer type, HttpServletRequest request) throws Exception {
+    public CommonResult stopRecord(@RequestParam(value = "baseId") @NotNull Integer baseId,
+                                   @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam(value = "type") @NotNull Integer type, HttpServletRequest request) throws Exception {
         /********************** 参数初始化 **********************/
         return super.monitorService.stopMachine(baseId, type, request.getHeader("token"));
     }
@@ -169,7 +171,7 @@ public class MonitorController extends BaseController {
 
     @ApiOperation("获取监测规则")
     @RequestMapping(value = "/rule", method = RequestMethod.GET)
-    public CommonResult<List<MonitorRule>> getRule(@ApiParam(value = "科室id，值为-1获取默认规则", required = true) @RequestParam(value = "departmentId") Integer departmentId,
+    public CommonResult<List<MonitorRule>> getRule(@ApiParam(value = "科室id，值为-1获取默认规则", required = true) @NotNull @RequestParam(value = "departmentId") Integer departmentId,
                                                    @RequestParam(value = "patientId", required = false) Integer patientId) {
         List<MonitorRule> rules = null;
         if (!StringUtils.isNullorEmpty(patientId)) {

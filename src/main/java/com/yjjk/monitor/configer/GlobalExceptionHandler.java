@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.UnexpectedTypeException;
 import java.net.ConnectException;
 import java.text.ParseException;
@@ -68,13 +69,24 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = MissingServletRequestParameterException.class)
-    public CommonResult processConnectionException(MissingServletRequestParameterException e) {
+    public CommonResult processMissingServletRequestParameterException(MissingServletRequestParameterException e) {
 
         /**
          * 未知异常
          */
         logger.error("参数错误：[{}]", e.getMessage(), e);
         return ResultUtil.returnError(ErrorCodeEnum.PARAM_ERROR);
+
+    }
+
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public CommonResult processConstraintViolationException(ConstraintViolationException e) {
+
+        /**
+         * 未知异常
+         */
+        logger.error("参数错误：[{}]", e.getMessage(), e);
+        return ResultUtil.returnError(ErrorCodeEnum.PARAM_ERROR + ":  " + e.getMessage());
 
     }
 
