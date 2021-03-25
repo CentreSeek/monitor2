@@ -72,11 +72,11 @@ public class PatientServiceImpl extends BaseService implements PatientService {
                         return null;
                     }
                 }
-            } else {
-                // 未在监护状态则更新姓名
-                zsPatientInfo.setName(name);
             }
             // 更新患者姓名
+            if (!zsPatientInfo.getName().equals(name) && !zsPatientInfo.getName().equals(StringUtils.replaceNameX(name))) {
+                zsPatientInfo.setName(name);
+            }
             zsPatientInfo.setLevelOfNursing(levelOfNursing);
             super.patientInfoMapper.updateByPrimaryKeySelective(zsPatientInfo);
         }

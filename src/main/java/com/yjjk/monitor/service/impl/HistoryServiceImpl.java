@@ -160,6 +160,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
             default:
                 break;
         }
+        // 患者姓名脱敏
         for (RecordsHistory recordsHistory : list) {
             recordsHistory.setPatientName(StringUtils.replaceNameX(recordsHistory.getPatientName()));
         }
