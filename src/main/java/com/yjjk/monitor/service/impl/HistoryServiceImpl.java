@@ -56,14 +56,10 @@ import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.plaf.metal.MetalIconFactory;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author CentreS
@@ -147,22 +143,27 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
     public PagedGridResult getHistory(PageBO pageBO, GetRecordsBO bo) {
         bo.setPatientName(StringUtils.getLikeName(bo.getPatientName()));
         PageHelper.startPage(pageBO.getPage(), pageBO.getPageSize());
+        List<RecordsHistory> list = new ArrayList<>();
         switch (bo.getType()) {
             case MachineConstant.TEMPERATURE:
-                List<RecordsHistory> list = super.recordTemperatureMapper.getHistoryRecords(bo);
-                return setterPagedGrid(list, pageBO.getPage());
+                list = super.recordTemperatureMapper.getHistoryRecords(bo);
+                break;
             case MachineConstant.ECG:
-                List<RecordsHistory> historyRecords = super.recordEcgMapper.getHistoryRecords(bo);
-                return setterPagedGrid(historyRecords, pageBO.getPage());
+                list = super.recordEcgMapper.getHistoryRecords(bo);
+                break;
             case MachineConstant.BLOOD:
-                List<RecordsHistory> historyRecords1 = super.recordBloodMapper.getHistoryRecords(bo);
-                return setterPagedGrid(historyRecords1, pageBO.getPage());
+                list = super.recordBloodMapper.getHistoryRecords(bo);
+                break;
             case MachineConstant.SLEEPING:
-                List<RecordsHistory> historyRecords2 = super.recordSleepingMapper.getHistoryRecords(bo);
-                return setterPagedGrid(historyRecords2, pageBO.getPage());
+                list = super.recordSleepingMapper.getHistoryRecords(bo);
+                break;
             default:
-                return setterPagedGrid(new ArrayList<>(), pageBO.getPage());
+                break;
         }
+        for (RecordsHistory recordsHistory : list) {
+            recordsHistory.setPatientName(StringUtils.replaceNameX(recordsHistory.getPatientName()));
+        }
+        return setterPagedGrid(list, pageBO.getPage());
     }
 
 
