@@ -87,12 +87,12 @@ public class TimingPlan{
     /**
      * 心电数据清除计划
      */
-    @Scheduled(cron = "0 0 0 1/7 * ?")
-    private void cleanEcgExport() {
-        String date = DateUtil.getCurrentTime();
-        int j = ecgService.cleanEcgExport();
-        logger.info("执行心电数据清理计划     时间: " + date + "   执行条数:" + j);
-    }
+//    @Scheduled(cron = "0 0 0 1/7 * ?")
+//    private void cleanEcgExport() {
+//        String date = DateUtil.getCurrentTime();
+//        int j = ecgService.cleanEcgExport();
+//        logger.info("执行心电数据清理计划     时间: " + date + "   执行条数:" + j);
+//    }
 
 
 }
