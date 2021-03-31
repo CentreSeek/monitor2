@@ -180,12 +180,10 @@ public class StringUtils {
         name = name.trim();
         builder.append(name.charAt(0));
         if (name.length() > 2) {
-            for (int i = 0; i < name.length() - 2; i++) {
-                builder.append("☆");
-            }
+            builder.append("*");
             builder.append(name.charAt(name.length() - 1));
         } else if (name.length() == 2) {
-            builder.append("☆");
+            builder.append("*");
         }
         return builder.toString();
     }
