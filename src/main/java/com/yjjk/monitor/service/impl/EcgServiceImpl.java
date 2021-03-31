@@ -20,6 +20,7 @@ import com.yjjk.monitor.utility.NetUtils;
 import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.net.ConnectException;
 
 /**
@@ -293,6 +294,19 @@ public class EcgServiceImpl extends BaseService implements EcgService {
     @Override
     public int cleanEcgExport() {
         return zsEcgInfoMapper.deleteEcgData(DateUtil.getCurrentTimeLong() - 30 * 24 * 60 * 60 * 1000, null);
+    }
+
+    public static void main(String[] args) {
+        BigDecimal aMonth = new BigDecimal(30);
+        aMonth = aMonth.multiply(new BigDecimal(24));
+        aMonth = aMonth.multiply(new BigDecimal(60));
+        aMonth = aMonth.multiply(new BigDecimal(60));
+        aMonth = aMonth.multiply(new BigDecimal(1000));
+        BigDecimal cur = new BigDecimal(System.currentTimeMillis());
+        BigDecimal result = cur.subtract(aMonth);
+        System.out.println(DateUtil.getDateTime(result.longValue()));
+        long l = 30 * 24 * 60 * 60 * 1000L;
+        System.out.println(DateUtil.getDateTime(System.currentTimeMillis() - l));
     }
 
     @Override

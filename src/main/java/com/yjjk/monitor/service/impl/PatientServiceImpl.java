@@ -74,7 +74,7 @@ public class PatientServiceImpl extends BaseService implements PatientService {
                 }
             }
             // 更新患者姓名
-            if (!zsPatientInfo.getName().equals(name) && !zsPatientInfo.getName().equals(StringUtils.replaceNameX(name))) {
+            if (!zsPatientInfo.getName().equals(name) && !StringUtils.replaceNameX(zsPatientInfo.getName()).equals(name)) {
                 zsPatientInfo.setName(name);
             }
             zsPatientInfo.setLevelOfNursing(levelOfNursing);
