@@ -36,8 +36,8 @@
                zei.ecg
         FROM `zs_ecg_info` zei
         WHERE zei.machine_id = #{machineId,jdbcType=INTEGER}
-          and zei.create_time <![CDATA[>=]]> #{startTime,jdbcType=VARCHAR}
-          and zei.create_time <![CDATA[<=]]> #{endTime,jdbcType=VARCHAR}
+          and zei.timestamp <![CDATA[>=]]> #{startTime,jdbcType=BIGINT}
+          and zei.timestamp <![CDATA[<=]]> #{endTime,jdbcType=BIGINT}
         ORDER BY zei.TIMESTAMP
     </select>
 

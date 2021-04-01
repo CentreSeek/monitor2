@@ -20,7 +20,7 @@ public interface ZsEcgInfoMapper extends MyMapper<ZsEcgInfo> {
      */
     int deleteEcgData(Long timestamp, Integer machineId);
 
-    List<ZsEcgInfo> getEcgs(Integer machineId, String startTime, String endTime);
+    List<ZsEcgInfo> getEcgs(Integer machineId, Long startTime, Long endTime);
     /**
      * 获取心电贴最新心电数据
      *

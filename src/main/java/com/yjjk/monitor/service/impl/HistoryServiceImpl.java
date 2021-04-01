@@ -75,7 +75,7 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
         RecordEcg recordEcg = recordEcgMapper.selectByPrimaryKeyNoneHistory(recordBase.getRecordEcgId());
         ZsMachineInfo machineInfo = zsMachineInfoMapper.getByMachineId(recordEcg.getMachineId());
         PatientInfo patientInfo = patientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());
-        List<ZsEcgInfo> ecgs = zsEcgInfoMapper.getEcgs(machineInfo.getMachineId(), timestamp + " 00:00:00", timestamp + " 24:00:00");
+        List<ZsEcgInfo> ecgs = zsEcgInfoMapper.getEcgs(machineInfo.getMachineId(), DateUtil.getDateTimeLong(timestamp + " 00:00:00"), DateUtil.getDateTimeLong(timestamp + " 24:00:00"));
         int[] ints = DataUtils.parseData(ecgs);
         if (!StringUtils.isNullorEmpty(ecgs)) {
             return Mit16Util.writeMit16File(patientInfo.getCaseNum(), ecgs.get(0).getTimestamp(), ints);
