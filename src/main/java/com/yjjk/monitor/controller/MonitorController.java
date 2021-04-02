@@ -51,7 +51,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("monitor")
-@Validated
 @Api(tags = {"监控模块"})
 public class MonitorController extends BaseController {
 

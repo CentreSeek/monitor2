@@ -46,7 +46,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("history")
-@Validated
 @Api(tags = {"历史记录模块"})
 public class HistoryController extends BaseController {
 

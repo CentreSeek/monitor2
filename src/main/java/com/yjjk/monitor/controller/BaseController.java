@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.annotation.Resource;
@@ -37,6 +38,7 @@ import java.util.Map;
  * @create 2019-06-18
  */
 @CrossOrigin
+@Validated
 public class BaseController {
 
     protected static Logger logger = LoggerFactory.getLogger(BaseController.class);
