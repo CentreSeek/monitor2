@@ -16,6 +16,30 @@
         <result column="updated_time" property="updatedTime" jdbcType="VARCHAR"/>
         <result column="history" property="history" jdbcType="LONGVARCHAR"/>
     </resultMap>
+
+    <select id="getExportEcgRecordIds" parameterType="java.util.Map"
+            resultType="com.yjjk.monitor.entity.pojo.RecordEcg">
+        SELECT
+        record.id,
+        record.base_id,
+        record.machine_id,
+        record.record_status,
+        record.start_time,
+        record.end_time,
+        record.status,
+        record.created_time,
+        record.updated_time
+        FROM record_ecg record
+        left join record_base rb on record.base_id = rb.id
+        <where>
+            record.status = 0 and rb.status = 0
+            <if test="date != null">
+                and rb.start_time <![CDATA[<=]]> CONCAT(#{date, jdbcType=VARCHAR},' 24:00:00')
+                and (rb.end_time is null or rb.end_time <![CDATA[>=]]> CONCAT(#{date, jdbcType=VARCHAR},' 00:00:00'))
+            </if>
+        </where>
+    </select>
+
     <select id="selectByPrimaryKeyNoneHistory" parameterType="java.lang.Integer"
             resultType="com.yjjk.monitor.entity.pojo.RecordEcg">
         SELECT id,

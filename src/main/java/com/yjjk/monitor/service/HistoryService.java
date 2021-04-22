@@ -29,6 +29,14 @@ import java.util.List;
  */
 @Service
 public interface HistoryService {
+    /**
+     * 获取导出文件名
+     *
+     * @param timestamp
+     * @param baseId
+     * @return
+     */
+    String getEcgExportFileName(String timestamp, Integer baseId);
 
     /**
      * mit16心电文件导出

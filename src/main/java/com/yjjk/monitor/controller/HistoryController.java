@@ -116,8 +116,9 @@ public class HistoryController extends BaseController {
     public CommonResult ecgExport(@RequestParam(value = "baseId") @NotNull Integer baseId,
                                   @ApiParam(value = "日期yyyy-MM-dd") @RequestParam(value = "timestamp") @NotNull String timestamp,
                                   HttpServletResponse response) {
-        String download = historyService.ecgExport(timestamp, baseId);
+//        String download = historyService.ecgExport(timestamp, baseId);
 //        FileUtils.download(download,response);
+        String download = historyService.getEcgExportFileName(timestamp, baseId);
         try {
             CompressDownloadUtil.compressEcgAsZip(download, response);
             return null;

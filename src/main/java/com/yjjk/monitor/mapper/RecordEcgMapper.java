@@ -15,6 +15,14 @@ import java.util.List;
 public interface RecordEcgMapper extends MyMapper<RecordEcg> {
 
     /**
+     * 获取需要导出的RecordId
+     *
+     * @param date
+     * @return
+     */
+    List<RecordEcg> getExportEcgRecordIds(String date);
+
+    /**
      * 统计数据
      *
      * @param departmentId

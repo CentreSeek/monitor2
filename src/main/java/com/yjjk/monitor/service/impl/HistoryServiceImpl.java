@@ -13,6 +13,7 @@ package com.yjjk.monitor.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.vivalnk.sdk.Mit16Util;
+import com.vivalnk.sdk.utils.DateFormat;
 import com.yjjk.monitor.constant.ExportExcelConstant;
 import com.yjjk.monitor.constant.MachineConstant;
 import com.yjjk.monitor.constant.MonitorConstant;
@@ -68,6 +69,15 @@ import java.util.List;
  */
 @Service
 public class HistoryServiceImpl extends BaseService implements HistoryService {
+
+    @Override
+    public String getEcgExportFileName(String timestamp, Integer baseId) {
+        Long param = DateUtil.getDateTimeLong(timestamp + " 00:00:00");
+        String fileTimestamp = DateFormat.format(param, "yyMMdd");
+        RecordBase recordBase = recordBaseMapper.selectByPrimaryKey(baseId);
+        PatientInfo patientInfo = patientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());
+        return patientInfo.getCaseNum() + "_" + fileTimestamp;
+    }
 
     @Override
     public String ecgExport(String timestamp, Integer baseId) {
