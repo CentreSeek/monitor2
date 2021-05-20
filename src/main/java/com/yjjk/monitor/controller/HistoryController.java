@@ -97,18 +97,19 @@ public class HistoryController extends BaseController {
 
     @ApiOperation("page历史记录：单人导出")
     @RequestMapping(value = "/privateExport", method = RequestMethod.GET)
-    public void privateExport(@ApiParam(value = "筛选规则，筛选大于该摄氏度的体温") @RequestParam(value = "temperature", required = false) Double temperature,
-                              @ApiParam(value = "recordId", required = true) @RequestParam(value = "recordId") @NotNull Integer recordId,
-                              @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type,
-                              @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language", required = false, defaultValue = "0") Integer language,
-                              @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType", required = false, defaultValue = "0") Integer temType,
-                              HttpServletResponse response) throws IOException {
+    public CommonResult privateExport(@ApiParam(value = "筛选规则，筛选大于该摄氏度的体温") @RequestParam(value = "temperature", required = false) Double temperature,
+                                      @ApiParam(value = "recordId", required = true) @RequestParam(value = "recordId") @NotNull Integer recordId,
+                                      @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type,
+                                      @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language", required = false, defaultValue = "0") Integer language,
+                                      @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType", required = false, defaultValue = "0") Integer temType,
+                                      HttpServletResponse response) throws IOException {
         Object historyData = super.historyService.getHistoryData(type, recordId);
         if (type == MachineConstant.TEMPERATURE && temperature != null) {
             historyData = super.historyService.filterTemperatureData((TemperatureHistory) historyData, temperature);
         }
         List privateExportHistoryList = super.historyService.getPrivateExportHistoryList(type, recordId, historyData);
         super.historyService.export(response, type, privateExportHistoryList, language, temType);
+        return ResultUtil.returnSuccess();
     }
 
     @ApiOperation("page历史记录：导出心电")
