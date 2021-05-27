@@ -56,56 +56,57 @@ public class TimingPlan extends BaseService {
     /**
      * 实时心电数据推送
      */
-    @Scheduled(cron = "*/1 * * * * ?")
-    private void pushEcgInfo() {
-        CopyOnWriteArraySet<WebSocketServer> webSocketSet =
-                WebSocketServer.getWebSocketSet();
-//        int i = 0;
-        webSocketSet.forEach(c -> {
-            try {
-                Map<String, Object> paraMap = new HashMap<>();
-                Long currentTime = System.currentTimeMillis();
-                if (c.getTimeStamp() == 0) {
-                    c.setTimeStamp(currentTime);
-                }
-                paraMap.put("machineId", c.getMachineId());
-                paraMap.put("timestamp", c.getTimeStamp());
-                List<ZsEcgInfo> newEcg = zsEcgInfoMapper.getNewEcg(paraMap);
-                for (int i = 0; i < newEcg.size(); i++) {
-                    if ((currentTime - newEcg.get(i).getTimestamp()) < 15 * 1000) {
-                        c.getQueue().offer(JSONArray.toJSONString(newEcg.get(i)));
-                        c.setTimeStamp(newEcg.get(i).getTimestamp());
-                    }
-                }
-                if (!c.getQueue().isEmpty()) {
-                    c.sendMessage(c.getQueue().poll());
-                } else {
-                    c.sendMessage("");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
+//    @Scheduled(cron = "*/1 * * * * ?")
+//    private void pushEcgInfo() {
+//        CopyOnWriteArraySet<WebSocketServer> webSocketSet =
+//                WebSocketServer.getWebSocketSet();
+////        int i = 0;
+//        webSocketSet.forEach(c -> {
+//            try {
+//                Map<String, Object> paraMap = new HashMap<>();
+//                Long currentTime = System.currentTimeMillis();
+//                if (c.getTimeStamp() == 0) {
+//                    c.setTimeStamp(currentTime);
+//                }
+//                paraMap.put("machineId", c.getMachineId());
+//                paraMap.put("timestamp", c.getTimeStamp());
+//                List<ZsEcgInfo> newEcg = zsEcgInfoMapper.getNewEcg(paraMap);
+//                for (int i = 0; i < newEcg.size(); i++) {
+//                    if ((currentTime - newEcg.get(i).getTimestamp()) < 15 * 1000) {
+//                        c.getQueue().offer(JSONArray.toJSONString(newEcg.get(i)));
+//                        c.setTimeStamp(newEcg.get(i).getTimestamp());
+//                    }
+//                }
+//                if (!c.getQueue().isEmpty()) {
+//                    c.sendMessage(c.getQueue().poll());
+//                } else {
+//                    c.sendMessage("");
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//    }
 
-    @Scheduled(cron = "0 0 0 * * ? ")
-//    @Scheduled(cron = "0 * * * * ? ")
-    private void exportMit16() {
-        System.out.println("执行定时任务=====================================================");
-        String lastDay = DateUtil.format(DateUtil.modifyDateTime(DateUtil.getCurrentTime(), Calendar.DATE, -1), "yyyy-MM-dd");
-        List<RecordEcg> records = recordEcgMapper.getExportEcgRecordIds(lastDay);
-        for (RecordEcg recordEcg : records) {
-            RecordBase recordBase = recordBaseMapper.selectByPrimaryKey(recordEcg.getBaseId());
-            ZsMachineInfo machineInfo = zsMachineInfoMapper.getByMachineId(recordEcg.getMachineId());
-            PatientInfo patientInfo = patientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());
-            List<ZsEcgInfo> ecgs = zsEcgInfoMapper.getEcgs(machineInfo.getMachineId(), DateUtil.getDateTimeLong(lastDay + " 00:00:00"), DateUtil.getDateTimeLong(lastDay + " 24:00:00"));
-            int[] ints = DataUtils.parseData(ecgs);
-            if (!StringUtils.isNullorEmpty(ecgs)) {
-                Mit16Util.writeMit16File(patientInfo.getCaseNum(), ecgs.get(0).getTimestamp(), ints);
-            }
-//            CompressDownloadUtil.compressEcgAsZip(path, response);
-        }
-        logger.info("执行定时任务，导出：" + records.size() + "条");
-    }
+//    @Scheduled(cron = "0 0 0 * * ? ")
+////    @Scheduled(cron = "0 * * * * ? ")
+//    private void exportMit16() {
+//        System.out.println("执行定时任务=====================================================");
+//        String lastDay = DateUtil.format(DateUtil.modifyDateTime(DateUtil.getCurrentTime(), Calendar.DATE, -1), "yyyy-MM-dd");
+//        List<RecordEcg> records = recordEcgMapper.getExportEcgRecordIds(lastDay);
+//        for (RecordEcg recordEcg : records) {
+//            RecordBase recordBase = recordBaseMapper.selectByPrimaryKey(recordEcg.getBaseId());
+//            ZsMachineInfo machineInfo = zsMachineInfoMapper.getByMachineId(recordEcg.getMachineId());
+//            PatientInfo patientInfo = patientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());
+//            List<ZsEcgInfo> ecgs = zsEcgInfoMapper.getEcgs(machineInfo.getMachineId(), DateUtil.getDateTimeLong(lastDay + " 00:00:00"), DateUtil.getDateTimeLong(lastDay + " 24:00:00"));
+//            int[] ints = DataUtils.parseData(ecgs);
+//            if (!StringUtils.isNullorEmpty(ecgs)) {
+//                Mit16Util.writeMit16File(patientInfo.getCaseNum(), ecgs.get(0).getTimestamp(), ints);
+//            }
+////            CompressDownloadUtil.compressEcgAsZip(path, response);
+//        }
+//        logger.info("执行定时任务，导出：" + records.size() + "条");
+//    }
+
 
 }

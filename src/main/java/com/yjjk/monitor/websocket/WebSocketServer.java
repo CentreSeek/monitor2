@@ -1,5 +1,7 @@
 package com.yjjk.monitor.websocket;
 
+import com.alibaba.fastjson.JSON;
+import com.yjjk.monitor.entity.websocket.MonitorParam;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,63 +9,58 @@ import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
+import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
-@ServerEndpoint("/websocket/{machineId}")
+@ServerEndpoint("/websocket/{departmentId}")
 @Component
 @Data
 public class WebSocketServer {
 
     protected static Logger log = LoggerFactory.getLogger(WebSocketServer.class);
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
-    private static int onlineCount = 0;
+    private static AtomicInteger onlineCount = new AtomicInteger(0);
     //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。
     private static CopyOnWriteArraySet<WebSocketServer> webSocketSet = new CopyOnWriteArraySet<WebSocketServer>();
 
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
 
-    //接收sid
-    private Integer machineId = 0;
+    // 参数
+    private MonitorParam param;
 
-
-    private Long timeStamp = 0L;
-    private Queue<String> queue = new ArrayDeque<>(15);
-
-    public Long getTimeStamp() {
-        return timeStamp;
+    public synchronized MonitorParam getParam() {
+        return param;
     }
 
-    public void setTimeStamp(Long timeStamp) {
-        this.timeStamp = timeStamp;
+    public synchronized void setParam(MonitorParam param) {
+        this.param = param;
     }
 
     /**
      * 连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("machineId") Integer machineId) {
+    public void onOpen(Session session, @PathParam("departmentId") Integer departmentId) {
+        Map<String, List<String>> requestParameterMap = session.getRequestParameterMap();
         this.session = session;
         webSocketSet.add(this);     //加入set中
         addOnlineCount();           //在线数加1
-        log.info("有新窗口开始监听:" + machineId + ",当前在线人数为" + getOnlineCount());
-        this.machineId = machineId;
-//        try {
-//            while (true) {
-//                ZsEcgInfo newEcg = zsEcgInfoMapper.getNewEcg(machineId);
-//                sendMessage("newEcg");
-//            }
-//        } catch (IOException e) {
-//            log.error("websocket IO异常");
-//        }
+        log.info("有新窗口开始监听, 当前在线人数为" + getOnlineCount());
+        log.info("param:     " + requestParameterMap.toString());
+        param = new MonitorParam();
+        param.setDepartmentId(departmentId);
+        param.setStart(Integer.parseInt(requestParameterMap.get("start").get(0)));
+        param.setEnd(Integer.parseInt(requestParameterMap.get("end").get(0)));
     }
 
     /**
@@ -76,21 +73,26 @@ public class WebSocketServer {
         log.info("有一连接关闭！当前在线人数为" + getOnlineCount());
     }
 
-//    /**
-//     * 收到客户端消息后调用的方法
-//     *
-//     * @param message 客户端发送过来的消息*/
-//    @OnMessage
-//    public void onMessage(String message, Session session) {
-//    	log.info("收到来自窗口"+sid+"的信息:"+message);
-//        //群发消息
-//        for (WebSocketServer item : webSocketSet) {
-//            try {
-//                item.sendMessage(message);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
+    /**
+     * 收到客户端消息后调用的方法
+     *
+     * @param message 客户端发送过来的消息
+     */
+    @OnMessage
+    public void onMessage(String message) {
+        MonitorParam changeParam = JSON.parseObject(message, MonitorParam.class);
+        if (changeParam.getDepartmentId() != null) {
+            param.setDepartmentId(changeParam.getDepartmentId());
+        }
+        param.setStart(changeParam.getStart());
+        param.setEnd(changeParam.getEnd());
+        log.info("更新参数:" + JSON.toJSONString(param));
+    }
+
+//    public static void main(String[] args) {
+//        MonitorParam a = new MonitorParam();
+//        a.setDepartmentId(1).setStart(1).setEnd(1);
+//        System.out.println(JSON.toJSONString(a));
 //    }
 
     /**
@@ -138,15 +140,15 @@ public class WebSocketServer {
 //    }
 
     public static synchronized int getOnlineCount() {
-        return onlineCount;
+        return onlineCount.get();
     }
 
     public static synchronized void addOnlineCount() {
-        WebSocketServer.onlineCount++;
+        WebSocketServer.onlineCount.incrementAndGet();
     }
 
     public static synchronized void subOnlineCount() {
-        WebSocketServer.onlineCount--;
+        WebSocketServer.onlineCount.decrementAndGet();
     }
 
     public static CopyOnWriteArraySet<WebSocketServer> getWebSocketSet() {
@@ -157,8 +159,5 @@ public class WebSocketServer {
         WebSocketServer.webSocketSet = webSocketSet;
     }
 
-    public Integer getMachineId() {
-        return machineId;
-    }
 }
 
