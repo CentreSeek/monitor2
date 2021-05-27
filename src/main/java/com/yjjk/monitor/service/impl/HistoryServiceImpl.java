@@ -57,6 +57,7 @@ import com.yjjk.monitor.utility.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -76,8 +77,17 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
         String fileTimestamp = DateFormat.format(param, "yyMMdd");
         RecordBase recordBase = recordBaseMapper.selectByPrimaryKey(baseId);
         PatientInfo patientInfo = patientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());
-        return patientInfo.getCaseNum() + "_" + fileTimestamp;
+        return patientInfo.getName() + "-" + patientInfo.getCaseNum() + "-" + fileTimestamp;
     }
+
+    @Override
+    public String getEcgExportFilePath(Integer baseId) {
+        String relativelyPath = System.getProperty("user.dir");
+        RecordBase recordBase = recordBaseMapper.selectByPrimaryKey(baseId);
+        PatientInfo patientInfo = patientInfoMapper.selectByPrimaryKey(recordBase.getPatientId());
+        return relativelyPath + File.separator + "mit16" + File.separator;
+    }
+
 
     @Override
     public String ecgExport(String timestamp, Integer baseId) {

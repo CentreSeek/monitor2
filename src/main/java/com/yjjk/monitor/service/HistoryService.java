@@ -38,6 +38,8 @@ public interface HistoryService {
      */
     String getEcgExportFileName(String timestamp, Integer baseId);
 
+    String getEcgExportFilePath(Integer baseId);
+
     /**
      * mit16心电文件导出
      *

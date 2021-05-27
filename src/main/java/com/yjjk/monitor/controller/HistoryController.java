@@ -117,11 +117,10 @@ public class HistoryController extends BaseController {
     public CommonResult ecgExport(@RequestParam(value = "baseId") @NotNull Integer baseId,
                                   @ApiParam(value = "日期yyyy-MM-dd") @RequestParam(value = "timestamp") @NotNull String timestamp,
                                   HttpServletResponse response) {
-//        String download = historyService.ecgExport(timestamp, baseId);
-//        FileUtils.download(download,response);
         String download = historyService.getEcgExportFileName(timestamp, baseId);
+        String path = historyService.getEcgExportFilePath(baseId);
         try {
-            CompressDownloadUtil.compressEcgAsZip(download, response);
+            CompressDownloadUtil.compressEcgAsZip(path, download, response);
             return null;
         } catch (Exception e) {
             e.printStackTrace();

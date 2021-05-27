@@ -49,19 +49,16 @@ public class CompressDownloadUtil {
                 .toArray(Integer[]::new);
     }
 
-    public static void compressEcgAsZip(String fileName, HttpServletResponse response) throws IOException {
-        File f = new File("");
+    public static void compressEcgAsZip(String path, String fileName, HttpServletResponse response) throws IOException {
         List<File> para = new ArrayList<>();
-        File dat = new File(f.getCanonicalFile() + File.separator + fileName + ".dat");
-        File hea = new File(f.getCanonicalFile() + File.separator + fileName + ".hea");
+        File dat = new File(path + File.separator + fileName + ".dat");
+        File hea = new File(path + File.separator + fileName + ".hea");
         para.add(dat);
         para.add(hea);
         response.setHeader("Content-Disposition", "attachment;fileName*=UTF-8''" + fileName + ".zip");
         response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         response.setContentType("application/octet-stream");
         compressZip(para, response.getOutputStream());
-        deleteFile(dat);
-        deleteFile(hea);
     }
 
     /**
@@ -76,20 +73,20 @@ public class CompressDownloadUtil {
         ZipOutputStream zipOutStream = null;
         try {
             //-- 包装成ZIP格式输出流
-                zipOutStream = new ZipOutputStream(new BufferedOutputStream(outputStream));
-                // -- 设置压缩方法
-                zipOutStream.setMethod(ZipOutputStream.DEFLATED);
-                //-- 将多文件循环写入压缩包
-                for (int i = 0; i < files.size(); i++) {
-                    File file = files.get(i);
-                    FileInputStream fileInputStream = new FileInputStream(file);
-                    byte[] data = new byte[(int) file.length()];
-                    fileInputStream.read(data);
-                    //-- 添加ZipEntry，并ZipEntry中写入文件流，这里，加上i是防止要下载的文件有重名的导致下载失败
-                    zipOutStream.putNextEntry(new ZipEntry(file.getName()));
-                    zipOutStream.write(data);
-                    fileInputStream.close();
-                    zipOutStream.closeEntry();
+            zipOutStream = new ZipOutputStream(new BufferedOutputStream(outputStream));
+            // -- 设置压缩方法
+            zipOutStream.setMethod(ZipOutputStream.DEFLATED);
+            //-- 将多文件循环写入压缩包
+            for (int i = 0; i < files.size(); i++) {
+                File file = files.get(i);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                byte[] data = new byte[(int) file.length()];
+                fileInputStream.read(data);
+                //-- 添加ZipEntry，并ZipEntry中写入文件流，这里，加上i是防止要下载的文件有重名的导致下载失败
+                zipOutStream.putNextEntry(new ZipEntry(file.getName()));
+                zipOutStream.write(data);
+                fileInputStream.close();
+                zipOutStream.closeEntry();
             }
         } catch (IOException e) {
         } finally {

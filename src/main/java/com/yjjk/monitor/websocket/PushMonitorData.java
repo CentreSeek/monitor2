@@ -51,7 +51,7 @@ public class PushMonitorData {
     @Resource
     protected MonitorService monitorService;
 
-    @Scheduled(cron = "*/1 * * * * ?")
+    @Scheduled(cron = "*/20 * * * * ?")
     private void pushEcgInfo() {
         CopyOnWriteArraySet<WebSocketServer> webSocketSet =
                 WebSocketServer.getWebSocketSet();
