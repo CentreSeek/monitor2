@@ -97,4 +97,17 @@ public class PatientServiceImpl extends BaseService implements PatientService {
         return patientInfo;
     }
 
+    @Override
+    public Boolean changeLevelOfNursing(Integer patientId, Integer levelOfNursing) {
+        PatientInfo patientInfo = new PatientInfo();
+        patientInfo.setPatientId(patientId);
+        patientInfo.setLevelOfNursing(levelOfNursing);
+        int i = super.patientInfoMapper.updateByPrimaryKeySelective(patientInfo);
+        if (i > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

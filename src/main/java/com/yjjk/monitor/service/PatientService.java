@@ -53,7 +53,7 @@ public interface PatientService {
      * @param bedId
      * @return
      */
-    Integer checkPatient(String name, String caseNum,Integer levelOfNursing, Integer bedId);
+    Integer checkPatient(String name, String caseNum, Integer levelOfNursing, Integer bedId);
 
     /**
      * 获取当前床位病人信息
@@ -63,4 +63,12 @@ public interface PatientService {
      */
     PatientInfo getPatientInfo(Integer bedId);
 
+    /**
+     * 更改护理等级
+     *
+     * @param patientId
+     * @param levelOfNursing
+     * @return
+     */
+    Boolean changeLevelOfNursing(Integer patientId, Integer levelOfNursing);
 }

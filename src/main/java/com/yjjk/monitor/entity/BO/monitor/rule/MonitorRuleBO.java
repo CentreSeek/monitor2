@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 public class MonitorRuleBO {
 
     @NotNull
-    @ApiModelProperty(value = "0：体温 1：心率 2：呼吸率 3：血氧")
+    @ApiModelProperty(value = "0：体温 1：心率 2：呼吸率 3：血氧 4：舒张压 5：收缩压")
     private Integer type;
 
     @NotNull

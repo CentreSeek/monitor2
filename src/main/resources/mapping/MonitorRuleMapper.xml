@@ -147,5 +147,21 @@
         values (#{departmentId,jdbcType=INTEGER},
                 3, 90.0, 80.0,
                 #{managerId,jdbcType=INTEGER});
+        INSERT `monitor_rule` (`department_id`,
+                               `type`,
+                               `param_one`,
+                               `param_two`,
+                               `param_three`,
+                               `manager_id`)
+        VALUES (#{departmentId,jdbcType=INTEGER}, 4, 59, 79, 89, #{managerId,jdbcType=INTEGER});
+        INSERT `monitor_rule` (`department_id`,
+                               `type`,
+                               `param_one`,
+                               `param_two`,
+                               `param_three`,
+                               `manager_id`)
+        VALUES (#{departmentId,jdbcType=INTEGER}, 5, 89, 119, 139, #{managerId,jdbcType=INTEGER});
+
+
     </insert>
 </mapper>

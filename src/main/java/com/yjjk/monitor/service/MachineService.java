@@ -11,13 +11,11 @@
 package com.yjjk.monitor.service;
 
 import com.yjjk.monitor.configer.CommonResult;
-import com.yjjk.monitor.controller.BaseController;
 import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.export.machine.MachineExportVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -31,13 +29,16 @@ public interface MachineService {
 
     /**
      * 分配设备
+     *
      * @param departmentId
      * @param machineIds
      * @return
      */
     boolean updateDepartmentOfMachines(Integer departmentId, List<Integer> machineIds);
+
     /**
      * 获取无科室设备列表
+     *
      * @return
      */
     List<ListVO> getNullDepartmentMachines();
@@ -50,16 +51,17 @@ public interface MachineService {
      * @return
      * @throws Exception
      */
-    CommonResult startMachine(Integer machineId, String connectionType) throws Exception;
+    CommonResult startMachine(Integer machineId, Integer type, String connectionType, Integer baseId) throws Exception;
 
     /**
      * 更换设备-通知数据采集服务器
+     *
      * @param oldMachineId
      * @param newMachineId
      * @return
      * @throws Exception
      */
-    CommonResult changeMachine(Integer oldMachineId, Integer newMachineId) throws Exception;
+    CommonResult changeMachine(Integer oldMachineId, Integer newMachineId, Integer type, Integer baseId) throws Exception;
 
     /**
      * 新增设备
@@ -112,6 +114,7 @@ public interface MachineService {
     List<ZsMachineInfo> selectByUsageState(ZsMachineInfo machineInfo);
 
     List<ListVO> selectUsageListByTypeId(Map<String, Object> paraMap);
+
     List<ListVO> selectUsageListByTypeIdMachineModel(Map<String, Object> paraMap);
 
     /**
@@ -120,7 +123,7 @@ public interface MachineService {
      * @param machineInfo
      * @return
      */
-    List<MachineExportVO> export(ZsMachineInfo machineInfo,Integer language);
+    List<MachineExportVO> export(ZsMachineInfo machineInfo, Integer language);
 
     /**
      * 更新设备信息
@@ -195,6 +198,7 @@ public interface MachineService {
 
     /**
      * 监控页面-获取设备概况
+     *
      * @param departmentId
      * @return
      */
@@ -202,6 +206,7 @@ public interface MachineService {
 
     /**
      * 获取设备型号
+     *
      * @param machineTypeId
      * @return
      */

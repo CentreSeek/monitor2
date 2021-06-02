@@ -68,6 +68,5 @@ connect:
   # Cassia
   #  address: http://192.168.31.165:8084
   address: http://192.168.31.165:8084
-  url: /web/isCassiaConnectNotice
   start: /web/enableNotice
   machine: /web/getCassiaOnlineList

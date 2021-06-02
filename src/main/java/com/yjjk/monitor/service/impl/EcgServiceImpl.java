@@ -309,25 +309,31 @@ public class EcgServiceImpl extends BaseService implements EcgService {
         System.out.println(DateUtil.getDateTime(System.currentTimeMillis() - l));
     }
 
-    @Override
-    public BackgroundResult connectEcgMachine(Integer machineId, Integer bedId, String connectionType) throws Exception {
-        // 连接心电设备
-        BackgroundSend backgroundSend = new BackgroundSend();
-//        Integer repeaterId = super.zsRepeaterInfoMapper.selectByBedId(bedId);
-        Integer repeaterId = 1;
-        backgroundSend.setActionId(String.valueOf(repeaterId));
-        if (StringUtils.isNullorEmpty(repeaterId)) {
-            throw new ConnectException();
-        }
-        backgroundSend.setDeviceId(String.valueOf(machineId));
-        backgroundSend.setData(connectionType);
-        String s = NetUtils.doPost(connectRepeater.getUrl(), backgroundSend);
-        logger.info("硬件服务器返回值：     " + s);
-        if (s == null || s == "500") {
-            return null;
-        }
-        return JSON.parseObject(s, BackgroundResult.class);
-    }
+//    @Override
+//    public BackgroundResult connectEcgMachine(Integer machineId, Integer bedId, String connectionType) throws Exception {
+//        return connectEcgMachine(machineId, bedId, connectionType, null);
+//    }
+//
+//    @Override
+//    public BackgroundResult connectEcgMachine(Integer machineId, Integer bedId, String connectionType, Integer baseId) throws Exception {
+//        // 连接心电设备
+//        BackgroundSend backgroundSend = new BackgroundSend();
+////        Integer repeaterId = super.zsRepeaterInfoMapper.selectByBedId(bedId);
+//        Integer repeaterId = 1;
+//        backgroundSend.setActionId(String.valueOf(repeaterId));
+//        backgroundSend.setBaseId(baseId);
+//        if (StringUtils.isNullorEmpty(repeaterId)) {
+//            throw new ConnectException();
+//        }
+//        backgroundSend.setDeviceId(String.valueOf(machineId));
+//        backgroundSend.setData(connectionType);
+//        String s = NetUtils.doPost(connectRepeater.getUrl(), backgroundSend);
+//        logger.info("硬件服务器返回值：     " + s);
+//        if (s == null || s == "500") {
+//            return null;
+//        }
+//        return JSON.parseObject(s, BackgroundResult.class);
+//    }
 
     @Override
     public boolean hasRepeater(Integer bedId) {

@@ -5,8 +5,10 @@ import com.yjjk.monitor.entity.websocket.MonitorParam;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -47,10 +49,21 @@ public class WebSocketServer {
     }
 
     /**
+     * 注入
+     */
+    @Autowired
+    PushMonitorData pushMonitorData;
+    private static WebSocketServer webSocketServer;
+
+    @PostConstruct
+    public void init() {
+        webSocketServer = this;
+    }
+    /**
      * 连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("departmentId") Integer departmentId) {
+    public void onOpen(Session session, @PathParam("departmentId") Integer departmentId) throws IOException {
         Map<String, List<String>> requestParameterMap = session.getRequestParameterMap();
         this.session = session;
         webSocketSet.add(this);     //加入set中
@@ -61,6 +74,8 @@ public class WebSocketServer {
         param.setDepartmentId(departmentId);
         param.setStart(Integer.parseInt(requestParameterMap.get("start").get(0)));
         param.setEnd(Integer.parseInt(requestParameterMap.get("end").get(0)));
+
+        webSocketServer.pushMonitorData.pushMonitorInfo();
     }
 
     /**

@@ -1,8 +1,12 @@
 package com.yjjk.monitor.mapper;
 
+import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
 import com.yjjk.monitor.entity.VO.StaticsRecordVO;
+import com.yjjk.monitor.entity.VO.history.RecordsHistory;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBloodPressureVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBloodVO;
+import com.yjjk.monitor.entity.export.history.HistoryExportBloodPressureVO;
+import com.yjjk.monitor.entity.export.history.HistoryExportTemperatureVO;
 import com.yjjk.monitor.entity.history.BloodPressureHistoryData;
 import com.yjjk.monitor.entity.history.SleepingHistoryData;
 import com.yjjk.monitor.entity.pojo.RecordBloodPressure;
@@ -48,4 +52,14 @@ public interface RecordBloodPressureMapper extends MyMapper<RecordBloodPressure>
      * @return
      */
     Integer getBattery(Integer recordId);
+
+    List<HistoryExportBloodPressureVO> getExportList(Integer departmentId, String date, Integer recordId);
+
+    /**
+     * records- 历史记录条目
+     *
+     * @param getRecordsBO
+     * @return
+     */
+    List<RecordsHistory> getHistoryRecords(GetRecordsBO getRecordsBO);
 }

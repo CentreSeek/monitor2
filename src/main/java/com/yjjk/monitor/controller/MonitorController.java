@@ -40,7 +40,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -68,24 +67,15 @@ public class MonitorController extends BaseController {
     @ApiOperation(value = "启用设备")
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     public synchronized CommonResult startMachine(@Valid StartBO startBO, HttpServletRequest request) throws Exception {
+
 //        try {
         // 获取患者id (检验、查询\新增)
         Integer patientId = super.patientService.checkPatient(startBO.getPatientName(), startBO.getCaseNum(), startBO.getLevelOfNursing(), startBO.getBedId());
         if (patientId == null) {
             return ResultUtil.returnError(ErrorCodeEnum.EXIST_RECORD);
         }
-        return super.monitorService.startMachine(startBO.getType(), startBO.getMachineId(), startBO.getBedId(), patientId, request.getHeader("token"));
-//        } catch (ConnectException c) {
-////            c.printStackTrace();
-////            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-////            logger.error("业务异常信息：[{}]", c.getMessage(), c);
-////            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-////        } catch (Exception e) {
-////            e.printStackTrace();
-////            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-////            logger.error("业务异常信息：[{}]", e.getMessage(), e);
-////            return ResultUtil.returnError(ErrorCodeEnum.UNKNOWN_ERROR);
-////        }
+        CommonResult result = super.monitorService.startMachine(startBO, patientId, request.getHeader("token"));
+        return result;
     }
 
 
@@ -122,7 +112,8 @@ public class MonitorController extends BaseController {
     public CommonResult stopRecord(@RequestParam(value = "baseId") @NotNull Integer baseId,
                                    @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam(value = "type") @NotNull Integer type, HttpServletRequest request) throws Exception {
         /********************** 参数初始化 **********************/
-        return super.monitorService.stopMachine(baseId, type, request.getHeader("token"));
+        CommonResult result = super.monitorService.stopMachine(baseId, type, request.getHeader("token"));
+        return result;
     }
 
     @ApiOperation("获取服务器时间")
@@ -132,6 +123,13 @@ public class MonitorController extends BaseController {
         return ResultUtil.returnSuccess(DateUtil.getCurrentTimeLong());
     }
 
+    @ApiOperation("刷新websocket推送信息")
+    @RequestMapping(value = "/flush", method = RequestMethod.GET)
+    public CommonResult flushMonitor() {
+        /********************** 参数初始化 **********************/
+        monitorService.flushMonitor();
+        return ResultUtil.returnSuccess("");
+    }
 
     /**
      * 获取监控信息
@@ -204,4 +202,11 @@ public class MonitorController extends BaseController {
         return ResultUtil.returnSuccess(url);
     }
 
+    @ApiOperation("更改护理等级")
+    @RequestMapping(value = "/levelOfNursing", method = RequestMethod.PUT)
+    public CommonResult useViva(@RequestParam(value = "patientId") Integer patientId,
+                                @RequestParam(value = "levelOfNursing") Integer levelOfNursing) {
+        Boolean aBoolean = patientService.changeLevelOfNursing(patientId, levelOfNursing);
+        return ResultUtil.returnSuccess(aBoolean);
+    }
 }

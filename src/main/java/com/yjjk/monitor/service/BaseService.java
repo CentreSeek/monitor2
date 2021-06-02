@@ -42,6 +42,7 @@ import com.yjjk.monitor.mapper.ZsTemperatureInfoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
@@ -105,6 +106,9 @@ public class BaseService {
     protected MachineConfig machineConfig;
     @Autowired
     protected ConnectRepeater connectRepeater;
+    @Autowired
+    @Lazy
+    protected DataServerService dataServerService;
 
     protected PagedGridResult setterPagedGrid(List<?> list, Integer page) {
         return setterPagedGrid(list, page, null);

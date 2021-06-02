@@ -15,14 +15,9 @@ import org.springframework.stereotype.Component;
 @Data
 public class ConnectRepeater {
 
-    private String url;
     private String start;
     private String machine;
     private String address;
-
-    public String getUrl() {
-        return address + url;
-    }
 
     public String getStart() {
         return address + start;
@@ -31,4 +26,5 @@ public class ConnectRepeater {
     public String getMachine() {
         return address + machine;
     }
+
 }

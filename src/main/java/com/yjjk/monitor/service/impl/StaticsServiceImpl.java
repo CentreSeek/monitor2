@@ -84,6 +84,9 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
         if (type.equals(MachineEnum.SLEEPING.getType())) {
             recordsPeriod = super.recordSleepingMapper.getRecordsPeriod(null, start, end, null);
         }
+        if (type.equals(MachineEnum.BLOOD_PRESSURE.getType())) {
+            recordsPeriod = super.recordBloodPressureMapper.getRecordsPeriod(null, start, end, null);
+        }
         for (StaticsRecordVO staticsRecordVO : recordsPeriod) {
             String departmentName = staticsRecordVO.getDepartmentName();
             map.put(departmentName, map.get(departmentName) + 1);
@@ -109,6 +112,9 @@ public class StaticsServiceImpl extends BaseService implements StaticsService {
         }
         if (type.equals(MachineEnum.SLEEPING.getType())) {
             recordsPeriod = super.recordSleepingMapper.getRecordsPeriod(departmentId, start, end, "get");
+        }
+        if (type.equals(MachineEnum.BLOOD_PRESSURE.getType())) {
+            recordsPeriod = super.recordBloodPressureMapper.getRecordsPeriod(departmentId, start, end, "get");
         }
         for (StaticsRecordVO staticsRecordVO : recordsPeriod) {
             if (StringUtils.isNullorEmpty(staticsRecordVO.getEndTime())) {

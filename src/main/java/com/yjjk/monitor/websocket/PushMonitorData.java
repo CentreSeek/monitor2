@@ -2,30 +2,21 @@ package com.yjjk.monitor.websocket;
 
 import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.configer.CommonResult;
-import com.yjjk.monitor.controller.BaseController;
-import com.yjjk.monitor.controller.MonitorController;
 import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
 import com.yjjk.monitor.entity.websocket.MonitorParam;
-import com.yjjk.monitor.service.HistoryService;
 import com.yjjk.monitor.service.HospitalService;
-import com.yjjk.monitor.service.LoginStateService;
 import com.yjjk.monitor.service.MachineService;
-import com.yjjk.monitor.service.ManagerService;
-import com.yjjk.monitor.service.MonitorRuleService;
 import com.yjjk.monitor.service.MonitorService;
-import com.yjjk.monitor.service.PatientService;
-import com.yjjk.monitor.service.RepeaterService;
-import com.yjjk.monitor.service.StaticsService;
 import com.yjjk.monitor.utility.ResultUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
@@ -51,10 +42,18 @@ public class PushMonitorData {
     @Resource
     protected MonitorService monitorService;
 
+//    private static PushMonitorData pushMonitorData;
+//
+//
+//    @PostConstruct
+//    public void init() {
+//        pushMonitorData = this;
+//    }
+
     @Scheduled(cron = "*/20 * * * * ?")
-    private void pushEcgInfo() {
-        CopyOnWriteArraySet<WebSocketServer> webSocketSet =
-                WebSocketServer.getWebSocketSet();
+//    @Scheduled(fixedDelay = 20000)
+    public void pushMonitorInfo() {
+        CopyOnWriteArraySet<WebSocketServer> webSocketSet = WebSocketServer.getWebSocketSet();
         webSocketSet.forEach(c -> {
             try {
                 MonitorParam param = c.getParam();

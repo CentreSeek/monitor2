@@ -17,4 +17,7 @@ public class BackgroundSend {
     private String deviceId;
     private String actionId;
     private String data;
+    private String bigData;
+    private Integer baseId;
+    private Integer type;
 }

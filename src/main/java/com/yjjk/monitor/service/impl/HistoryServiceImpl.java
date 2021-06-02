@@ -22,10 +22,12 @@ import com.yjjk.monitor.entity.BO.PageBO;
 import com.yjjk.monitor.entity.BO.history.GetRecordsBO;
 import com.yjjk.monitor.entity.VO.PagedGridResult;
 import com.yjjk.monitor.entity.VO.history.RecordsHistory;
+import com.yjjk.monitor.entity.export.history.HistoryExportBloodPressureVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportBloodVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportEcgVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportSleepingVO;
 import com.yjjk.monitor.entity.export.history.HistoryExportTemperatureVO;
+import com.yjjk.monitor.entity.export.history.export.HistoryExportBloodPressureVOO;
 import com.yjjk.monitor.entity.export.history.export.HistoryExportBloodVOO;
 import com.yjjk.monitor.entity.export.history.export.HistoryExportEcgVOO;
 import com.yjjk.monitor.entity.export.history.export.HistoryExportSleepingVOO;
@@ -33,6 +35,8 @@ import com.yjjk.monitor.entity.export.history.export.HistoryExportTemperatureVOO
 import com.yjjk.monitor.entity.history.BaseData;
 import com.yjjk.monitor.entity.history.BloodHistory;
 import com.yjjk.monitor.entity.history.BloodHistoryData;
+import com.yjjk.monitor.entity.history.BloodPressureHistory;
+import com.yjjk.monitor.entity.history.BloodPressureHistoryData;
 import com.yjjk.monitor.entity.history.EcgHistory;
 import com.yjjk.monitor.entity.history.EcgHistoryData;
 import com.yjjk.monitor.entity.history.SleepingHistory;
@@ -42,6 +46,7 @@ import com.yjjk.monitor.entity.history.TemperatureHistoryData;
 import com.yjjk.monitor.entity.pojo.PatientInfo;
 import com.yjjk.monitor.entity.pojo.RecordBase;
 import com.yjjk.monitor.entity.pojo.RecordBlood;
+import com.yjjk.monitor.entity.pojo.RecordBloodPressure;
 import com.yjjk.monitor.entity.pojo.RecordEcg;
 import com.yjjk.monitor.entity.pojo.RecordSleeping;
 import com.yjjk.monitor.entity.pojo.RecordTemperature;
@@ -156,6 +161,13 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                 tital = ExportExcelConstant.SLEEPING_TITLE_EN;
             }
         }
+        if (type == MachineConstant.BLOOD_PRESSURE) {
+            if (language == ExportExcelConstant.CN) {
+                tital = ExportExcelConstant.BLOOD_PRESSURE_TITLE;
+            } else {
+                tital = ExportExcelConstant.BLOOD_PRESSURE_TITLE_EN;
+            }
+        }
         ExcelUtils.exportExcel(response, dataList, FileNameUtils.getHistoryFileName(), tital);
     }
 
@@ -176,6 +188,9 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                 break;
             case MachineConstant.SLEEPING:
                 list = super.recordSleepingMapper.getHistoryRecords(bo);
+                break;
+            case MachineConstant.BLOOD_PRESSURE:
+                list = super.recordBloodPressureMapper.getHistoryRecords(bo);
                 break;
             default:
                 break;
@@ -261,6 +276,22 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                     }
                 }
                 return sleepingHistory;
+            case MachineConstant.BLOOD_PRESSURE:
+                RecordBloodPressure recordBloodPressure = recordBloodPressureMapper.selectByPrimaryKey(recordId);
+                BloodPressureHistory bloodPressureHistory = JSON.parseObject(recordBloodPressure.getHistory(), BloodPressureHistory.class);
+                if (recordBloodPressure.getMachineId() != -1) {
+                    List<BloodPressureHistoryData> histories = recordBloodPressureMapper.getHistories(recordBloodPressure.getMachineId());
+                    bloodPressureHistory.getHistory().add(histories);
+                }
+                // 清理空数组
+                Iterator<List<BloodPressureHistoryData>> iterator5 = bloodPressureHistory.getHistory().iterator();
+                while (iterator5.hasNext()) {
+                    List<BloodPressureHistoryData> temp = iterator5.next();
+                    if (StringUtils.isNullorEmpty(temp)) {
+                        iterator5.remove();
+                    }
+                }
+                return bloodPressureHistory;
             default:
                 return new TemperatureHistoryData();
         }
@@ -420,6 +451,28 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                 }
             }
         }
+
+        if (type == MachineConstant.BLOOD_PRESSURE) {
+            List<HistoryExportBloodPressureVO> exportList = recordBloodPressureMapper.getExportList(departmentId, date, null);
+            for (int i = 0; i < exportList.size(); i++) {
+                BloodPressureHistory bloodPressureHistory = JSON.parseObject(exportList.get(i).getHistory(), BloodPressureHistory.class);
+                List<BloodPressureHistoryData> histories = recordBloodPressureMapper.getHistories(exportList.get(i).getMachineId());
+                bloodPressureHistory.getHistory().add(histories);
+                List<BloodPressureHistoryData> timesData = DataUtils.getTimesData(bloodPressureHistory.getHistory(), date);
+                for (int j = 0; j < timesData.size(); j++) {
+                    HistoryExportBloodPressureVOO pojo = new HistoryExportBloodPressureVOO();
+                    pojo.setSys(String.valueOf(exportList.get(j).getSys()))
+                            .setDia(String.valueOf(exportList.get(j).getDia()))
+                            .setBed(exportList.get(0).getBed())
+                            .setCaseNum(exportList.get(0).getCaseNum())
+                            .setDepartmentName(exportList.get(0).getDepartmentName())
+                            .setPatientName(exportList.get(0).getPatientName())
+                            .setRoom(exportList.get(0).getRoom())
+                            .setTime(DateUtil.getDateTime(timesData.get(j).getTimestamp()));
+                    result.add(pojo);
+                }
+            }
+        }
         return result;
     }
 
@@ -492,6 +545,23 @@ public class HistoryServiceImpl extends BaseService implements HistoryService {
                         .setRoom(exportList.get(0).getRoom())
                         .setTime(DateUtil.getDateTime(timesData.get(j).getTimestamp()))
                         .setSleepingState(SleepEnum.getName(timesData.get(j).getSleepState()));
+                result.add(pojo);
+            }
+        }
+        if (type == MachineConstant.BLOOD_PRESSURE) {
+            List<HistoryExportBloodPressureVO> exportList = recordBloodPressureMapper.getExportList(null, null, recordId);
+            BloodPressureHistory bloodPressureHistory = (BloodPressureHistory) data;
+            List<BloodPressureHistoryData> list = DataUtils.concatList(bloodPressureHistory.getHistory());
+            for (int j = 0; j < list.size(); j++) {
+                HistoryExportBloodPressureVOO pojo = new HistoryExportBloodPressureVOO();
+                pojo.setSys(String.valueOf(list.get(j).getSys()))
+                        .setDia(String.valueOf(list.get(j).getDia()))
+                        .setBed(exportList.get(0).getBed())
+                        .setCaseNum(exportList.get(0).getCaseNum())
+                        .setDepartmentName(exportList.get(0).getDepartmentName())
+                        .setPatientName(exportList.get(0).getPatientName())
+                        .setRoom(exportList.get(0).getRoom())
+                        .setTime(DateUtil.getDateTime(list.get(j).getTimestamp()));
                 result.add(pojo);
             }
         }

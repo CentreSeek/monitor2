@@ -68,6 +68,5 @@ machine:
 connect:
   address: http://127.0.0.1:8084
   # Cassia
-  url: /web/isCassiaConnectNotice
   start: /web/enableNotice
   machine: /web/getCassiaOnlineList

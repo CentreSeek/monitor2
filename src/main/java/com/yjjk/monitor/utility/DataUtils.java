@@ -71,6 +71,15 @@ public class DataUtils {
         return result;
     }
 
+    public static <T extends BaseData> List<T> getTimesData(List<List<T>> data, String date) {
+        List<T> list = concatList(data);
+        List<T> result = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            result.add(list.get(i));
+        }
+        return result;
+    }
+
     /**
      * 处理历史记录
      *

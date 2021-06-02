@@ -65,11 +65,16 @@
             parameterType="java.util.Map">
         SELECT IFNULL(count(*), 0) AS machineCount
         FROM zs_machine_info zmi
-                 LEFT JOIN machine_type_info mti ON zmi.`machine_type_id` = mti.`id`
-                 LEFT JOIN machine_type_info mti2 ON mti.`parent_id` = mti2.`id`
+        LEFT JOIN machine_type_info mti ON zmi.`machine_type_id` = mti.`id`
+        LEFT JOIN machine_type_info mti2 ON mti.`parent_id` = mti2.`id`
         where zmi.department_id = #{departmentId,jdbcType=INTEGER}
-          and mti2.id = #{machineTypeId,jdbcType=INTEGER}
-          and zmi.status = 0
-          and zmi.usage_state in (0, 2)
+        and mti2.id = #{machineTypeId,jdbcType=INTEGER}
+        and zmi.status = 0
+        <if test="using != null">
+            and zmi.usage_state in (2)
+        </if>
+        <if test="using == null">
+            and zmi.usage_state in (0, 2)
+        </if>
     </select>
 </mapper>

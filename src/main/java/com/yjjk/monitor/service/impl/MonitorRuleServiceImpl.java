@@ -105,6 +105,22 @@ public class MonitorRuleServiceImpl extends BaseService implements MonitorRuleSe
                         return false;
                     }
                     break;
+                case 4:
+                    if (monitorRuleBO.getParamOne() <= 30.0 || monitorRuleBO.getParamOne() > 120.0) {
+                        return false;
+                    }
+                    if (monitorRuleBO.getParamTwo() <= 30.0 || monitorRuleBO.getParamOne() > 120.0) {
+                        return false;
+                    }
+                    break;
+                case 5:
+                    if (monitorRuleBO.getParamOne() <= 60.0 || monitorRuleBO.getParamOne() > 210.0) {
+                        return false;
+                    }
+                    if (monitorRuleBO.getParamTwo() <= 60.0 || monitorRuleBO.getParamOne() > 210.0) {
+                        return false;
+                    }
+                    break;
                 default:
                     return true;
             }

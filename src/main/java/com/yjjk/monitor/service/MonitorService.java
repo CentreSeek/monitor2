@@ -11,12 +11,14 @@
 package com.yjjk.monitor.service;
 
 import com.yjjk.monitor.configer.CommonResult;
+import com.yjjk.monitor.entity.BO.monitor.StartBO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorMachineListVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorVO;
 import com.yjjk.monitor.entity.log.ManageLog;
 import com.yjjk.monitor.entity.pojo.MonitorRule;
 import com.yjjk.monitor.entity.pojo.RecordBase;
+import com.yjjk.monitor.entity.transaction.XueYaInModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +30,8 @@ import java.util.List;
  */
 @Service
 public interface MonitorService {
+
+    void flushMonitor();
 
     String redirectVivaUrl(String token, String caseNum);
 
@@ -138,14 +142,12 @@ public interface MonitorService {
     /**
      * 启用设备
      *
-     * @param type
-     * @param machineId
-     * @param bedId
+     * @param startBO
      * @param patientId
      * @param token
      * @return
      */
-    CommonResult startMachine(Integer type, Integer machineId, Integer bedId, Integer patientId, String token) throws Exception;
+    CommonResult startMachine(StartBO startBO, Integer patientId, String token) throws Exception;
 
     CommonResult startTemperatureMachine(Integer baseId, Integer machineId) throws Exception;
 
@@ -155,7 +157,7 @@ public interface MonitorService {
 
     CommonResult startSleepingMachine(Integer baseId, Integer machineId) throws Exception;
 
-    CommonResult startBloodPressureMachine(Integer baseId, Integer machineId) throws Exception;
+    CommonResult startBloodPressureMachine(Integer baseId, Integer machineId, XueYaInModel xueYaInModel) throws Exception;
 
     /**
      * 持久化监测数据

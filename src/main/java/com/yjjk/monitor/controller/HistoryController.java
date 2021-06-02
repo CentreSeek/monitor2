@@ -26,7 +26,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,7 +59,7 @@ public class HistoryController extends BaseController {
 
     @ApiOperation("page历史记录：查询历史记录")
     @RequestMapping(value = "/historyData", method = RequestMethod.GET)
-    public CommonResult getHistoryData(@ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") @NotNull Integer type,
+    public CommonResult getHistoryData(@ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam(value = "type") @NotNull Integer type,
                                        @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType", required = false, defaultValue = "0") Integer temType,
                                        @RequestParam(value = "recordId") @NotNull Integer recordId) {
         /********************** 参数初始化 **********************/
@@ -84,15 +83,16 @@ public class HistoryController extends BaseController {
 
     @ApiOperation("page历史记录：时间点拍批量导出")
     @RequestMapping(value = "/export", method = RequestMethod.GET)
-    public void export(@ApiParam(value = "时间点：格式  00:00:00", required = true) @RequestParam(value = "timeList") List<String> timeList,
-                       @ApiParam(value = "导出日期：格式  0000-00-00", required = true) @RequestParam(value = "date") String date,
-                       @RequestParam(value = "departmentId") @NotNull Integer departmentId,
-                       @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应") @RequestParam(value = "type") Integer type,
-                       @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language", required = false, defaultValue = "0") Integer language,
-                       @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType", required = false, defaultValue = "0") Integer temType,
-                       HttpServletResponse response) throws IOException {
+    public CommonResult export(@ApiParam(value = "时间点：格式  00:00:00") @RequestParam(value = "timeList", required = false) List<String> timeList,
+                               @ApiParam(value = "导出日期：格式  0000-00-00", required = true) @RequestParam(value = "date") String date,
+                               @RequestParam(value = "departmentId") @NotNull Integer departmentId,
+                               @ApiParam(value = "启用类型： 0-体温 1-心电 2-血氧 3-离床感应 4-血压") @RequestParam(value = "type") Integer type,
+                               @ApiParam(value = "语言 0：中文 1：英文") @RequestParam(value = "language", required = false, defaultValue = "0") Integer language,
+                               @ApiParam(value = "温度类型 0：℃ 1：℉") @RequestParam(value = "temType", required = false, defaultValue = "0") Integer temType,
+                               HttpServletResponse response) throws IOException {
         List list = super.historyService.getExportHistoryList(type, departmentId, date, timeList);
         super.historyService.export(response, type, list, language, temType);
+        return ResultUtil.returnSuccess();
     }
 
     @ApiOperation("page历史记录：单人导出")

@@ -10,6 +10,7 @@
  */
 package com.yjjk.monitor.entity.BO.monitor;
 
+import com.yjjk.monitor.entity.transaction.XueYaInModel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -45,4 +46,6 @@ public class StartBO {
     @NotNull
     @ApiModelProperty(value = "护理级别 特级-0 一级-1 二级-2 三级-3", required = true)
     private Integer levelOfNursing;
+
+    private XueYaInModel xueYaInModel;
 }

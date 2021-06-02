@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.configer.CommonResult;
 import com.yjjk.monitor.configer.ErrorCodeEnum;
 import com.yjjk.monitor.constant.MachineConstant;
+import com.yjjk.monitor.constant.MonitorMachineEnum;
 import com.yjjk.monitor.constant.SearchMachineConstant;
 import com.yjjk.monitor.entity.ListVO;
 import com.yjjk.monitor.entity.VO.SearchMachineVO;
@@ -44,7 +45,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,20 +75,12 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     }
 
     @Override
-    public CommonResult startMachine(Integer machineId, String connectionType) throws Exception {
-        // 连接设备
-        BackgroundSend backgroundSend = new BackgroundSend();
+    public CommonResult startMachine(Integer machineId, Integer type, String connectionType, Integer baseId) throws Exception {
         ZsMachineInfo machineInfo = super.zsMachineInfoMapper.getByMachineId(machineId);
-        backgroundSend.setDeviceId(machineInfo.getMachineNum());
-        backgroundSend.setData(connectionType);
-        String s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
-        if (s == "500") {
-            throw new ConnectException();
-        }
-        logger.info("启用设备-硬件服务器返回值：     " + s);
-        BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            throw new ConnectException();
+        Boolean aBoolean = dataServerService.connectDataServer(String.valueOf(machineInfo.getMachineId()), type, connectionType, baseId);
+        if (!aBoolean) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         }
         return ResultUtil.returnSuccess();
     }
@@ -98,16 +90,10 @@ public class MachineServiceImpl extends BaseService implements MachineService {
     MonitorService monitorService;
 
     @Override
-    public CommonResult changeMachine(Integer oldMachineId, Integer newMachineId) throws Exception {
-        // 连接设备
-        BackgroundSend backgroundSend = new BackgroundSend();
+    public CommonResult changeMachine(Integer oldMachineId, Integer newMachineId, Integer type, Integer baseId) throws Exception {
         ZsMachineInfo machineInfo = super.zsMachineInfoMapper.getByMachineId(oldMachineId);
-        backgroundSend.setDeviceId(machineInfo.getMachineNum());
-        backgroundSend.setData(BackgroundSend.DATA_LOSE_CONNECTION);
-        String s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
-        logger.info("停用设备-硬件服务器返回值：     " + s);
-        BackgroundResult backgroundResult = JSON.parseObject(s, BackgroundResult.class);
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+        Boolean aBoolean = dataServerService.connectDataServer(String.valueOf(machineInfo.getMachineId()), type, BackgroundSend.DATA_LOSE_CONNECTION, baseId);
+        if (!aBoolean) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         }
@@ -115,12 +101,8 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
         // 连接设备
         ZsMachineInfo newMachineInfo = super.zsMachineInfoMapper.getByMachineId(newMachineId);
-        backgroundSend.setDeviceId(newMachineInfo.getMachineNum());
-        backgroundSend.setData(BackgroundSend.DATA_CONNECTION);
-        s = NetUtils.doPost(connectRepeater.getStart(), backgroundSend);
-        logger.info("启用设备-硬件服务器返回值：     " + s);
-        backgroundResult = JSON.parseObject(s, BackgroundResult.class);
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+        Boolean newBoolean = dataServerService.connectDataServer(String.valueOf(newMachineInfo.getMachineId()), type, BackgroundSend.DATA_LOSE_CONNECTION, baseId);
+        if (!newBoolean) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
         }
@@ -246,16 +228,17 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
     @Override
     public List<MachineTypeListVO> getMonitorTypeList(Integer departmentId) {
-        List<MachineTypeListVO> temperatureMachineName = super.machineTypeInfoMapper.getMonitorMachineTypes(departmentId);
-        for (int i = 0; i < temperatureMachineName.size(); i++) {
-            Integer count = super.machineTypeInfoMapper.getMonitorMachineTypesCount(departmentId, temperatureMachineName.get(i).getMachineTypeId());
-            temperatureMachineName.get(i).setMachineCount(count);
+        List<MachineTypeListVO> machineInfo = super.machineTypeInfoMapper.getMonitorMachineTypes(departmentId);
+        for (int i = 0; i < machineInfo.size(); i++) {
+            Integer total = super.machineTypeInfoMapper.getMonitorMachineTypesCount(departmentId, machineInfo.get(i).getMachineTypeId(), null);
+            Integer using = super.machineTypeInfoMapper.getMonitorMachineTypesCount(departmentId, machineInfo.get(i).getMachineTypeId(), "using");
+            machineInfo.get(i).setMachineCount(total).setNumber(using).setName(MonitorMachineEnum.getName(machineInfo.get(i).getId()));
         }
-        for (int i = 0; i < temperatureMachineName.size(); i++) {
-            MachineTypeListVO temp = temperatureMachineName.get(i);
-//            temp.setValue(MachineEnum.getName(temperatureMachineName.get(i).getId()));
-        }
-        return temperatureMachineName;
+//        for (int i = 0; i < machineInfo.size(); i++) {
+//            MachineTypeListVO temp = machineInfo.get(i);
+////            temp.setValue(MachineEnum.getName(temperatureMachineName.get(i).getId()));
+//        }
+        return machineInfo;
     }
 
     @Override

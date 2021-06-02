@@ -47,7 +47,8 @@ public interface EcgService {
      * @param connectionType
      * @return com.yjjk.monitor.entity.transaction.BackgroundResult
      */
-    BackgroundResult connectEcgMachine(Integer machineId, Integer bedId, String connectionType) throws Exception;
+//    BackgroundResult connectEcgMachine(Integer machineId, Integer bedId, String connectionType) throws Exception;
+//    BackgroundResult connectEcgMachine(Integer machineId, Integer bedId, String connectionType,Integer baseId) throws Exception;
 
     /**
      * 查询指定床位是否能启用心电设备

@@ -22,6 +22,8 @@ import com.yjjk.monitor.constant.MonitorEnum;
 import com.yjjk.monitor.constant.MonitorRuleEnum;
 import com.yjjk.monitor.constant.RecordBaseEnum;
 import com.yjjk.monitor.constant.VivaConstant;
+import com.yjjk.monitor.controller.MonitorController;
+import com.yjjk.monitor.entity.BO.monitor.StartBO;
 import com.yjjk.monitor.entity.SleepingState;
 import com.yjjk.monitor.entity.VO.monitor.MachinesInfoVO;
 import com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO;
@@ -57,9 +59,11 @@ import com.yjjk.monitor.entity.pojo.ZsHealthInfo;
 import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
 import com.yjjk.monitor.entity.pojo.ZsSleepingBeltInfo;
 import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
-import com.yjjk.monitor.entity.transaction.BackgroundResult;
 import com.yjjk.monitor.entity.transaction.BackgroundSend;
+import com.yjjk.monitor.entity.transaction.XueYaInModel;
+import com.yjjk.monitor.entity.websocket.MonitorParam;
 import com.yjjk.monitor.service.BaseService;
+import com.yjjk.monitor.service.BloodPressureService;
 import com.yjjk.monitor.service.EcgService;
 import com.yjjk.monitor.service.MachineService;
 import com.yjjk.monitor.service.ManagerService;
@@ -68,15 +72,18 @@ import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.MonitorUtils;
 import com.yjjk.monitor.utility.ResultUtil;
 import com.yjjk.monitor.utility.StringUtils;
+import com.yjjk.monitor.websocket.WebSocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @author CentreS
@@ -90,6 +97,24 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     MachineService machineService;
     @Autowired
     ManagerService managerService;
+    @Autowired
+    @Lazy
+    MonitorController monitorController;
+
+    @Override
+    public void flushMonitor() {
+        CopyOnWriteArraySet<WebSocketServer> webSocketSet = WebSocketServer.getWebSocketSet();
+        webSocketSet.forEach(c -> {
+            try {
+                MonitorParam param = c.getParam();
+                CommonResult<MonitorVO> monitors = monitorController.getMonitors(param.getDepartmentId(), param.getStart(), param.getEnd());
+                String monitor = JSON.toJSONString(monitors);
+                c.sendMessage(monitor);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
     @Override
     public String redirectVivaUrl(String token, String caseNum) {
@@ -198,7 +223,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             }
             if (monitorVOList.get(i).getRecordBloodPressureId() != -1) {
                 Integer battery = super.recordBloodPressureMapper.getBattery(monitorVOList.get(i).getRecordBloodPressureId());
-                if (battery <= 10) {
+                if (battery <= 20) {
                     MachinesInfoVO temp = new MachinesInfoVO();
                     temp.setMachineType(MachineEnum.BLOOD_PRESSURE.getType())
                             .setBedName(monitorVOList.get(i).getBedName());
@@ -749,7 +774,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         super.recordTemperatureMapper.updateByPrimaryKeySelective(recordTemperature);
         deletePastData(MachineConstant.TEMPERATURE, recordTemperature.getMachineId());
         changeMachineState(recordTemperature.getMachineId(), MachineConstant.USAGE_STATE_NORMAL);
-        return machineService.startMachine(recordTemperature.getMachineId(), BackgroundSend.DATA_LOSE_CONNECTION);
+        return machineService.startMachine(recordTemperature.getMachineId(), 0, BackgroundSend.DATA_LOSE_CONNECTION, null);
     }
 
     @Override
@@ -757,25 +782,25 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         if (recordId == -1) {
             ResultUtil.returnError(ErrorCodeEnum.ERROR_MACHINE_STOP);
         }
-        // 连接心电设备
         RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(recordId);
-        BackgroundResult backgroundResult = null;
-        try {
-            backgroundResult = ecgService.connectEcgMachine(recordEcg.getMachineId(), bedId, BackgroundSend.DATA_LOSE_CONNECTION);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError("无法连接中继器服务器");
-        }
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-        }
+//        // 连接心电设备
+//        BackgroundResult backgroundResult = null;
+//        try {
+//            backgroundResult = ecgService.connectEcgMachine(recordEcg.getMachineId(), bedId, BackgroundSend.DATA_LOSE_CONNECTION);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResultUtil.returnError("无法连接中继器服务器");
+//        }
+//        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+//        }
         cacheMonitorHistory(MachineConstant.ECG, recordId);
         recordEcg.setRecordStatus(RecordBaseEnum.USAGE_STATE_UN_USE.getType()).setEndTime(DateUtil.getCurrentTime()).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordEcgMapper.updateByPrimaryKeySelective(recordEcg);
         deletePastData(MachineConstant.ECG, recordEcg.getMachineId());
         changeMachineState(recordEcg.getMachineId(), MachineConstant.USAGE_STATE_NORMAL);
-        return machineService.startMachine(recordEcg.getMachineId(), BackgroundSend.DATA_LOSE_CONNECTION);
+        return machineService.startMachine(recordEcg.getMachineId(), 1, BackgroundSend.DATA_LOSE_CONNECTION, recordEcg.getBaseId());
     }
 
     @Override
@@ -783,17 +808,17 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         // 连接心电设备
         RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(recordId);
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(recordBlood.getBaseId());
-        BackgroundResult backgroundResult = null;
-        try {
-            backgroundResult = ecgService.connectEcgMachine(recordBlood.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError("无法连接中继器服务器");
-        }
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-        }
+//        BackgroundResult backgroundResult = null;
+//        try {
+//            backgroundResult = ecgService.connectEcgMachine(recordBlood.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResultUtil.returnError("无法连接中继器服务器");
+//        }
+//        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+//        }
 
         if (recordId == -1) {
             ResultUtil.returnError(ErrorCodeEnum.ERROR_MACHINE_STOP);
@@ -803,7 +828,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         super.recordBloodMapper.updateByPrimaryKeySelective(recordBlood);
         deletePastData(MachineConstant.BLOOD, recordBlood.getMachineId());
         changeMachineState(recordBlood.getMachineId(), MachineConstant.USAGE_STATE_NORMAL);
-        return machineService.startMachine(recordBlood.getMachineId(), BackgroundSend.DATA_LOSE_CONNECTION);
+        return machineService.startMachine(recordBlood.getMachineId(), 2, BackgroundSend.DATA_LOSE_CONNECTION, recordBase.getId());
     }
 
     @Override
@@ -818,25 +843,25 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         deletePastData(MachineConstant.SLEEPING, recordSleeping.getMachineId());
         MonitorConstant.sleepingTimesMap.remove(recordSleeping.getMachineId());
         changeMachineState(recordSleeping.getMachineId(), MachineConstant.USAGE_STATE_NORMAL);
-        return machineService.startMachine(recordSleeping.getMachineId(), BackgroundSend.DATA_LOSE_CONNECTION);
+        return machineService.startMachine(recordSleeping.getMachineId(), 3, BackgroundSend.DATA_LOSE_CONNECTION, recordSleeping.getBaseId());
     }
 
     @Override
     public CommonResult stopBloodPressureMachine(Integer recordId) throws Exception {
         // 连接心电设备
         RecordBloodPressure recordBloodPressure = recordBloodPressureMapper.selectByPrimaryKey(recordId);
-        RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(recordBloodPressure.getBaseId());
-        BackgroundResult backgroundResult = null;
-        try {
-            backgroundResult = ecgService.connectEcgMachine(recordBloodPressure.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultUtil.returnError("无法连接中继器服务器");
-        }
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-        }
+//        RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(recordBloodPressure.getBaseId());
+//        BackgroundResult backgroundResult = null;
+//        try {
+//            backgroundResult = ecgService.connectEcgMachine(recordBloodPressure.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResultUtil.returnError("无法连接中继器服务器");
+//        }
+//        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+//        }
 
         if (recordId == -1) {
             ResultUtil.returnError(ErrorCodeEnum.ERROR_MACHINE_STOP);
@@ -846,7 +871,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         super.recordBloodPressureMapper.updateByPrimaryKeySelective(recordBloodPressure);
         deletePastData(MachineConstant.BLOOD_PRESSURE, recordBloodPressure.getMachineId());
         changeMachineState(recordBloodPressure.getMachineId(), MachineConstant.USAGE_STATE_NORMAL);
-        return machineService.startMachine(recordBloodPressure.getMachineId(), BackgroundSend.DATA_LOSE_CONNECTION);
+        return machineService.startMachine(recordBloodPressure.getMachineId(), 4, BackgroundSend.DATA_LOSE_CONNECTION, recordBloodPressure.getBaseId());
     }
 
     @Override
@@ -899,7 +924,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         cacheMonitorHistory(MachineConstant.TEMPERATURE, recordTemperature.getId());
         recordTemperature.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordTemperatureMapper.updateByPrimaryKeySelective(recordTemperature);
-        return machineService.changeMachine(oldMachineId, machineId);
+        return machineService.changeMachine(oldMachineId, machineId, 0, baseId);
     }
 
     @Override
@@ -907,22 +932,22 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         RecordEcg recordEcg = super.recordEcgMapper.selectByPrimaryKey(recordBase.getRecordEcgId());
         Integer oldMachineId = recordEcg.getMachineId();
-        CommonResult commonResult = machineService.changeMachine(oldMachineId, machineId);
-        // 连接心电设备
-        BackgroundResult backgroundResult = null;
-        try {
-            ecgService.connectEcgMachine(recordEcg.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-            ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-            backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError("无法连接中继器服务器");
-        }
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-        }
+        CommonResult commonResult = machineService.changeMachine(oldMachineId, machineId, 1, baseId);
+//        // 连接心电设备
+//        BackgroundResult backgroundResult = null;
+//        try {
+//            ecgService.connectEcgMachine(recordEcg.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+//            ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+//            backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError("无法连接中继器服务器");
+//        }
+//        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+//        }
         cacheMonitorHistory(MachineConstant.ECG, recordEcg.getId());
         recordEcg.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime()).setHistory(null);
         super.recordEcgMapper.updateByPrimaryKeySelective(recordEcg);
@@ -934,22 +959,22 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(recordBase.getRecordBloodId());
         Integer oldMachineId = recordBlood.getMachineId();
-        CommonResult commonResult = machineService.changeMachine(oldMachineId, machineId);
-        // 连接心电设备
-        BackgroundResult backgroundResult = null;
-        try {
-            ecgService.connectEcgMachine(recordBlood.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-            ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-            backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError("无法连接中继器服务器");
-        }
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-        }
+        CommonResult commonResult = machineService.changeMachine(oldMachineId, machineId, 2, baseId);
+//        // 连接心电设备
+//        BackgroundResult backgroundResult = null;
+//        try {
+//            ecgService.connectEcgMachine(recordBlood.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+//            ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+//            backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError("无法连接中继器服务器");
+//        }
+//        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+//        }
         cacheMonitorHistory(MachineConstant.BLOOD, recordBlood.getId());
         recordBlood.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordBloodMapper.updateByPrimaryKeySelective(recordBlood);
@@ -966,7 +991,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         cacheMonitorHistory(MachineConstant.SLEEPING, recordSleeping.getId());
         recordSleeping.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime());
         super.recordSleepingMapper.updateByPrimaryKeySelective(recordSleeping);
-        return machineService.changeMachine(oldMachineId, machineId);
+        return machineService.changeMachine(oldMachineId, machineId, 3, baseId);
     }
 
     @Override
@@ -974,22 +999,22 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         RecordBloodPressure recordBloodPressure = recordBloodPressureMapper.selectByPrimaryKey(recordBase.getRecordBloodPressureId());
         Integer oldMachineId = recordBloodPressure.getMachineId();
-        CommonResult commonResult = machineService.changeMachine(oldMachineId, machineId);
-        // 连接心电设备
-        BackgroundResult backgroundResult = null;
-        try {
-            ecgService.connectEcgMachine(recordBloodPressure.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-            ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-            backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
-        } catch (Exception e) {
-            e.printStackTrace();
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError("无法连接中继器服务器");
-        }
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-        }
+        CommonResult commonResult = machineService.changeMachine(oldMachineId, machineId, 4, baseId);
+//        // 连接心电设备
+//        BackgroundResult backgroundResult = null;
+//        try {
+//            ecgService.connectEcgMachine(recordBloodPressure.getMachineId(), recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+//            ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+//            backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError("无法连接中继器服务器");
+//        }
+//        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+//        }
         cacheMonitorHistory(MachineConstant.BLOOD_PRESSURE, recordBloodPressure.getId());
         recordBloodPressure.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime()).setHistory(null);
         super.recordBloodPressureMapper.updateByPrimaryKeySelective(recordBloodPressure);
@@ -999,7 +1024,10 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public CommonResult startMachine(Integer type, Integer machineId, Integer bedId, Integer patientId, String token) throws Exception {
+    public CommonResult startMachine(StartBO startBO, Integer patientId, String token) throws Exception {
+        Integer bedId = startBO.getBedId();
+        Integer type = startBO.getType();
+        Integer machineId = startBO.getMachineId();
         // 查询 or 新增RecordBase
         Example example = new Example(RecordBase.class);
         Example.Criteria criteria = example.createCriteria();
@@ -1060,7 +1088,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             case MachineConstant.SLEEPING:
                 return startSleepingMachine(recordBase.getId(), machineId);
             case MachineConstant.BLOOD_PRESSURE:
-                return startBloodPressureMachine(recordBase.getId(), machineId);
+                return startBloodPressureMachine(recordBase.getId(), machineId, startBO.getXueYaInModel());
             default:
                 return ResultUtil.returnError(ErrorCodeEnum.ERROR_MACHINE_TYPE);
         }
@@ -1083,7 +1111,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             super.recordTemperatureMapper.updateByPrimaryKeySelective(recordTemperature);
         }
         changeMachineState(machineId, MachineConstant.USAGE_STATE_USED);
-        return machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
+        return machineService.startMachine(machineId, 0, BackgroundSend.DATA_CONNECTION, recordBase.getId());
     }
 
     @Autowired
@@ -1094,21 +1122,21 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     public CommonResult startEcgMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
         // 心电设备能否启用
-        CommonResult commonResult = machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
+        CommonResult commonResult = machineService.startMachine(machineId, 1, BackgroundSend.DATA_CONNECTION, baseId);
 //        boolean b = ecgService.hasRepeater(recordBase.getBedId());
 //        boolean b = true;
 //        if (!b) {
 //            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 //            return ResultUtil.returnError(ErrorCodeEnum.ERROR_USAGE_ECG);
 //        }
-        // 连接心电设备
-        BackgroundResult backgroundResult = null;
-        ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-        backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-        }
+//        // 连接心电设备
+//        BackgroundResult backgroundResult = null;
+//        ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION, baseId);
+//        backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION, baseId);
+//        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+//        }
 
         if (recordBase.getRecordEcgId().equals(RecordBaseEnum.MACHINE_UN_USE.getType())) {
             // 未启用过则新建record
@@ -1130,16 +1158,16 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
 //    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public CommonResult startBloodMachine(Integer baseId, Integer machineId) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
-        CommonResult commonResult = machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
+        CommonResult commonResult = machineService.startMachine(machineId, 2, BackgroundSend.DATA_CONNECTION, recordBase.getId());
 
-        // 连接心电设备
-        BackgroundResult backgroundResult = null;
-        ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-        backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-        }
+//        // 连接心电设备
+//        BackgroundResult backgroundResult = null;
+//        ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
+//        backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
+//        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
+//        }
 
         if (recordBase.getRecordBloodId().equals(RecordBaseEnum.MACHINE_UN_USE.getType())) {
             // 未启用过则新建record
@@ -1175,21 +1203,17 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         }
         MonitorConstant.sleepingTimesMap.put(machineId, DateUtil.getCurrentTime());
         changeMachineState(machineId, MachineConstant.USAGE_STATE_USED);
-        return machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
+        return machineService.startMachine(machineId, 3, BackgroundSend.DATA_CONNECTION, baseId);
     }
 
-    @Override
-    public CommonResult startBloodPressureMachine(Integer baseId, Integer machineId) throws Exception {
-        RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
-        // 连接心电设备
-        BackgroundResult backgroundResult = null;
-        ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_LOSE_CONNECTION);
-        backgroundResult = ecgService.connectEcgMachine(machineId, recordBase.getBedId(), BackgroundSend.DATA_CONNECTION);
-        if (backgroundResult == null || !"200".equals(backgroundResult.getCode())) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);
-        }
+    @Autowired
+    @Lazy
+    BloodPressureService bloodPressureService;
 
+    @Override
+    public CommonResult startBloodPressureMachine(Integer baseId, Integer machineId, XueYaInModel xueYaInModel) throws Exception {
+        RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
+        CommonResult commonResult = machineService.startMachine(machineId, 4, BackgroundSend.DATA_CONNECTION, baseId);
         if (recordBase.getRecordSleepingId().equals(RecordBaseEnum.MACHINE_UN_USE.getType())) {
             // 未启用过则新建record
             RecordBloodPressure recordBloodPressure = new RecordBloodPressure();
@@ -1203,7 +1227,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             super.recordBloodPressureMapper.updateByPrimaryKeySelective(recordBloodPressure);
         }
         changeMachineState(machineId, MachineConstant.USAGE_STATE_USED);
-        return machineService.startMachine(machineId, BackgroundSend.DATA_CONNECTION);
+        return commonResult;
     }
 
     @Override
