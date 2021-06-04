@@ -171,6 +171,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         List<MonitorBaseVO> monitorVOList = monitorVO.getMonitorVOList();
         List<MachinesInfoVO> machinesInfoVOList = new ArrayList<>();
         for (int i = 0; i < monitorVOList.size(); i++) {
+            if (monitorVOList.get(i).getBaseId() == null) {
+                continue;
+            }
             if (monitorVOList.get(i).getRecordTemperatureId() != -1) {
                 if (monitorVOList.get(i).getMonitorTemperatureVO().getBattery() <= 10) {
                     MachinesInfoVO temp = new MachinesInfoVO();
@@ -241,6 +244,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         List<MonitorRule> rules = super.monitorRuleMapper.getRule(departmentId, null);
         List<MonitorBaseVO> monitorVOList = monitorVO.getMonitorVOList();
         for (int i = 0; i < monitorVOList.size(); i++) {
+            if (monitorVOList.get(i).getBaseId() == null) {
+                continue;
+            }
             // 获取个人规则
             List<MonitorRule> patientRule = getPatientRule(monitorVOList.get(i).getPatientId());
             if (!StringUtils.isNullorEmpty(patientRule)) {
@@ -251,21 +257,33 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             MonitorRule hRule = null;
             MonitorRule rRule = null;
             MonitorRule bRule = null;
+            // 收缩压
+            MonitorRule bpsRule = null;
+            // 舒张压
+            MonitorRule bpdRule = null;
             for (int j = 0; j < rules.size(); j++) {
-                if (rules.get(j).getType().equals(MonitorEnum.TEMPERATURE.getType())) {
+                if (rules.get(j).getType().equals(MonitorRuleEnum.TEMPERATURE.getType())) {
                     tRule = rules.get(j);
                     continue;
                 }
-                if (rules.get(j).getType().equals(MonitorEnum.HEART_RATE.getType())) {
+                if (rules.get(j).getType().equals(MonitorRuleEnum.HEART_RATE.getType())) {
                     hRule = rules.get(j);
                     continue;
                 }
-                if (rules.get(j).getType().equals(MonitorEnum.RESPIRATORY_RATE.getType())) {
+                if (rules.get(j).getType().equals(MonitorRuleEnum.RESPIRATORY_RATE.getType())) {
                     rRule = rules.get(j);
                     continue;
                 }
-                if (rules.get(j).getType().equals(MonitorEnum.BLOOD_OXYGEN.getType())) {
+                if (rules.get(j).getType().equals(MonitorRuleEnum.BLOOD_OXYGEN.getType())) {
                     bRule = rules.get(j);
+                    continue;
+                }
+                if (rules.get(j).getType().equals(MonitorRuleEnum.BLOOD_PRESSURE_DIA.getType())) {
+                    bpsRule = rules.get(j);
+                    continue;
+                }
+                if (rules.get(j).getType().equals(MonitorRuleEnum.BLOOD_PRESSURE_SYS.getType())) {
+                    bpdRule = rules.get(j);
                     continue;
                 }
             }
@@ -348,24 +366,51 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                     monitorVOList.get(i).getMonitorRespiratoryRateVO().setRespiratory(MonitorRuleEnum.RESPIRATORY_ALERT_H.getName());
                 }
             }
-            if (bRule != null
-                    && monitorVOList.get(i).getMonitorBloodVO() != null
-                    && monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen() != null) {
+            if (monitorVOList.get(i).getMonitorBloodPressureVO().getRecordState() == 2) {
+                monitorVOList.get(i).getMonitorBloodPressureVO().setBloodPressureAlert(MonitorRuleEnum.ALERT_WHITE.getType());
+                monitorVOList.get(i).getMonitorBloodPressureVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
+            } else if (bpsRule != null
+                    && monitorVOList.get(i).getMonitorBloodPressureVO() != null
+                    && monitorVOList.get(i).getMonitorBloodPressureVO().getSys() != null) {
 //                    && Double.parseDouble(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen()) != 0) {
-                Integer blood = Integer.parseInt(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen());
-                if (blood < bRule.getParamOne() && (blood >= bRule.getParamTwo())) {
-                    monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
-                    monitorVOList.get(i).getMonitorBloodVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
+                Integer sys = monitorVOList.get(i).getMonitorBloodPressureVO().getSys();
+                if (sys < bpsRule.getParamOne() && (sys >= bpsRule.getParamTwo())) {
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setBloodPressureAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                     if (errorStatus < 3) {
                         errorStatus = 2;
                     }
-                } else if (blood < bRule.getParamTwo()) {
-                    monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_RED.getType());
-                    monitorVOList.get(i).getMonitorBloodVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
+                } else if (sys < bpsRule.getParamTwo()) {
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setBloodPressureAlert(MonitorRuleEnum.ALERT_RED.getType());
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
                     errorStatus = 3;
                 } else {
-                    monitorVOList.get(i).getMonitorBloodVO().setBloodOxygenAlert(MonitorRuleEnum.ALERT_WHITE.getType());
-                    monitorVOList.get(i).getMonitorBloodVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setBloodPressureAlert(MonitorRuleEnum.ALERT_WHITE.getType());
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
+                }
+            }
+            if (monitorVOList.get(i).getMonitorBloodPressureVO().getRecordState() == 2) {
+                monitorVOList.get(i).getMonitorBloodPressureVO().setBloodPressureAlert(MonitorRuleEnum.ALERT_WHITE.getType());
+                monitorVOList.get(i).getMonitorBloodPressureVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
+            } else if (bpdRule != null
+                    && monitorVOList.get(i).getMonitorBloodPressureVO() != null
+                    && monitorVOList.get(i).getMonitorBloodPressureVO().getDia() != null) {
+//                    && Double.parseDouble(monitorVOList.get(i).getMonitorBloodVO().getBloodOxygen()) != 0) {
+
+                Integer dia = monitorVOList.get(i).getMonitorBloodPressureVO().getDia();
+                if (dia < bRule.getParamOne() && (dia >= bRule.getParamTwo())) {
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setBloodPressureAlert(MonitorRuleEnum.ALERT_ORANGE.getType());
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
+                    if (errorStatus < 3) {
+                        errorStatus = 2;
+                    }
+                } else if (dia < bRule.getParamTwo()) {
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setBloodPressureAlert(MonitorRuleEnum.ALERT_RED.getType());
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setAlert(MonitorEnum.ALERT_ERROR.getType());
+                    errorStatus = 3;
+                } else {
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setBloodPressureAlert(MonitorRuleEnum.ALERT_WHITE.getType());
+                    monitorVOList.get(i).getMonitorBloodPressureVO().setAlert(MonitorEnum.ALERT_NORMAL.getType());
                 }
             }
             monitorVOList.get(i).setErrorStatus(errorStatus);
@@ -386,6 +431,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     public List<MonitorBaseVO> getMonitors(Integer departmentId, Integer start, Integer end) {
         List<MonitorBaseVO> allBaseRecords = super.recordBaseMapper.getAllBaseRecords(departmentId, start, end);
         for (int i = 0; i < allBaseRecords.size(); i++) {
+            if (allBaseRecords.get(i).getBaseId() == null) {
+                continue;
+            }
             Integer baseId = allBaseRecords.get(i).getBaseId();
             RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
             MonitorBaseVO temp = allBaseRecords.get(i);
@@ -445,6 +493,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType());
 //                    .setIsReady(isReady(MachineEnum.TEMPERATURE.getType(), recordId));
         }
+        if (data.getTimeDays() == null) {
+            data.setTimeDays(0);
+            data.setTimeHours(0);
+            data.setTimeMinutes(0);
+        }
         monitorBaseVO.setMonitorTemperatureVO(data);
         return monitorBaseVO;
     }
@@ -456,6 +509,7 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         if (sleepingRecordId != -1 && recordSleeping.getRecordStatus().equals(MonitorEnum.CHILDREN_RECORD_USED.getType())) {
             data = super.recordSleepingMapper.getHeartRate(recordSleeping.getMachineId(), sleepingRecordId);
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType());
+
 //                    .setIsReady(isReady(MachineEnum.SLEEPING.getType(), sleepingRecordId));
         }
         RecordBlood recordBlood = super.recordBloodMapper.selectByPrimaryKey(bloodRecordId);
@@ -474,6 +528,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
             data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
         } else if (data.getHeart() == null || data.getHeart().equals(0)) {
             data.setHeart("");
+        }
+        if (data.getTimeDays() == null) {
+            data.setTimeDays(0);
+            data.setTimeHours(0);
+            data.setTimeMinutes(0);
         }
         monitorBaseVO.setMonitorHeartRateVO(data);
         return monitorBaseVO;
@@ -499,6 +558,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         } else if (data.getRespiratory() == null || data.getRespiratory().equals(0)) {
             data.setRespiratory("");
         }
+        if (data.getTimeDays() == null) {
+            data.setTimeDays(0);
+            data.setTimeHours(0);
+            data.setTimeMinutes(0);
+        }
         monitorBaseVO.setMonitorRespiratoryRateVO(data);
         return monitorBaseVO;
     }
@@ -514,6 +578,11 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
         }
         if (StringUtils.isNullorEmpty(data.getRecordState())) {
             data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
+        }
+        if (data.getTimeDays() == null) {
+            data.setTimeDays(0);
+            data.setTimeHours(0);
+            data.setTimeMinutes(0);
         }
         monitorBaseVO.setMonitorBloodVO(data);
         return monitorBaseVO;
@@ -533,10 +602,19 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
                 data.setBloodPressure(data.getSys().toString() + "/" + data.getDia().toString());
             }
             data.setRecordState(RecordBaseEnum.USAGE_STATE_USE.getType())
-                    .setTimestamp(DateUtil.format(data.getTimestamp(), "MM/dd, HH:mm:ss"));
+                    .setTimestamp(DateUtil.format(data.getTimestamp(), "MM/dd, HH:mm"))
+                    .setFirstStart(DateUtil.format(recordBloodPressure.getFirstStart(), "HH:mm"));
         }
-        if (StringUtils.isNullorEmpty(data.getRecordState())) {
+        Long timeDifferent = DateUtil.timeDifferentLong(recordBloodPressure.getFirstStart(), DateUtil.getCurrentTime());
+        if (timeDifferent < 0) {
+            data.setRecordState(2);
+        } else if (StringUtils.isNullorEmpty(data.getRecordState())) {
             data.setRecordState(RecordBaseEnum.USAGE_STATE_UN_USE.getType());
+        }
+        if (data.getTimeDays() == null) {
+            data.setTimeDays(0);
+            data.setTimeHours(0);
+            data.setTimeMinutes(0);
         }
         monitorBaseVO.setMonitorBloodPressureVO(data);
         return monitorBaseVO;
@@ -545,6 +623,9 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     @Override
     public List<MonitorBaseVO> getSleeping(List<MonitorBaseVO> list) {
         for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getBaseId() == null) {
+                continue;
+            }
             RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(list.get(i).getBaseId());
             if (recordBase.getMachineSleepingState().equals(MonitorEnum.SLEEPING_USAGE_USED.getType())) {
                 RecordSleeping recordSleeping = super.recordSleepingMapper.selectByPrimaryKey(list.get(i).getRecordSleepingId());
@@ -1213,17 +1294,20 @@ public class MonitorServiceImpl extends BaseService implements MonitorService {
     @Override
     public CommonResult startBloodPressureMachine(Integer baseId, Integer machineId, XueYaInModel xueYaInModel) throws Exception {
         RecordBase recordBase = super.recordBaseMapper.selectByPrimaryKey(baseId);
-        CommonResult commonResult = machineService.startMachine(machineId, 4, BackgroundSend.DATA_CONNECTION, baseId);
-        if (recordBase.getRecordSleepingId().equals(RecordBaseEnum.MACHINE_UN_USE.getType())) {
+        CommonResult commonResult = machineService.startMachine(machineId, 4, BackgroundSend.DATA_CONNECTION, baseId, xueYaInModel);
+        if (recordBase.getRecordBloodPressureId().equals(RecordBaseEnum.MACHINE_UN_USE.getType())) {
             // 未启用过则新建record
             RecordBloodPressure recordBloodPressure = new RecordBloodPressure();
-            recordBloodPressure.setBaseId(baseId).setMachineId(machineId).setStartTime(DateUtil.getCurrentTime()).setHistory(JSON.toJSONString(new BloodPressureHistory()));
+            recordBloodPressure.setBaseId(baseId).setMachineId(machineId).setStartTime(DateUtil.getCurrentTime()).setHistory(JSON.toJSONString(new BloodPressureHistory()))
+                    .setFirstStart(DateUtil.format(DateUtil.getCurrentTime(), "yyyy-MM-dd ") + xueYaInModel.getStartTime() + ":00");
             super.recordBloodPressureMapper.insertSelective(recordBloodPressure);
             recordBase.setRecordBloodPressureId(recordBloodPressure.getId()).setUpdatedTime(DateUtil.getCurrentTime());
             super.recordBaseMapper.updateByPrimaryKeySelective(recordBase);
         } else {
             RecordBloodPressure recordBloodPressure = super.recordBloodPressureMapper.selectByPrimaryKey(recordBase.getRecordBloodPressureId());
-            recordBloodPressure.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime()).setRecordStatus(0);
+            recordBloodPressure.setMachineId(machineId).setUpdatedTime(DateUtil.getCurrentTime()).setRecordStatus(0).
+                    setFirstStart(DateUtil.format(DateUtil.getCurrentTime(), "yyyy-MM-dd ") + xueYaInModel.getStartTime() + ":00");
+            ;
             super.recordBloodPressureMapper.updateByPrimaryKeySelective(recordBloodPressure);
         }
         changeMachineState(machineId, MachineConstant.USAGE_STATE_USED);

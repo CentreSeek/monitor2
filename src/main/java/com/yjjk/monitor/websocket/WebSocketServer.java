@@ -2,6 +2,7 @@ package com.yjjk.monitor.websocket;
 
 import com.alibaba.fastjson.JSON;
 import com.yjjk.monitor.entity.websocket.MonitorParam;
+import com.yjjk.monitor.utility.StringUtils;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,7 @@ public class WebSocketServer {
     public void init() {
         webSocketServer = this;
     }
+
     /**
      * 连接建立成功调用的方法
      */
@@ -72,9 +74,12 @@ public class WebSocketServer {
         log.info("param:     " + requestParameterMap.toString());
         param = new MonitorParam();
         param.setDepartmentId(departmentId);
-        param.setStart(Integer.parseInt(requestParameterMap.get("start").get(0)));
-        param.setEnd(Integer.parseInt(requestParameterMap.get("end").get(0)));
-
+        String start = requestParameterMap.get("start").get(0);
+        String end = requestParameterMap.get("end").get(0);
+        if (!StringUtils.isNullorEmpty(start) && !StringUtils.isNullorEmpty(end)) {
+            param.setStart(Integer.parseInt(requestParameterMap.get("start").get(0)));
+            param.setEnd(Integer.parseInt(requestParameterMap.get("end").get(0)));
+        }
         webSocketServer.pushMonitorData.pushMonitorInfo();
     }
 
@@ -99,10 +104,14 @@ public class WebSocketServer {
         if (changeParam.getDepartmentId() != null) {
             param.setDepartmentId(changeParam.getDepartmentId());
         }
-        param.setStart(changeParam.getStart());
-        param.setEnd(changeParam.getEnd());
+        if (!StringUtils.isNullorEmpty(changeParam.getStart()) && !StringUtils.isNullorEmpty(changeParam.getEnd())) {
+            param.setStart(changeParam.getStart());
+            param.setEnd(changeParam.getEnd());
+        }
         log.info("更新参数:" + JSON.toJSONString(param));
+        webSocketServer.pushMonitorData.pushMonitorInfo();
     }
+
 
 //    public static void main(String[] args) {
 //        MonitorParam a = new MonitorParam();

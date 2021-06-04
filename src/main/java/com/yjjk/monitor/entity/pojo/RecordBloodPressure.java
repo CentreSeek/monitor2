@@ -47,6 +47,8 @@ public class RecordBloodPressure {
      */
     @Column(name = "end_time")
     private String endTime;
+    @Column(name = "first_start")
+    private String firstStart;
 
     /**
      * 状态 0：正常 1：删除

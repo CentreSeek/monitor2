@@ -66,7 +66,7 @@ public class MonitorController extends BaseController {
     //    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     @ApiOperation(value = "启用设备")
     @RequestMapping(value = "/start", method = RequestMethod.POST)
-    public synchronized CommonResult startMachine(@Valid StartBO startBO, HttpServletRequest request) throws Exception {
+    public synchronized CommonResult startMachine(@RequestBody @Valid StartBO startBO, HttpServletRequest request) throws Exception {
 
 //        try {
         // 获取患者id (检验、查询\新增)
@@ -134,6 +134,7 @@ public class MonitorController extends BaseController {
     /**
      * 获取监控信息
      */
+    @Deprecated
     @ApiOperation("获取监控信息")
     @RequestMapping(value = "/monitor", method = RequestMethod.GET)
     public CommonResult<MonitorVO> getMonitors(@ApiParam(value = "科室id", required = true) @NotNull @RequestParam(value = "departmentId") Integer departmentId,

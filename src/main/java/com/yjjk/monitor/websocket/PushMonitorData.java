@@ -9,6 +9,7 @@ import com.yjjk.monitor.entity.websocket.MonitorParam;
 import com.yjjk.monitor.service.HospitalService;
 import com.yjjk.monitor.service.MachineService;
 import com.yjjk.monitor.service.MonitorService;
+import com.yjjk.monitor.utility.DateUtil;
 import com.yjjk.monitor.utility.ResultUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -78,4 +79,8 @@ public class PushMonitorData {
         monitorVO.setBedCount(hospitalService.getBedCount(departmentId, start, end));
         return ResultUtil.returnSuccess(monitorVO);
     }
+
+//    public static void main(String[] args) {
+//        System.out.println(DateUtil.format(DateUtil.getCurrentTime(),"yyyy-MM-dd ")+"12:00"+":00");;
+//    }
 }

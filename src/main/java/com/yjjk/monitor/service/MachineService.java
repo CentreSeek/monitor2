@@ -16,6 +16,7 @@ import com.yjjk.monitor.entity.VO.monitor.MachineTypeListVO;
 import com.yjjk.monitor.entity.export.machine.MachineExportVO;
 import com.yjjk.monitor.entity.pojo.MachineTypeInfo;
 import com.yjjk.monitor.entity.pojo.ZsMachineInfo;
+import com.yjjk.monitor.entity.transaction.XueYaInModel;
 
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,8 @@ public interface MachineService {
      * @throws Exception
      */
     CommonResult startMachine(Integer machineId, Integer type, String connectionType, Integer baseId) throws Exception;
+
+    CommonResult startMachine(Integer machineId, Integer type, String connectionType, Integer baseId, XueYaInModel xueYaInModel) throws Exception;
 
     /**
      * 更换设备-通知数据采集服务器

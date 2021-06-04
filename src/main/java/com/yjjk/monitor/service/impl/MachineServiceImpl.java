@@ -31,6 +31,7 @@ import com.yjjk.monitor.entity.pojo.ZsSleepingBeltInfo;
 import com.yjjk.monitor.entity.pojo.ZsTemperatureInfo;
 import com.yjjk.monitor.entity.transaction.BackgroundResult;
 import com.yjjk.monitor.entity.transaction.BackgroundSend;
+import com.yjjk.monitor.entity.transaction.XueYaInModel;
 import com.yjjk.monitor.service.BaseService;
 import com.yjjk.monitor.service.MachineService;
 import com.yjjk.monitor.service.MonitorService;
@@ -76,8 +77,13 @@ public class MachineServiceImpl extends BaseService implements MachineService {
 
     @Override
     public CommonResult startMachine(Integer machineId, Integer type, String connectionType, Integer baseId) throws Exception {
+        return startMachine(machineId, type, connectionType, baseId, null);
+    }
+
+    @Override
+    public CommonResult startMachine(Integer machineId, Integer type, String connectionType, Integer baseId, XueYaInModel xueYaInModel) throws Exception {
         ZsMachineInfo machineInfo = super.zsMachineInfoMapper.getByMachineId(machineId);
-        Boolean aBoolean = dataServerService.connectDataServer(String.valueOf(machineInfo.getMachineId()), type, connectionType, baseId);
+        Boolean aBoolean = dataServerService.connectDataServer(String.valueOf(machineInfo.getMachineId()), type, connectionType, baseId, xueYaInModel);
         if (!aBoolean) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.returnError(ErrorCodeEnum.ERROR_CONNECT_DATA_SERVICE);

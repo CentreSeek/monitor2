@@ -25,7 +25,17 @@ public enum MonitorRuleEnum {
     HEART_ALERT_L(40, "L"),
     HEART_ALERT_H(300, "H"),
     RESPIRATORY_ALERT_L(5, "L"),
-    RESPIRATORY_ALERT_H(61, "H");
+    RESPIRATORY_ALERT_H(61, "H"),
+
+    TEMPERATURE(0, "体温"),
+    HEART_RATE(1, "心率"),
+    RESPIRATORY_RATE(2, "呼吸率"),
+    BLOOD_OXYGEN(3, "血氧"),
+    BLOOD_PRESSURE_DIA(4, "舒张压"),
+    BLOOD_PRESSURE_SYS(5, "收缩压"),
+
+
+    ;
 
     private Integer type;
 

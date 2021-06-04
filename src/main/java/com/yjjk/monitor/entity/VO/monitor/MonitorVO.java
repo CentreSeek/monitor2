@@ -1,6 +1,7 @@
 package com.yjjk.monitor.entity.VO.monitor;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.yjjk.monitor.entity.ListVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

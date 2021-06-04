@@ -28,6 +28,36 @@
     </resultMap>
     <select id="getAllBaseRecords" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorBaseVO">
+        <!--        SELECT-->
+        <!--        hb.`bed_id`,-->
+        <!--        hb.`name` AS bedName,-->
+        <!--        rb.`id` AS baseId,-->
+        <!--        pin.`patient_id`,-->
+        <!--        pin.`name` AS patientName,-->
+        <!--        pin.`case_num`,-->
+        <!--        pin.level_of_nursing-->
+        <!--        FROM-->
+        <!--        hospital_department hd-->
+        <!--        LEFT JOIN hospital_room hr-->
+        <!--        ON hr.`department_id` = hd.`department_id`-->
+        <!--        AND hr.status = 0-->
+        <!--        LEFT JOIN hospital_bed hb-->
+        <!--        ON hb.room_id = hr.`room_id`-->
+        <!--        AND hb.status = 0-->
+        <!--        LEFT JOIN record_base rb-->
+        <!--        ON rb.`bed_id` = hb.bed_id-->
+        <!--        AND rb.usage_status = 0-->
+        <!--        LEFT JOIN patient_info pin-->
+        <!--        ON rb.`patient_id` = pin.`patient_id`-->
+        <!--        WHERE hd.`status` = 0-->
+        <!--        and hd.department_id = #{departmentId,jdbcType=INTEGER}-->
+        <!--        <if test="start != null">-->
+        <!--            and hb.bed_id <![CDATA[>=]]> #{start,jdbcType=INTEGER}-->
+        <!--        </if>-->
+        <!--        <if test="end != null">-->
+        <!--            and hb.bed_id <![CDATA[<=]]> #{end,jdbcType=INTEGER}-->
+        <!--        </if>-->
+        <!--        ORDER BY rb.`usage_status` DESC, hb.`bed_id`-->
         SELECT rb.`id` AS baseId,
         pin.`patient_id`,
         pin.`name` AS patientName,

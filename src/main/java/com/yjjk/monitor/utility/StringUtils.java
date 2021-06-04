@@ -71,6 +71,9 @@ public class StringUtils {
             if (str.length() <= 0) {
                 return true;
             }
+            if (str.equals("null") || str.equals("NULL")) {
+                return true;
+            }
         } else if (param instanceof List) {
             List list = (List) param;
             if (list.size() == 0) {

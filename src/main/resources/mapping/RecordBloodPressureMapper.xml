@@ -11,6 +11,7 @@
         <result column="record_status" property="recordStatus" jdbcType="INTEGER"/>
         <result column="start_time" property="startTime" jdbcType="VARCHAR"/>
         <result column="end_time" property="endTime" jdbcType="VARCHAR"/>
+        <result column="first_start" property="firstStart" jdbcType="VARCHAR"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
         <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
         <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP"/>
@@ -64,20 +65,23 @@
     <select id="getBloodPressure" parameterType="java.util.Map"
             resultType="com.yjjk.monitor.entity.VO.monitor.MonitorBloodPressureVO">
         SELECT
-        rbp.`id` as recordId,
-        zbpr.sys,
-        zbpr.dia,
-        zbpr.update_time as timestamp
+        record.`id` as recordId,
+        data.sys,
+        data.dia,
+        data.update_time as timestamp,
+        TIMESTAMPDIFF(MINUTE, record.start_time, CONCAT(CURDATE(),' ',CURTIME())) div 1440 as timeDays,
+        TIMESTAMPDIFF(MINUTE, record.start_time, CONCAT(CURDATE(),' ',CURTIME())) mod 1440 div 60 as timeHours,
+        TIMESTAMPDIFF(MINUTE, record.start_time, CONCAT(CURDATE(),' ',CURTIME())) MOD 60 as timeMinutes
         FROM
-        record_blood_pressure rbp
+        record_blood_pressure record
         LEFT JOIN
-        zs_blood_pressure_real zbpr
+        zs_blood_pressure_real data
         on
-        rbp.machine_id = zbpr.`machine_id`
+        record.machine_id = data.`machine_id`
         <where>
-            zbpr.update_time <![CDATA[>=]]> rbp.start_time
+            data.update_time <![CDATA[>=]]> record.start_time
             <if test="recordId != null">
-                and rbp.id = #{recordId,jdbcType=INTEGER}
+                and record.id = #{recordId,jdbcType=INTEGER}
             </if>
         </where>
     </select>
